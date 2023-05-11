@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PixiJS Sprite Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js"></script>
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+    <script>
+      const app = new PIXI.Application({width:640,height:480,antialias:true,transparent:false,resolution:1});
+      document.body.appendChild(app.view);
+      PIXI.Loader.shared.add([
+        {name: 'background', url: 'https://i.imgur.com/tvoaqaY.png'},
+        {name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png'},
+        {name: 'sprite', url: 'https://i.imgur.com/yX1cfEj.png'}
+      ]).load(setup);
+
+      function setup() {
+        const background = new PIXI.Sprite(PIXI.Loader.shared.resources['background'].texture);
+        const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
+        const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources['sprite'].texture);
+        sprite.scale.set(0.5);
+        sprite.anchor.set(0.5);
+         // set the y position of the background to 100
+
+        sprite.position.set(app.screen.width / 2, app.screen.height / 1.35); // center the sprite horizontally and vertically
+        const velocity = new PIXI.Point(0, 0);
+        const parallaxRatio = 0.5; // adjust as desired
+        window.addEventListener("keydown", (e) => {
+          const speed = 2;
+          switch(e.key) {
+            case "ArrowLeft": velocity.x = -speed; break;
+            case "ArrowRight": velocity.x = speed; break;
+            case "ArrowUp": velocity.y = -speed; break;
+            case "ArrowDown": velocity.y = speed; break;
+          }
+        });
+        window.addEventListener("keyup", (e) => {
+          switch(e.key) {
+            case "ArrowLeft":
+            case "ArrowRight": velocity.x = 0; break;
+            case "ArrowUp":
+            case "ArrowDown": velocity.y = 0; break;
+          }
+        });
+        app.ticker.add(() => {
+          sprite.scale.x = velocity.x < 0 ? -0.5 : velocity.x > 0 ? 0.5 : sprite.scale.x;
+          sprite.position.x += velocity.x;
+          sprite.position.y += velocity.y;
+          background.position.x = -sprite.x * parallaxRatio;
+          background.position.y = -sprite.y * parallaxRatio;
+          app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -sprite.x + app.screen.width / 2));
+          app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -sprite.y + app.screen.height / 2));
+        });
+        app.stage.addChild(background, foreground, sprite);
+      }
+    </script>
+  </body>
+</html>
