@@ -1,60 +1,250 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Crittors Pixi</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js"></script>
-  </head>
-  <body>
-    <canvas id="game-canvas"></canvas>
-    <script>
-      const app = new PIXI.Application({width:640,height:480,antialias:true,transparent:false,resolution:1});
-      document.body.appendChild(app.view);
-      PIXI.Loader.shared.add([
-        {name: 'background', url: 'https://i.imgur.com/tvoaqaY.png'},
-        {name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png'},
-        {name: 'sprite', url: 'https://i.imgur.com/yX1cfEj.png'}
-      ]).load(setup);
+<head>
+	<meta charset="utf-8">
+	<title>Crittors</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js">
+	</script>
+</head>
+<body>
+	<canvas id="game-canvas"></canvas>
+	<script>
+	 const app = new PIXI.Application({width:640,height:480,antialias:true,transparent:false,resolution:1});
+	document.body.appendChild(app.view);
+	const LEFT_ARROW_KEYCODE = 37;
+	const RIGHT_ARROW_KEYCODE = 39;
+	const UP_ARROW_KEYCODE = 38;
+  const SPACEBAR_KEYCODE = 32;
+	const DOWN_ARROW_KEYCODE = 40;
+	const speed = 2;
+	const mountainVelocityX = 0;
+	const mountainVelocityY = 0.2;
+	const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
+	const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
+	let keysPressed = 0;
+	PIXI.Loader.shared.add([
+	 {name: 'background', url: 'https://i.imgur.com/tvoaqaY.png'},
+	 {name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png'},
+	 {name: 'critter', url: 'https://i.imgur.com/yX1cfEj.png'},
+	 {name: 'critter_walk', url: 'https://i.imgur.com/TKZnXKG.png'},
+   {name: 'critter_attack', url: 'https://i.imgur.com/gJGYMLn.png'},
+	 {name: 'mountain1', url: 'https://i.imgur.com/FP1W0k6.png'},
+	 {name: 'mountain2', url: 'https://i.imgur.com/Y6IKYjW.png'},
+   {name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png'}
+	]).load(setup);
 
-      function setup() {
-        const background = new PIXI.Sprite(PIXI.Loader.shared.resources['background'].texture);
-        const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
-        const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources['sprite'].texture);
-        sprite.scale.set(0.5);
-        sprite.anchor.set(0.5);
-         // set the y position of the background to 100
+	function setup() {
 
-        sprite.position.set(app.screen.width / 2, app.screen.height / 1.35); // center the sprite horizontally and vertically
-        const velocity = new PIXI.Point(0, 0);
-        const parallaxRatio = 0.5; // adjust as desired
-        window.addEventListener("keydown", (e) => {
-          const speed = 2;
-          switch(e.key) {
-            case "ArrowLeft": velocity.x = -speed; break;
-            case "ArrowRight": velocity.x = speed; break;
-            case "ArrowUp": velocity.y = -speed; break;
-            case "ArrowDown": velocity.y = speed; break;
-          }
-        });
-        window.addEventListener("keyup", (e) => {
-          switch(e.key) {
-            case "ArrowLeft":
-            case "ArrowRight": velocity.x = 0; break;
-            case "ArrowUp":
-            case "ArrowDown": velocity.y = 0; break;
-          }
-        });
-        app.ticker.add(() => {
-          sprite.scale.x = velocity.x < 0 ? -0.5 : velocity.x > 0 ? 0.5 : sprite.scale.x;
-          sprite.position.x += velocity.x;
-          sprite.position.y += velocity.y;
-          background.position.x = -sprite.x * parallaxRatio;
-          background.position.y = -sprite.y * parallaxRatio;
-          app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -sprite.x + app.screen.width / 2));
-          app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -sprite.y + app.screen.height / 2));
-        });
-        app.stage.addChild(background, foreground, sprite);
+	 const texture = PIXI.Loader.shared.resources['background'].texture;
+	 const background = new PIXI.Sprite(texture);
+	 background.position.set(400, 500);
+	 background.width = app.screen.width * 6;
+	 background.height = app.screen.height * 1.4;
+	 app.stage.addChild(background);
+	 const mountain1 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain1'].texture);
+	mountain1.position.set(-100, app.screen.height - mountain1.height + 50);
+	mountain1.scale.set(0.7);
+	mountain1.zIndex = -1;
+	app.stage.addChild(mountain1);
+
+	const mountain2 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain2'].texture);
+	mountain2.position.set(400, app.screen.height - mountain2.height + 50);
+	mountain2.scale.set(0.7);
+	mountain2.zIndex = -1;
+	app.stage.addChild(mountain2);
+
+	mountain1.velocity = mountainVelocity1;
+	mountain2.velocity = mountainVelocity2;
+
+
+
+
+	 const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
+	 foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.2;
+	 //app.stage.addChild(foreground);
+
+	 const critterIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['critter'].texture);
+   const critterIdleTextures = [critterIdleTexture];
+	 const critterWalkTextures = [];
+	 for (let i = 0; i < 12; i++) {
+	   const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['critter_walk'].texture.width / 12), 0, PIXI.Loader.shared.resources['critter_walk'].texture.width / 12, 335);
+	   critterWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['critter_walk'].texture, rect));
+	 }
+	 const critter = new PIXI.AnimatedSprite(critterWalkTextures);
+   const critterAttackTextures = [];
+   for (let i = 0; i < 13; i++) {
+  const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['critter_attack'].texture.width / 13), 0, PIXI.Loader.shared.resources['critter_attack'].texture.width / 13, 333);
+  const texture = new PIXI.Texture(PIXI.Loader.shared.resources['critter_attack'].texture, rect);
+  // Adjust the x-coordinate of the anchor point to shift the sprite to the right
+  critterAttackTextures.push(texture);
+}
+
+critter.scale.set(0.5);
+critter.anchor.set(0.35, 0.35);
+critter.position.set(app.screen.width / 2, app.screen.height / 1.35);
+critter.animationSpeed = 0.25;
+critter.loop = true;
+app.stage.addChild(critter);
+   const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
+const backgroundImage = PIXI.Sprite.from('background');
+const clouds = new PIXI.TilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
+clouds.tileScale.x = 0.4;
+clouds.tileScale.y = 0.4;
+clouds.tilePosition.y = 200; // set to desired vertical offset
+app.stage.addChild(clouds);
+
+
+
+
+
+	 const velocity = new PIXI.Point(0, 0);
+	 const parallaxRatio = 0.5;
+	 const speed = 2;
+	 const pressedKeys = new Set();
+   let xDir = 0;
+let yDir = 0;
+let isMoving = false;
+let isAttacking = false;
+
+function handleKeyDown(e) {
+  switch (e.keyCode) {
+    case LEFT_ARROW_KEYCODE:
+      xDir = -1;
+      critter.scale.x = -0.5; // flip image horizontally
+      break;
+    case RIGHT_ARROW_KEYCODE:
+      xDir = 1;
+      critter.scale.x = 0.5; // reset image orientation
+      break;
+    case UP_ARROW_KEYCODE:
+      yDir = -1;
+      break;
+    case DOWN_ARROW_KEYCODE:
+      yDir = 1;
+      break;
+    case SPACEBAR_KEYCODE:
+      if (!isAttacking) {
+        isAttacking = true;
+        critter.textures = critterAttackTextures;
+        critter.loop = true;
+        critter.play();
       }
-    </script>
-  </body>
+      break;
+  }
+
+  if (e.keyCode !== SPACEBAR_KEYCODE) {
+    if (!isMoving && !isAttacking) {
+      isMoving = true;
+      critter.textures = critterWalkTextures;
+      critter.loop = true;
+      critter.play();
+    }
+    updateVelocity();
+  }
+}
+
+function handleKeyUp(e) {
+  switch (e.keyCode) {
+    case LEFT_ARROW_KEYCODE:
+      xDir = xDir === -1 ? 0 : xDir;
+      break;
+    case RIGHT_ARROW_KEYCODE:
+      xDir = xDir === 1 ? 0 : xDir;
+      break;
+    case UP_ARROW_KEYCODE:
+      yDir = yDir === -1 ? 0 : yDir;
+      break;
+    case DOWN_ARROW_KEYCODE:
+      yDir = yDir === 1 ? 0 : yDir;
+      break;
+    case SPACEBAR_KEYCODE:
+      if (isAttacking) {
+        isAttacking = false;
+        critter.textures = isMoving ? critterWalkTextures : critterIdleTextures;
+        critter.loop = isMoving;
+        critter.gotoAndStop(0);
+      }
+      break;
+  }
+
+  if (xDir === 0 && yDir === 0 && !isAttacking) { // check if critter is no longer moving
+    isMoving = false;
+    critter.textures = critterIdleTextures;
+    critter.stop();
+  } else if (!isAttacking) {
+    critter.textures = critterWalkTextures;
+    critter.loop = true;
+    critter.play();
+  }
+
+  updateVelocity();
+}
+
+
+
+	function updateVelocity() {
+	 velocity.x = xDir * speed;
+	 velocity.y = yDir * speed;
+	 mountainVelocity1.x = mountainVelocityX;
+	 mountainVelocity1.y = mountainVelocityY;
+	 mountainVelocity2.x = mountainVelocityX;
+	 mountainVelocity2.y = mountainVelocityY;
+	}
+
+	window.addEventListener("keydown", handleKeyDown);
+	window.addEventListener("keyup", handleKeyUp);
+
+
+
+
+
+	app.ticker.add(() => {
+ 
+ critter.position.x += velocity.x;
+ critter.position.y += velocity.y;
+
+ clouds.position.x +=1/5;
+ const maxX = foreground.width - critter.width / 2; // set maximum X position
+ const minX = critter.width/2; // set minimum X position
+ const maxY = app.screen.height * 0.85; // set maximum Y position
+ const minY = app.screen.height * 0.5; // set minimum Y position
+ 
+ if (critter.position.y > maxY) {
+   critter.position.y = maxY;
+ } else if (critter.position.y < minY) {
+   critter.position.y = minY;
+ }
+
+ if (critter.position.x > maxX) {
+   critter.position.x = maxX;
+ } else if (critter.position.x < minX) {
+   critter.position.x = minX;
+ }
+ else{ mountain1.position.x -= velocity.x * 0.2; // move at 20% of critter velocity
+ mountain2.position.x -= velocity.x * 0.05; // move at 40% of critter velocity
+}
+
+ // adjust mountain velocities to move at different speeds
+
+  
+ background.position.x = -critter.position.x * parallaxRatio;
+ background.position.y = -critter.position.y * .2;
+ clouds.position.x -= 1/3.5;
+ 
+ if (clouds.x + clouds.width / 2 < 0) {
+   // move the cloud to the right side of the screen
+   clouds.x = app.screen.width + clouds.width / 2;
+ }
+ 
+ app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + app.screen.width / 2));
+ app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
+});
+
+app.stage.addChild(background, mountain1, mountain2, foreground, critter, clouds);
+
+
+	}
+
+	</script>
+</body>
 </html>
