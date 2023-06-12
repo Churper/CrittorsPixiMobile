@@ -53,11 +53,14 @@ app.stage.addChild(frogPortrait);
 let isFrog = false;
 function startGame() {
   // Remove menu elements
+  
   app.stage.removeChild(menuSprite);
   app.stage.removeChild(startText);
 
   // Add game elements and logic here
-  // ...
+  // ... // Usage example
+    const castleMaxHealth = 100;
+    let castleHealth = castleMaxHealth;
   
     //window.addEventListener("keydown", handleKeyDown);
     const LEFT_ARROW_KEYCODE = 37;
@@ -71,7 +74,7 @@ function startGame() {
     const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
     const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
     let keysPressed = 0;
-    
+    let hp = 100;
    const hpBarWidth = 180;
 const hpBarHeight = 16;
 const hpBarX = app.screen.width + 1710 - hpBarWidth / 2;
@@ -166,13 +169,14 @@ app.stage.addChild(hpBar);
 
 
       app.stage.addChild(castle);
+
              
         const frogIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['frog'].texture);
       const frogIdleTextures = [frogIdleTexture];
 
       const frogWalkTextures = [];
       for (let i = 0; i < 10; i++) {
-        const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['frog_walk'].texture.width / 10), 0, PIXI.Loader.shared.resources['critter_walk'].texture.width / 10, 409);
+        const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['frog_walk'].texture.width / 10), 0, PIXI.Loader.shared.resources['frog_walk'].texture.width / 10, 409);
         frogWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['frog_walk'].texture, rect));
       }
 
@@ -196,6 +200,9 @@ app.stage.addChild(hpBar);
 
 
 
+
+      
+
       
      
       const critterIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['critter'].texture);
@@ -207,9 +214,17 @@ app.stage.addChild(hpBar);
         critterWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['critter_walk'].texture, rect));
       }
 
-      const critter = new PIXI.AnimatedSprite(critterWalkTextures);
-      const critterAttackTextures = [];
 
+      let characterTextures;
+  if (isFrog) {
+    characterTextures = frogWalkTextures;
+  } else {
+    characterTextures = critterWalkTextures;
+  }
+
+
+      const critter = new PIXI.AnimatedSprite(characterTextures);
+      const critterAttackTextures = [];
       const critterAttackTextureWidth = PIXI.Loader.shared.resources['critter_attack'].texture.width / 13;
 
       for (let i = 0; i < 13; i++) {
@@ -223,6 +238,7 @@ app.stage.addChild(hpBar);
       critter.position.set(app.screen.width / 2, app.screen.height / 1.35);
       critter.animationSpeed = 0.25;
       critter.loop = true;
+
       //app.stage.addChild(critter);
      
 
@@ -246,35 +262,44 @@ app.stage.addChild(hpBar);
       let yDir = 0;
       let isMoving = false;
       let isAttacking = false;
+    // critter.textures = critterIdleTextures;
 
-      function handleKeyDown(e) {
-        switch (e.keyCode) {
-          case LEFT_ARROW_KEYCODE:
-            xDir = -1;
-            critter.scale.x = -0.5; // flip image horizontally
-            break;
-          case RIGHT_ARROW_KEYCODE:
-            xDir = 1;
-            critter.scale.x = 0.5; // reset image orientation
-            break;
-          case UP_ARROW_KEYCODE:
-            yDir = -1;
-            break;
-          case DOWN_ARROW_KEYCODE:
-            yDir = 1;
-            break;
-          case SPACEBAR_KEYCODE:
-            if (!isAttacking) {
-              isAttacking = true;
-            //  window.alert(isFrog);
-              if(isFrog){
-              critter.textures = frogAttackTextures;
-            }else{critter.textures = critterAttackTextures;}
-              critter.loop = true;
-              critter.play();
-            }
-            break;
+    function handleKeyDown(e) {
+  switch (e.keyCode) {
+    case LEFT_ARROW_KEYCODE:
+      xDir = -1;
+      critter.scale.x = -0.5; // flip image horizontally
+      break;
+    case RIGHT_ARROW_KEYCODE:
+      xDir = 1;
+      critter.scale.x = 0.5; // reset image orientation
+      break;
+    case UP_ARROW_KEYCODE:
+      yDir = -1;
+      break;
+    case DOWN_ARROW_KEYCODE:
+      yDir = 1;
+      break;
+    case SPACEBAR_KEYCODE:
+      if (!isAttacking) {
+        castleTakeDamage(10);
+        isAttacking = true;
+        //  window.alert(isFrog);
+        if (isFrog) {
+          critter.textures = frogAttackTextures;
+        } else {
+          critter.textures = critterAttackTextures;
         }
+        critter.loop = true;
+        critter.onLoop = function () {
+          castleTakeDamage(10); // Damage calculation
+        };
+        critter.play();
+      }
+      break;
+  }
+
+
 
         if (e.keyCode !== SPACEBAR_KEYCODE) {
           if (!isMoving && !isAttacking) {
@@ -355,21 +380,23 @@ app.stage.addChild(hpBar);
       hpBar.endFill();
     }
     app.stage.addChild(hpBarBackground, hpBar);
-    // Usage example
-    const castleMaxHealth = 100;
-    let castleHealth = castleMaxHealth;
+   
 
     // Update the HP bar with initial values
-    updateHPBar(castleHealth, castleMaxHealth);
+    //updateHPBar(castleHealth, castleMaxHealth);
 
     // Example damage function
     function castleTakeDamage(damage) {
       castleHealth -= damage;
       if (castleHealth < 0) {
         castleHealth = 0;
+        castleExplode();
       }
       updateHPBar(castleHealth, castleMaxHealth);
     }
+ function castleExplode(){
+
+ }
 
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
@@ -387,8 +414,7 @@ app.stage.addChild(hpBar);
         // update critter position
         critter.position.x += velocity.x;
         critter.position.y += velocity.y;
-        characterPortrait.position.x += velocity.x;
-        characterPortrait.position.y += velocity.y;
+
 
 
 
@@ -450,12 +476,16 @@ function handleImpClick() {
 
 function handleFrogClick() {
   isFrog = true;
+
+       // critter.textures = frog;
   if (!isGameStarted) {
     isGameStarted = true;
    
     startGame();
   }
 }
+
+
 
 impPortrait.on('click', handleImpClick);
 frogPortrait.on('click', handleFrogClick);
