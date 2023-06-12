@@ -21,478 +21,439 @@
 
     document.body.appendChild(app.view);
 
-let isGameStarted = false;
-const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
-const menuSprite = new PIXI.Sprite(menuTexture);
-menuSprite.anchor.set(0.5);
-menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
-app.stage.addChild(menuSprite);
+    let isGameStarted = false;
+    const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
+    const menuSprite = new PIXI.Sprite(menuTexture);
+    menuSprite.anchor.set(0.5);
+    menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
+    app.stage.addChild(menuSprite);
 
-const startText = new PIXI.Text('Choose your character!', {
-  fontSize: 24,
-  fill: 'white',
-  align: 'center',
-});
-startText.anchor.set(0.5);
-startText.position.set(app.screen.width / 2, app.screen.height / 2 + 100);
-app.stage.addChild(startText);
+    const startText = new PIXI.Text('Choose your character!', {
+      fontSize: 24,
+      fill: 'white',
+      align: 'center',
+    });
+    startText.anchor.set(0.5);
+    startText.position.set(app.screen.width / 2, app.screen.height / 2 + 100);
+    app.stage.addChild(startText);
 
-const impPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
-const impPortrait = new PIXI.Sprite(impPortraitTexture);
-impPortrait.interactive = true;
-impPortrait.buttonMode = true;
-impPortrait.position.set(100, 0);
-app.stage.addChild(impPortrait);
+    const impPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
+    const impPortrait = new PIXI.Sprite(impPortraitTexture);
+    impPortrait.interactive = true;
+    impPortrait.buttonMode = true;
+    impPortrait.position.set(100, 0);
+    app.stage.addChild(impPortrait);
 
-const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/yzzwAH6.png');
-const frogPortrait = new PIXI.Sprite(frogPortraitTexture);
-frogPortrait.interactive = true;
-frogPortrait.buttonMode = true;
-frogPortrait.position.set(340, 0);
-app.stage.addChild(frogPortrait);
-let isFrog = false;
-function startGame() {
-  // Remove menu elements
-  
-  app.stage.removeChild(menuSprite);
-  app.stage.removeChild(startText);
+    const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/yzzwAH6.png');
+    const frogPortrait = new PIXI.Sprite(frogPortraitTexture);
+    frogPortrait.interactive = true;
+    frogPortrait.buttonMode = true;
+    frogPortrait.position.set(340, 0);
+    app.stage.addChild(frogPortrait);
+    let isFrog = false;
+    function startGame() {
+      // Remove menu elements
+      app.stage.removeChild(menuSprite);
+      app.stage.removeChild(startText);
 
-  // Add game elements and logic here
-  // ... // Usage example
-    const castleMaxHealth = 100;
-    let castleHealth = castleMaxHealth;
-  
-    //window.addEventListener("keydown", handleKeyDown);
-    const LEFT_ARROW_KEYCODE = 37;
-    const RIGHT_ARROW_KEYCODE = 39;
-    const UP_ARROW_KEYCODE = 38;
-    const SPACEBAR_KEYCODE = 32;
-    const DOWN_ARROW_KEYCODE = 40;
-    const speed = 2;
-    const mountainVelocityX = 0;
-    const mountainVelocityY = 0.2;
-    const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
-    const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
-    let keysPressed = 0;
-    let hp = 100;
-   const hpBarWidth = 180;
-const hpBarHeight = 16;
-const hpBarX = app.screen.width + 1710 - hpBarWidth / 2;
-const hpBarY = app.screen.height - 40 - hpBarHeight - 210; // Adjusted position
-
-
-
-const hpBarBackgroundColor = 0x000000;
-const hpBarColor = 0xff0000;
-
-const hpBarBackground = new PIXI.Graphics();
-const hpBarBorderColor = 0x000000; // Black color
-const hpBarBorderThickness = 4; // Adjust the thickness as desired
-
-hpBarBackground.lineStyle(hpBarBorderThickness, hpBarBorderColor);
-hpBarBackground.beginFill(hpBarBackgroundColor, 0.5); // Set the alpha value for transparency
-hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-hpBarBackground.endFill();
-
-hpBarBackground.beginFill(hpBarBackgroundColor, 0.5); // Set the alpha value for transparency
-hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
-hpBarBackground.endFill();
-app.stage.addChild(hpBarBackground);
-
-const hpBar = new PIXI.Graphics();
-hpBar.beginFill(hpBarColor, 0.5); // Set the alpha value for transparency
-hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-hpBar.endFill();
-hpBar.visible = false; // Initially hide the HP bar
-app.stage.addChild(hpBar);
-
-
-
-
-  
-
-    PIXI.Loader.shared.add([
-      { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
-      { name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png' },
-      { name: 'critter', url: 'https://i.imgur.com/yX1cfEj.png' },
-      { name: 'critter_walk', url: 'https://i.imgur.com/TKZnXKG.png' },
-      { name: 'critter_attack', url: 'https://i.imgur.com/gJGYMLn.png' },
-      { name: 'frog', url: 'https://i.imgur.com/xBb2PuG.png' },
-      { name: 'frog_walk', url: 'https://i.imgur.com/CkWdada.png' },
-      { name: 'frog_attack', url: 'https://i.imgur.com/V5XDl7p.png' },
-      { name: 'mountain1', url: 'https://i.imgur.com/FP1W0k6.png' },
-      { name: 'mountain2', url: 'https://i.imgur.com/Y6IKYjW.png' },
-      { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
-      { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
-    ]).load(setup);
-
-    function setup() {
-      const texture = PIXI.Loader.shared.resources['background'].texture;
-      const background = new PIXI.Sprite(texture);
-      background.position.set(400, 500);
-      background.width = app.screen.width * 6;
-      background.height = app.screen.height * 1.4;
-      app.stage.addChild(background);
-
-      const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
-    const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
-    //characterPortrait.position.x = 0;
-     // characterPortrait.position.y = characterPortrait.height+30;
-   // app.stage.addChild(characterPortrait);
-
-
-      const mountain1 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain1'].texture);
-      mountain1.position.set(-100, app.screen.height - mountain1.height + 50);
-      mountain1.scale.set(0.7);
-      mountain1.zIndex = -1;
-      mountain1.velocity = mountainVelocity1;
-      app.stage.addChild(mountain1);
-
-
-
-
-
-      const mountain2 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain2'].texture);
-      mountain2.position.set(850, app.screen.height - mountain2.height + 50);
-      mountain2.scale.set(0.7);
-      mountain2.zIndex = -1;
-      mountain2.velocity = mountainVelocity2;
-      app.stage.addChild(mountain2);
-
-      const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
-      foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.2;
-
-      const castleTexture = PIXI.Texture.from('castle');
-      const castle = new PIXI.Sprite(castleTexture);
-      castle.anchor.set(1, 1); // Set the anchor point to the bottom right of the castle
-      castle.position.set(app.screen.width +1850, app.screen.height-40);
-
-
-      app.stage.addChild(castle);
-
-             
-        const frogIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['frog'].texture);
-      const frogIdleTextures = [frogIdleTexture];
-
-      const frogWalkTextures = [];
-      for (let i = 0; i < 10; i++) {
-        const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['frog_walk'].texture.width / 10), 0, PIXI.Loader.shared.resources['frog_walk'].texture.width / 10, 409);
-        frogWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['frog_walk'].texture, rect));
-      }
-
-      const frog = new PIXI.AnimatedSprite(frogWalkTextures);
-      const frogAttackTextures = [];
-
-      const frogAttackTextureWidth = PIXI.Loader.shared.resources['frog_attack'].texture.width / 12;
-
-      for (let i = 0; i < 12; i++) {
-        const rect = new PIXI.Rectangle(i * frogAttackTextureWidth, 0, frogAttackTextureWidth, 409);
-        const texture = new PIXI.Texture(PIXI.Loader.shared.resources['frog_attack'].texture, rect);
-        frogAttackTextures.push(texture);
-      }
-
-      frog.scale.set(0.5);
-     frog.anchor.set(0.35);
-      frog.position.set(app.screen.width / 2, app.screen.height / 1.35);
-      frog.animationSpeed = 0.25;
-      frog.loop = true;
-      //app.stage.addChild(frog);
-
-
-
-
-      
-
-      
-     
-      const critterIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['critter'].texture);
-      const critterIdleTextures = [critterIdleTexture];
-
-      const critterWalkTextures = [];
-      for (let i = 0; i < 12; i++) {
-        const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['critter_walk'].texture.width / 12), 0, PIXI.Loader.shared.resources['critter_walk'].texture.width / 12, 335);
-        critterWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['critter_walk'].texture, rect));
-      }
-
-
-      let characterTextures;
-  if (isFrog) {
-    characterTextures = frogWalkTextures;
-  } else {
-    characterTextures = critterWalkTextures;
-  }
-
-
-      const critter = new PIXI.AnimatedSprite(characterTextures);
-      const critterAttackTextures = [];
-      const critterAttackTextureWidth = PIXI.Loader.shared.resources['critter_attack'].texture.width / 13;
-
-      for (let i = 0; i < 13; i++) {
-        const rect = new PIXI.Rectangle(i * critterAttackTextureWidth, 0, critterAttackTextureWidth, 333);
-        const texture = new PIXI.Texture(PIXI.Loader.shared.resources['critter_attack'].texture, rect);
-        critterAttackTextures.push(texture);
-      }
-
-      critter.scale.set(0.5);
-      critter.anchor.set(0.35);
-      critter.position.set(app.screen.width / 2, app.screen.height / 1.35);
-      critter.animationSpeed = 0.25;
-      critter.loop = true;
-
-      //app.stage.addChild(critter);
-     
-
-
-      
-    
-      
-
-      const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
-      const backgroundImage = PIXI.Sprite.from('background');
-      const clouds = new PIXI.TilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
-      clouds.tileScale.set(0.4);
-      clouds.tilePosition.y = 200;
-      app.stage.addChild(clouds);
-
-      const velocity = new PIXI.Point();
-      const parallaxRatio = 0.5;
+      // Game elements and logic 
+      const castleMaxHealth = 100;
+      let castleHealth = castleMaxHealth;
+      const LEFT_ARROW_KEYCODE = 37;
+      const RIGHT_ARROW_KEYCODE = 39;
+      const UP_ARROW_KEYCODE = 38;
+      const SPACEBAR_KEYCODE = 32;
+      const DOWN_ARROW_KEYCODE = 40;
       const speed = 2;
-      const pressedKeys = new Set();
-      let xDir = 0;
-      let yDir = 0;
-      let isMoving = false;
-      let isAttacking = false;
-    // critter.textures = critterIdleTextures;
+      const mountainVelocityX = 0;
+      const mountainVelocityY = 0.2;
+      const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
+      const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
+      let keysPressed = 0;
+      let hp = 100;
+      const hpBarWidth = 180;
+      const hpBarHeight = 16;
+      const hpBarX = app.screen.width + 1710 - hpBarWidth / 2;
+      const hpBarY = app.screen.height - 40 - hpBarHeight - 210; // Adjusted position
+      const hpBarBackgroundColor = 0x000000;
+      const hpBarColor = 0xff0000;
+      const hpBarBackground = new PIXI.Graphics();
+      const hpBarBorderColor = 0x000000; // Black color
+      const hpBarBorderThickness = 4; // Adjust the thickness as desired
 
-    function handleKeyDown(e) {
-  switch (e.keyCode) {
-    case LEFT_ARROW_KEYCODE:
-      xDir = -1;
-      critter.scale.x = -0.5; // flip image horizontally
-      break;
-    case RIGHT_ARROW_KEYCODE:
-      xDir = 1;
-      critter.scale.x = 0.5; // reset image orientation
-      break;
-    case UP_ARROW_KEYCODE:
-      yDir = -1;
-      break;
-    case DOWN_ARROW_KEYCODE:
-      yDir = 1;
-      break;
-    case SPACEBAR_KEYCODE:
-      if (!isAttacking) {
-        castleTakeDamage(10);
-        isAttacking = true;
-        //  window.alert(isFrog);
-        if (isFrog) {
-          critter.textures = frogAttackTextures;
-        } else {
-          critter.textures = critterAttackTextures;
+      hpBarBackground.lineStyle(hpBarBorderThickness, hpBarBorderColor);
+      hpBarBackground.beginFill(hpBarBackgroundColor, 0.5); // Set the alpha value for transparency
+      hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+      hpBarBackground.endFill();
+
+      hpBarBackground.beginFill(hpBarBackgroundColor, 0.5); // Set the alpha value for transparency
+      hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
+      hpBarBackground.endFill();
+
+      const hpBar = new PIXI.Graphics();
+      hpBar.beginFill(hpBarColor, 0.5); // Set the alpha value for transparency
+      hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+      hpBar.endFill();
+      hpBar.visible = false; // Initially hide the HP bar
+
+
+
+      PIXI.Loader.shared.add([
+        { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
+        { name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png' },
+        { name: 'critter', url: 'https://i.imgur.com/yX1cfEj.png' },
+        { name: 'critter_walk', url: 'https://i.imgur.com/TKZnXKG.png' },
+        { name: 'critter_attack', url: 'https://i.imgur.com/gJGYMLn.png' },
+        { name: 'frog', url: 'https://i.imgur.com/xBb2PuG.png' },
+        { name: 'frog_walk', url: 'https://i.imgur.com/CkWdada.png' },
+        { name: 'frog_attack', url: 'https://i.imgur.com/V5XDl7p.png' },
+        { name: 'mountain1', url: 'https://i.imgur.com/FP1W0k6.png' },
+        { name: 'mountain2', url: 'https://i.imgur.com/Y6IKYjW.png' },
+        { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
+        { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
+      ]).load(setup);
+
+      function setup() {
+        const texture = PIXI.Loader.shared.resources['background'].texture;
+        const background = new PIXI.Sprite(texture);
+        background.position.set(400, 500);
+        background.width = app.screen.width * 6;
+        background.height = app.screen.height * 1.4;
+
+        const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
+        const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
+
+
+        const mountain1 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain1'].texture);
+        mountain1.position.set(-100, app.screen.height - mountain1.height + 50);
+        mountain1.scale.set(0.7);
+        mountain1.zIndex = -1;
+        mountain1.velocity = mountainVelocity1;
+
+
+        const mountain2 = new PIXI.Sprite(PIXI.Loader.shared.resources['mountain2'].texture);
+        mountain2.position.set(850, app.screen.height - mountain2.height + 50);
+        mountain2.scale.set(0.7);
+        mountain2.zIndex = -1;
+        mountain2.velocity = mountainVelocity2;
+
+        const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
+        foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.2;
+
+        const castleTexture = PIXI.Texture.from('castle');
+        const castle = new PIXI.Sprite(castleTexture);
+        castle.anchor.set(1, 1); // Set the anchor point to the bottom right of the castle
+        castle.position.set(app.screen.width + 1850, app.screen.height - 40);
+
+
+        const frogIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['frog'].texture);
+        const frogIdleTextures = [frogIdleTexture];
+
+        const frogWalkTextures = [];
+        for (let i = 0; i < 10; i++) {
+          const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['frog_walk'].texture.width / 10), 0, PIXI.Loader.shared.resources['frog_walk'].texture.width / 10, 409);
+          frogWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['frog_walk'].texture, rect));
         }
+
+        const frog = new PIXI.AnimatedSprite(frogWalkTextures);
+        const frogAttackTextures = [];
+
+        const frogAttackTextureWidth = PIXI.Loader.shared.resources['frog_attack'].texture.width / 12;
+
+        for (let i = 0; i < 12; i++) {
+          const rect = new PIXI.Rectangle(i * frogAttackTextureWidth, 0, frogAttackTextureWidth, 409);
+          const texture = new PIXI.Texture(PIXI.Loader.shared.resources['frog_attack'].texture, rect);
+          frogAttackTextures.push(texture);
+        }
+
+        frog.scale.set(0.5);
+        frog.anchor.set(0.35);
+        frog.position.set(app.screen.width / 2, app.screen.height / 1.35);
+        frog.animationSpeed = 0.25;
+        frog.loop = true;
+        //app.stage.addChild(frog);
+
+
+        const critterIdleTexture = new PIXI.Texture(PIXI.Loader.shared.resources['critter'].texture);
+        const critterIdleTextures = [critterIdleTexture];
+
+        const critterWalkTextures = [];
+        for (let i = 0; i < 12; i++) {
+          const rect = new PIXI.Rectangle(i * (PIXI.Loader.shared.resources['critter_walk'].texture.width / 12), 0, PIXI.Loader.shared.resources['critter_walk'].texture.width / 12, 335);
+          critterWalkTextures.push(new PIXI.Texture(PIXI.Loader.shared.resources['critter_walk'].texture, rect));
+        }
+
+
+        let characterTextures;
+        if (isFrog) {
+          characterTextures = frogWalkTextures;
+        } else {
+          characterTextures = critterWalkTextures;
+        }
+
+
+        const critter = new PIXI.AnimatedSprite(characterTextures);
+        const critterAttackTextures = [];
+        const critterAttackTextureWidth = PIXI.Loader.shared.resources['critter_attack'].texture.width / 13;
+
+        for (let i = 0; i < 13; i++) {
+          const rect = new PIXI.Rectangle(i * critterAttackTextureWidth, 0, critterAttackTextureWidth, 333);
+          const texture = new PIXI.Texture(PIXI.Loader.shared.resources['critter_attack'].texture, rect);
+          critterAttackTextures.push(texture);
+        }
+
+        critter.scale.set(0.5);
+        critter.anchor.set(0.35);
+        critter.position.set(app.screen.width / 2, app.screen.height / 1.35);
+        critter.animationSpeed = 0.25;
         critter.loop = true;
-        critter.onLoop = function () {
-          castleTakeDamage(10); // Damage calculation
-        };
-        critter.play();
-      }
-      break;
-  }
 
 
+        const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
+        const backgroundImage = PIXI.Sprite.from('background');
+        const clouds = new PIXI.TilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
+        clouds.tileScale.set(0.4);
+        clouds.tilePosition.y = 200;
+        app.stage.addChild(clouds);
 
-        if (e.keyCode !== SPACEBAR_KEYCODE) {
-          if (!isMoving && !isAttacking) {
-            isMoving = true;
-            if(isFrog){
-              critter.textures = frogWalkTextures;}else{
-            critter.textures = critterWalkTextures;}
+        const velocity = new PIXI.Point();
+        const parallaxRatio = 0.5;
+        const speed = 2;
+        const pressedKeys = new Set();
+        let xDir = 0;
+        let yDir = 0;
+        let isMoving = false;
+        let isAttacking = false;
+        // critter.textures = critterIdleTextures;
+
+        function handleKeyDown(e) {
+          switch (e.keyCode) {
+            case LEFT_ARROW_KEYCODE:
+              xDir = -1;
+              critter.scale.x = -0.5; // flip image horizontally
+              break;
+            case RIGHT_ARROW_KEYCODE:
+              xDir = 1;
+              critter.scale.x = 0.5; // reset image orientation
+              break;
+            case UP_ARROW_KEYCODE:
+              yDir = -1;
+              break;
+            case DOWN_ARROW_KEYCODE:
+              yDir = 1;
+              break;
+            case SPACEBAR_KEYCODE:
+              if (!isAttacking) {
+                castleTakeDamage(10);
+                isAttacking = true;
+                //  window.alert(isFrog);
+                if (isFrog) {
+                  critter.textures = frogAttackTextures;
+                } else {
+                  critter.textures = critterAttackTextures;
+                }
+                critter.loop = true;
+                critter.onLoop = function () {
+                  castleTakeDamage(10); // Damage calculation
+                };
+                critter.play();
+              }
+              break;
+          }
+
+
+          if (e.keyCode !== SPACEBAR_KEYCODE) {
+            if (!isMoving && !isAttacking) {
+              isMoving = true;
+              if (isFrog) {
+                critter.textures = frogWalkTextures;
+              } else {
+                critter.textures = critterWalkTextures;
+              }
+              critter.loop = true;
+              critter.play();
+            }
+            updateVelocity();
+          }
+        }
+
+        function handleKeyUp(e) {
+          switch (e.keyCode) {
+            case LEFT_ARROW_KEYCODE:
+              xDir = xDir === -1 ? 0 : xDir;
+              break;
+            case RIGHT_ARROW_KEYCODE:
+              xDir = xDir === 1 ? 0 : xDir;
+              break;
+            case UP_ARROW_KEYCODE:
+              yDir = yDir === -1 ? 0 : yDir;
+              break;
+            case DOWN_ARROW_KEYCODE:
+              yDir = yDir === 1 ? 0 : yDir;
+              break;
+            case SPACEBAR_KEYCODE:
+              if (isAttacking) {
+                isAttacking = false;
+                if (xDir === 0 && yDir === 0) {
+                  isMoving = false;
+                  if (isFrog) { critter.textures = frogIdleTextures; } else {
+                    critter.textures = critterIdleTextures;
+                  }
+                  critter.stop();
+                } else {
+                  if (isFrog) { critter.textures = frogWalkTextures; } else {
+                    critter.textures = critterWalkTextures;
+                  }
+                  critter.loop = true;
+                  critter.play();
+                }
+              }
+              break;
+          }
+
+          if (xDir === 0 && yDir === 0 && !isAttacking) { // check if critter is no longer moving
+            isMoving = false;
+            if (isFrog) { critter.textures = frogIdleTextures; } else {
+              critter.textures = critterIdleTextures;
+            }
+            critter.stop();
+          } else if (!isAttacking) {
+            if (isFrog) { critter.textures = frogWalkTextures; } else { critter.textures = critterWalkTextures; }
+
             critter.loop = true;
             critter.play();
           }
+
           updateVelocity();
         }
-      }
 
-      function handleKeyUp(e) {
-        switch (e.keyCode) {
-          case LEFT_ARROW_KEYCODE:
-            xDir = xDir === -1 ? 0 : xDir;
-            break;
-          case RIGHT_ARROW_KEYCODE:
-            xDir = xDir === 1 ? 0 : xDir;
-            break;
-          case UP_ARROW_KEYCODE:
-            yDir = yDir === -1 ? 0 : yDir;
-            break;
-          case DOWN_ARROW_KEYCODE:
-            yDir = yDir === 1 ? 0 : yDir;
-            break;
-          case SPACEBAR_KEYCODE:
-            if (isAttacking) {
-              isAttacking = false;
-              if (xDir === 0 && yDir === 0) {
-                isMoving = false;
-                if(isFrog){  critter.textures = frogIdleTextures;  }else{
-                critter.textures = critterIdleTextures;}
-                critter.stop();
-              } else {
-                if(isFrog){  critter.textures = frogWalkTextures;  }else{
-                critter.textures = critterWalkTextures;}
-                critter.loop = true;
-                critter.play();
-              }
-            }
-            break;
+        function updateVelocity() {
+          velocity.x = xDir * speed;
+          velocity.y = yDir * speed;
+          mountainVelocity1.x = mountainVelocityX;
+          mountainVelocity1.y = mountainVelocityY;
+          mountainVelocity2.x = mountainVelocityX;
+          mountainVelocity2.y = mountainVelocityY;
         }
 
-        if (xDir === 0 && yDir === 0 && !isAttacking) { // check if critter is no longer moving
-          isMoving = false;
-          if(isFrog){ critter.textures = frogIdleTextures;}else{
-          critter.textures = critterIdleTextures;}
-          critter.stop();
-        } else if (!isAttacking) {
-          if(isFrog){ critter.textures = frogWalkTextures;}else{critter.textures = critterWalkTextures;}
-         
-          critter.loop = true;
-          critter.play();
+        // Function to update the HP bar based on the castle's health
+        function updateHPBar(health, maxHealth) {
+          const hpRatio = health / maxHealth;
+          const newHpWidth = Math.max(0, hpBarWidth * hpRatio);
+          hpBar.clear();
+          hpBar.beginFill(hpBarColor);
+          hpBar.drawRect(hpBarX, hpBarY, newHpWidth, hpBarHeight);
+          hpBar.endFill();
         }
 
-        updateVelocity();
-      }
 
-      function updateVelocity() {
-        velocity.x = xDir * speed;
-        velocity.y = yDir * speed;
-        mountainVelocity1.x = mountainVelocityX;
-        mountainVelocity1.y = mountainVelocityY;
-        mountainVelocity2.x = mountainVelocityX;
-        mountainVelocity2.y = mountainVelocityY;
-      }
+        // Damage function
+        function castleTakeDamage(damage) {
+          castleHealth -= damage;
+          if (castleHealth < 0) {
+            castleHealth = 0;
+            castleExplode();
+          }
+          updateHPBar(castleHealth, castleMaxHealth);
+        }
 
-       // Function to update the HP bar based on the castle's health
-    function updateHPBar(health, maxHealth) {
-      const hpRatio = health / maxHealth;
-      const newHpWidth = Math.max(0, hpBarWidth * hpRatio);
-      hpBar.clear();
-      hpBar.beginFill(hpBarColor);
-      hpBar.drawRect(hpBarX, hpBarY, newHpWidth, hpBarHeight);
-      hpBar.endFill();
+        function castleExplode() {
+
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
+        const maxX = foreground.width - critter.width / 2; // set maximum X position
+        const minX = critter.width / 2; // set minimum X position
+        const maxY = app.screen.height * 0.85; // set maximum Y position
+        const minY = app.screen.height * 0.5; // set minimum Y position
+        //const parallaxRatio = 0.2;
+        const cloudSpeed = 1 / 3.5;
+        const mountain1Speed = 0.2;
+        const mountain2Speed = 0.05;
+
+        app.ticker.add(() => {
+          // update critter position
+          critter.position.x += velocity.x;
+          critter.position.y += velocity.y;
+
+
+          // keep critter within bounds
+          if (critter.position.y > maxY) {
+            critter.position.y = maxY;
+          } else if (critter.position.y < minY) {
+            critter.position.y = minY;
+          }
+          if (critter.position.x > maxX - 100) {
+            critter.position.x = maxX - 100;
+          } else if (critter.position.x < minX) {
+            critter.position.x = minX;
+          }
+
+
+          // Check character's X position
+          if (critter.position.x > 2200) {
+            hpBar.visible = true; // Show the HP bar
+            hpBarBackground.visible = true
+          } else {
+            hpBar.visible = false;
+            hpBarBackground.visible = false; // Hide the HP bar
+          }
+
+
+          // update mountain positions
+          mountain1.position.x -= velocity.x * mountain1Speed;
+          mountain2.position.x -= velocity.x * mountain2Speed;
+
+          // update background position for parallax effect
+          background.position.x = -critter.position.x * parallaxRatio;
+          background.position.y = -critter.position.y * 0.2;
+
+          // update cloud position
+          clouds.position.x -= cloudSpeed;
+
+          // characterPortrait.position.x = 10;
+          //characterPortrait.position.y = characterPortrait.height - 10;
+
+          // check if cloud has gone offscreen and move it to the right side
+          if (clouds.x + clouds.width / 2 < 0) {
+            clouds.x = app.screen.width + clouds.width / 2;
+          }
+
+          // adjust app stage position
+          app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + app.screen.width / 2));
+          app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
+        });
+        app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar)
+      }
     }
-    app.stage.addChild(hpBarBackground, hpBar);
-   
-
-    // Update the HP bar with initial values
-    //updateHPBar(castleHealth, castleMaxHealth);
-
-    // Example damage function
-    function castleTakeDamage(damage) {
-      castleHealth -= damage;
-      if (castleHealth < 0) {
-        castleHealth = 0;
-        castleExplode();
+    function handleImpClick() {
+      if (!isGameStarted) {
+        isGameStarted = true;
+        startGame();
       }
-      updateHPBar(castleHealth, castleMaxHealth);
     }
- function castleExplode(){
 
- }
+    function handleFrogClick() {
+      isFrog = true;
 
-      window.addEventListener("keydown", handleKeyDown);
-      window.addEventListener("keyup", handleKeyUp);
+      // critter.textures = frog;
+      if (!isGameStarted) {
+        isGameStarted = true;
 
-      const maxX = foreground.width - critter.width / 2; // set maximum X position
-      const minX = critter.width / 2; // set minimum X position
-      const maxY = app.screen.height * 0.85; // set maximum Y position
-      const minY = app.screen.height * 0.5; // set minimum Y position
-      //const parallaxRatio = 0.2;
-      const cloudSpeed = 1 / 3.5;
-      const mountain1Speed = 0.2;
-      const mountain2Speed = 0.05;
-
-      app.ticker.add(() => {
-        // update critter position
-        critter.position.x += velocity.x;
-        critter.position.y += velocity.y;
-
-
-
-
-        // keep critter within bounds
-        if (critter.position.y > maxY) {
-          critter.position.y = maxY;
-        } else if (critter.position.y < minY) {
-          critter.position.y = minY;
-        }
-        if (critter.position.x > maxX-100) {
-          critter.position.x = maxX-100;
-        } else if (critter.position.x < minX) {
-          critter.position.x = minX;
-        }
-
-
- // Check character's X position
-  if (critter.position.x > 2200) {
-    hpBar.visible = true; // Show the HP bar
-    hpBarBackground.visible = true
-  } else {
-    hpBar.visible = false;
-    hpBarBackground.visible= false; // Hide the HP bar
-  }
-
-
-        // update mountain positions
-        mountain1.position.x -= velocity.x * mountain1Speed;
-        mountain2.position.x -= velocity.x * mountain2Speed;
-
-        // update background position for parallax effect
-        background.position.x = -critter.position.x * parallaxRatio;
-        background.position.y = -critter.position.y * 0.2;
-
-        // update cloud position
-        clouds.position.x -= cloudSpeed;
-
-       // characterPortrait.position.x = 10;
-        //characterPortrait.position.y = characterPortrait.height - 10;
-
-        // check if cloud has gone offscreen and move it to the right side
-        if (clouds.x + clouds.width / 2 < 0) {
-          clouds.x = app.screen.width + clouds.width / 2;
-        }
-
-        // adjust app stage position
-        app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + app.screen.width / 2));
-        app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
-      });
-      app.stage.addChild(background, mountain1, mountain2, foreground,castle, critter, clouds ,hpBarBackground,hpBar)
+        startGame();
+      }
     }
-}
-function handleImpClick() {
-  if (!isGameStarted) {
-    isGameStarted = true;
-    startGame();
-  }
-}
-
-function handleFrogClick() {
-  isFrog = true;
-
-       // critter.textures = frog;
-  if (!isGameStarted) {
-    isGameStarted = true;
-   
-    startGame();
-  }
-}
 
 
-
-impPortrait.on('click', handleImpClick);
-frogPortrait.on('click', handleFrogClick);
-// Add click event listener
-app.stage.interactive = true;
-app.stage.on('click', handleClick);
+    impPortrait.on('click', handleImpClick);
+    frogPortrait.on('click', handleFrogClick);
+    // Add click event listener
+    app.stage.interactive = true;
+    app.stage.on('click', handleClick);
 
   </script>
 </body>
+
 </html>
