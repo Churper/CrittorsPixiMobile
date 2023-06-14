@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Crittors</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js">
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js"></script>
 </head>
 
 <body>
@@ -18,10 +17,15 @@
       transparent: false,
       resolution: 1,
     });
-
+    
     document.body.appendChild(app.view);
-
     let isGameStarted = false;
+
+    const attackSound = new Audio();
+    attackSound.src = "./attacksound.wav";
+    const hitSound = new Audio();
+   hitSound.src = "./hurt.wav";
+
     const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
     const menuSprite = new PIXI.Sprite(menuTexture);
     menuSprite.anchor.set(0.5);
@@ -33,6 +37,7 @@
       fill: 'white',
       align: 'center',
     });
+
     startText.anchor.set(0.5);
     startText.position.set(app.screen.width / 2, app.screen.height / 2 + 100);
     app.stage.addChild(startText);
@@ -51,10 +56,15 @@
     frogPortrait.position.set(340, 0);
     app.stage.addChild(frogPortrait);
     let isFrog = false;
+    
+  
     function startGame() {
       // Remove menu elements
       app.stage.removeChild(menuSprite);
       app.stage.removeChild(startText);
+      const sound = new Audio();
+    //sound.src = "./theme.ogg";
+   // sound.play();
 
       // Game elements and logic 
       const castleMaxHealth = 100;
@@ -106,6 +116,7 @@
         { name: 'frog', url: 'https://i.imgur.com/xBb2PuG.png' },
         { name: 'frog_walk', url: 'https://i.imgur.com/CkWdada.png' },
         { name: 'frog_attack', url: 'https://i.imgur.com/V5XDl7p.png' },
+        { name: 'enemy_death', url: 'https://i.imgur.com/qLabP3I.png' },
         { name: 'mountain1', url: 'https://i.imgur.com/FP1W0k6.png' },
         { name: 'mountain2', url: 'https://i.imgur.com/Y6IKYjW.png' },
         { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
@@ -113,6 +124,12 @@
       ]).load(setup);
 
       function setup() {
+
+        // Create an instance of the HTML5 Audio element
+
+
+// Set the source path to your local sound file
+      
         const texture = PIXI.Loader.shared.resources['background'].texture;
         const background = new PIXI.Sprite(texture);
         background.position.set(400, 500);
@@ -205,6 +222,7 @@
         critter.anchor.set(0.35);
         critter.position.set(app.screen.width / 2, app.screen.height / 1.35);
         critter.animationSpeed = 0.25;
+        critter.zIndex=1;
         critter.loop = true;
 
 
@@ -214,6 +232,28 @@
         clouds.tileScale.set(0.4);
         clouds.tilePosition.y = 200;
         app.stage.addChild(clouds);
+
+
+
+        const enemyDeathTextures = [];
+const enemyDeathTextureWidth = PIXI.Loader.shared.resources['enemy_death'].texture.width / 8;
+
+for (let i = 0; i < 8; i++) {
+  const rect = new PIXI.Rectangle(i * enemyDeathTextureWidth, 0, enemyDeathTextureWidth, 436); // Replace `height` with the height of your death animation frames
+  const texture = new PIXI.Texture(PIXI.Loader.shared.resources['enemy_death'].texture, rect);
+  enemyDeathTextures.push(texture);
+}
+
+const enemyDeath = new PIXI.AnimatedSprite(enemyDeathTextures);
+enemyDeath.animationSpeed = 0.25;
+enemyDeath.loop = false;
+
+// Set anchor and scale
+enemyDeath.anchor.set(0.5); // Adjust the anchor position if needed
+enemyDeath.scale.set(.5); // Adjust the scale factor if needed
+
+
+        
 
         const velocity = new PIXI.Point();
         const parallaxRatio = 0.5;
@@ -252,9 +292,13 @@
         }
         critter.loop = false;
         critter.onComplete = function () {
+          
+    //attackSound.src = "./attacksound.wav";
+    attackSound.play();
           if(critter.position.x> 2200){
           castleTakeDamage(10); // Damage calculation
         }
+        
           isAttacking = false;
           if (isFrog) {
             critter.textures = frogIdleTextures;
@@ -433,8 +477,8 @@
 app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
 
 setInterval(() => {
-  spawnEnemy(critter,critterAttackTextures);
-}, 5000);
+  spawnEnemy(critter,critterAttackTextures,frogAttackTextures,enemyDeath);
+}, 13000);
       }
   
     }
@@ -442,7 +486,7 @@ setInterval(() => {
 
 
 
-    function spawnEnemy(critter, critterAttackTextures) {
+    function spawnEnemy(critter, critterAttackTextures,frogAttackTextures,enemyDeath) {
   const enemyIdleTexture = PIXI.Loader.shared.resources['critter'].texture;
   const enemyIdleTextures = [enemyIdleTexture];
 
@@ -483,12 +527,14 @@ setInterval(() => {
   enemy.position.set(2200, app.screen.height / 1.35);
   enemy.animationSpeed = 0.25;
   enemy.loop = true;
+  enemy.currentHP = 100;
   enemy.play();
 
   enemy.scale.x *= -1; // Flip the enemy horizontally
   enemy.vx = -2; // Set the enemy's horizontal velocity
 
   let isAttacking = false; // Flag to track if enemy is attacking
+  let hasAttacked = false; // Flag to track if the enemy has attacked
 
   app.ticker.add(() => {
     if (enemy.position.x - critter.position.x > 140) {
@@ -496,20 +542,139 @@ setInterval(() => {
     } else {
       if (!isAttacking) {
         isAttacking = true;
-        handleEnemyAttacking(enemy, enemyAttackTextures);
+        handleEnemyAttacking(enemy, enemyAttackTextures, critter,frogAttackTextures,enemyDeath);
+        drawEnemyHPBar(enemy);
+      } else if (!hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking) {
+        hasAttacked = true;
+        critterAttack(critter,enemy);
+        isPlayerAttacking = false; // Reset player attack flag after calling critterAttack
       }
-      // Enemy has stopped moving, play attacking animation
     }
   });
 
   app.stage.addChild(enemy);
 }
 
-function handleEnemyAttacking(enemy, critterAttackTextures) {
+let isPlayerAttacking = false; // Flag to track if the player is attacking
+
+// Example player attack event handler
+function onPlayerAttack() {
+  // Perform player attack logic
+  // ...
+  
+  // Set player attack flag to true
+  isPlayerAttacking = true;
+}
+
+function handleEnemyAttacking(enemy, critterAttackTextures, critter,frogAttackTextures,enemyDeath) {
   enemy.textures = critterAttackTextures;
   enemy.loop = true; // Set loop to true for the attack animation to continuously loop
   enemy.gotoAndPlay(0); // Start playing from the first frame of the attack animation
+
+  let hasPlayedSound = false; // Flag to track if the sound has been played
+
+  enemy.onLoop = () => {
+  if (!hasPlayedSound) {
+    if (enemy.isAlive && enemy.isVisible) {
+      hitSound.play();
+      hasPlayedSound = true; // Set the sound flag to true
+    }
+  }
+};
+
+
+  let hasAttackedCritter = false; // Flag to track if critter attack has occurred
+
+app.ticker.add(() => {
+  // Reset the sound flag when the attack animation starts
+  if (enemy.currentFrame === 0) {
+    hasPlayedSound = false;
+    if (enemy.position.x - critter.position.x < 150) {
+      if (critter.textures === frogAttackTextures) {
+        if (!hasAttackedCritter) {
+          critterAttack(critter,enemy,enemyDeath);
+          hasAttackedCritter = true;
+        }
+      }
+    }
+  } else {
+    hasAttackedCritter = false;
+  }
+});
+
 }
+function critterAttack(critter, enemy, enemyDeath) {
+  // Reduce enemy's HP
+  if (enemy && enemy.currentHP - 10 <= 0) {
+    // Callback function to remove enemy after death animation
+    if (app.stage.children.includes(enemy)) {
+      app.stage.removeChild(enemy);
+      playDeathAnimation(enemy, enemyDeath);
+      app.stage.removeChild(enemy.hpBar);
+      app.stage.removeChild(enemy.hpBarBackground);
+    }
+  } else {
+    enemy.currentHP -= 10;
+    drawEnemyHPBar(enemy);
+    console.log(enemy.currentHP);
+  }
+}
+
+function playDeathAnimation(enemy, enemyDeath) {
+  // Add the death animation sprite to the stage
+  enemyDeath.position.set(enemy.position.x, enemy.position.y);
+  app.stage.addChild(enemyDeath);
+
+  // Play the death animation
+  enemyDeath.gotoAndPlay(0);
+
+  // Remove the death animation after it completes
+  enemyDeath.onComplete = () => {
+   
+    app.stage.removeChild(enemyDeath);
+  };
+}
+
+
+
+function drawEnemyHPBar(enemy) {
+  const hpBarWidth = enemy.width / 2;
+  const hpBarHeight = 8;
+  const hpBarX = (enemy.x - hpBarWidth / 2) + 30;
+  const hpBarY = enemy.y - enemy.height / 2 - 10;
+
+  // Remove previous HP bar graphics if they exist
+  if (enemy.hpBarBackground && enemy.hpBar) {
+    app.stage.removeChild(enemy.hpBarBackground);
+    app.stage.removeChild(enemy.hpBar);
+  }
+
+  // Create new HP bar graphics
+  enemy.hpBarBackground = new PIXI.Graphics();
+  enemy.hpBarBackground.beginFill(0x000000);
+  enemy.hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+  enemy.hpBarBackground.endFill();
+  app.stage.addChild(enemy.hpBarBackground);
+
+  enemy.hpBar = new PIXI.Graphics();
+  enemy.hpBar.beginFill(0xff0000);
+  enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+  enemy.hpBar.endFill();
+  app.stage.addChild(enemy.hpBar);
+
+  // Update the HP bar based on the enemy's health
+  const maxHealth = 100; // Replace with actual max health of enemy
+  const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
+  const hpBarRatio = enemy.currentHP / maxHealth;
+  const hpBarWidthActual = hpBarWidth * hpBarRatio;
+  enemy.hpBar.clear();
+  enemy.hpBar.beginFill(0xff0000);
+  enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidthActual, hpBarHeight);
+  enemy.hpBar.endFill();
+}
+
+
+
 
 
 
@@ -532,8 +697,7 @@ function handleEnemyAttacking(enemy, critterAttackTextures) {
       }
     }
 
-
-
+  
 
 
 
