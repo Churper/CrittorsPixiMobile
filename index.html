@@ -300,6 +300,20 @@
 
 
             
+// Constants
+const SPACEBAR_KEYCODE = 32;
+
+// Variables
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+// Event Listeners
+window.addEventListener("keydown", handleKeyDown);
+window.addEventListener("keyup", handleKeyUp);
+window.addEventListener("touchstart", handleTouchStart);
+window.addEventListener("touchend", handleTouchEnd);
+
 // Functions
 function handleKeyDown(e) {
     switch (e.keyCode) {
@@ -415,16 +429,19 @@ function handleTouchEnd(e) {
         if (swipeDistance > 0) {
             // Right swipe
             handleNonSpacebarKeyDown();
+            updateVelocity();
         } else {
             // Left swipe
-            handleNonSpacebarKeyDown();
+            handleKeyRelease();
+            updateVelocity();
         }
     }
 }
 
 // Automatically set the critter's direction to right
- xDir = 1;
+xDir = 1;
 critter.scale.x = 0.5;
+
 
                 function updateVelocity() {
                     velocity.x = xDir * speed;
