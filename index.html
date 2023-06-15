@@ -317,7 +317,7 @@
                 //let touchStartX = 0;
                 //let touchEndX = 0;
 
-            
+
 
                 // Functions
                 function handleKeyDown(e) {
@@ -386,6 +386,7 @@
                         critter.loop = true;
                         critter.play();
                     }
+                    else{isMoving=false;}
                 }
 
                 function handleSpacebarKeyUp() {
@@ -419,12 +420,12 @@
                     // Calculate swipe direction and distance
                     const swipeDistance = touchEndX - touchStartX;
                     if (Math.abs(swipeDistance) > 50) {
-                      
-                            // Right swipe
-                            handleNonSpacebarKeyDown();
-                      
-                        
-                    } 
+
+                        // Right swipe
+                        handleNonSpacebarKeyDown();
+
+
+                    }
                     updateVelocity();
                 }
 
