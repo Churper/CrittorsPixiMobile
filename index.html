@@ -13,8 +13,10 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            height: 100%;
+            min-height: 512px;
+            height: 100vh;
         }
+        
     </style>
 </head>
 
@@ -24,7 +26,7 @@
     <script>
         const app = new PIXI.Application({
             width: window.innerWidth,
-            height: window.innerHeight,
+            height: Math.max( window.innerHeight),
             antialias: true,
             transparent: false,
             resolution: 1,
@@ -79,7 +81,7 @@
             const sound = new Audio();
             sound.src = "./theme.ogg";
 
-            sound.volume = .4;
+            sound.volume = .2;
             sound.play();
 
             // Game elements and logic 
@@ -101,7 +103,7 @@
 
             PIXI.Loader.shared.add([
                 { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
-                { name: 'foreground', url: 'https://i.imgur.com/u9eXCjP.png' },
+                { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
                 { name: 'critter', url: 'https://i.imgur.com/yX1cfEj.png' },
                 { name: 'critter_walk', url: 'https://i.imgur.com/TKZnXKG.png' },
                 { name: 'critter_attack', url: 'https://i.imgur.com/gJGYMLn.png' },
@@ -130,31 +132,44 @@
 
                 const texture = PIXI.Loader.shared.resources['background'].texture;
                 const background = new PIXI.Sprite(texture);
-                background.position.set(app.screen.width * 0.4, app.screen.height * 0.5); // Adjust the position as needed
-                background.width = app.screen.width * 6;
-                background.height = app.screen.height * 1.4;
-
+                background.anchor.set(0,0);
+                background.position.set(0, 0); // Adjust the position as needed
+                background.width = app.screen.width * 5;
+                background.height = app.screen.height * 1.7;
+                
                 const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
                 const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
 
-                const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1);
-                const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.85, mountainVelocity2); // Adjust the position as needed
+               
 
                 const containerHeight = document.getElementById('game-container').clientHeight;
                 const containerWidth = document.getElementById('game-container').clientWidth;
                 const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
-                foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.2 * (app.screen.width / window.innerWidth);
+                foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width;
+                foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height;
+               // console.log(app.screen.width / window.innerWidth );
+                foreground.anchor.set(0, 1);
+                foreground.x = 0;
+               
+                console.log(app.screen.height);
+  foreground.y = Math.max(app.screen.height );
+                const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1,foreground);
+                const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.35, mountainVelocity2,foreground); // Adjust the position as needed
+                //const mountain3 = createMountainSprite('mountain1', app.screen.width * 0.75, mountainVelocity1,foreground);
+                //mountain3.position.set(500, app.screen.height - (foreground.height * .18) );
+  
 
-                // Calculate the y position based on container height and foreground height
-                foreground.y = app.screen.height - (containerHeight + foreground.height);
 
-                console.log(foreground.y);
+
+
+
+               // console.log(foreground.y);
 
                 // Adjust the x position if needed
                 foreground.x = 0;
 
                 // Add the foreground sprite to the stage or container
-                app.stage.addChild(foreground);
+                //app.stage.addChild(foreground);
 
                 const hpBarWidth = 180;
                 const hpBarHeight = 16;
@@ -183,17 +198,20 @@
                 // Calculate the castle position based on the screen width and height
                 castle.position.set(foreground.width - castle.width * 0.5, app.screen.height - castle.height * 0.15);
 
-                function createMountainSprite(resourceName, xPos, velocity) {
-                    const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
+                function createMountainSprite(resourceName, xPos, velocity, foreground) {
+    const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
+    const scaleFactor = Math.max(app.screen.height * 0.5 / sprite.height, app.screen.width * 1.2 / sprite.width);
+    sprite.scale.set(scaleFactor);
+    sprite.anchor.set(0, 1);
 
-                    // Calculate the mountain sprite position based on the screen height and sprite height
-                    sprite.position.set(xPos, app.screen.height - sprite.height + (sprite.height * 0.1));
+    // Calculate the mountain sprite position based on the screen height and sprite height
+    sprite.position.set(xPos, app.screen.height - (foreground.height * 0.42));
 
-                    sprite.scale.set(0.7);
-                    sprite.zIndex = -1;
-                    sprite.velocity = velocity;
-                    return sprite;
-                }
+    sprite.zIndex = -1;
+    sprite.velocity = velocity;
+    return sprite;
+}
+
 
 
                 const frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
@@ -232,7 +250,7 @@
                     critter.play();
 
                 }
-
+  console.log(foreground.y);
 
                 enemyDeath.animationSpeed = 0.2;
                 enemyDeath.loop = false;
