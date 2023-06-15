@@ -424,25 +424,30 @@ function handleKeyRelease() {
 function handleTouchStart(e) {
     touchStartX = e.changedTouches[0].clientX;
     isTouchActive = true;
-    handleSpacebarKeyDown();
+    isSwiping = false;
+}
+
+function handleTouchMove(e) {
+    if (isTouchActive) {
+        const touchCurrentX = e.changedTouches[0].clientX;
+        const swipeDistance = touchCurrentX - touchStartX;
+        if (Math.abs(swipeDistance) > 50) {
+            isSwiping = true;
+            if (!isAttackingChar && !isMoving) {
+                if (swipeDistance > 0) {
+                    handleNonSpacebarKeyDown();
+                } else {
+                    handleKeyRelease();
+                }
+            }
+        }
+    }
 }
 
 function handleTouchEnd(e) {
     touchEndX = e.changedTouches[0].clientX;
 
-    // Calculate swipe direction and distance
-    const swipeDistance = touchEndX - touchStartX;
-    if (Math.abs(swipeDistance) > 50) {
-        // Right swipe
-        if (!isAttackingChar && !isMoving) {
-            if (swipeDistance > 0) {
-                handleNonSpacebarKeyDown();
-            } else {
-                handleKeyRelease();
-            }
-        }
-    } else {
-        // Tap
+    if (!isSwiping) {
         if (!isAttackingChar && !isMoving) {
             handleSpacebarKeyDown();
         } else if (isAttackingChar) {
@@ -453,6 +458,7 @@ function handleTouchEnd(e) {
     if (isTouchActive) {
         handleSpacebarKeyUp();
         isTouchActive = false;
+        isSwiping = false;
     }
 
     updateVelocity();
