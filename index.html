@@ -315,132 +315,122 @@
                 window.addEventListener("touchend", handleTouchEnd);
 
                 //let touchStartX = 0;
-//let touchEndX = 0;
+                //let touchEndX = 0;
 
-// Event Listeners
-window.addEventListener("keydown", handleKeyDown);
-window.addEventListener("keyup", handleKeyUp);
-window.addEventListener("touchstart", handleTouchStart);
-window.addEventListener("touchend", handleTouchEnd);
+            
 
-// Functions
-function handleKeyDown(e) {
-    switch (e.keyCode) {
-        case SPACEBAR_KEYCODE:
-            handleSpacebarKeyDown();
-            break;
-        default:
-            handleNonSpacebarKeyDown();
-            break;
-    }
+                // Functions
+                function handleKeyDown(e) {
+                    switch (e.keyCode) {
+                        case SPACEBAR_KEYCODE:
+                            handleSpacebarKeyDown();
+                            break;
+                        default:
+                            handleNonSpacebarKeyDown();
+                            break;
+                    }
 
-    updateVelocity();
-}
+                    updateVelocity();
+                }
 
-function handleKeyUp(e) {
-    switch (e.keyCode) {
-        case SPACEBAR_KEYCODE:
-            handleSpacebarKeyUp();
-            break;
-        default:
-            handleKeyRelease();
-            break;
-    }
+                function handleKeyUp(e) {
+                    switch (e.keyCode) {
+                        case SPACEBAR_KEYCODE:
+                            handleSpacebarKeyUp();
+                            break;
+                        default:
+                            handleKeyRelease();
+                            break;
+                    }
 
-    updateVelocity();
-}
+                    updateVelocity();
+                }
 
-function handleSpacebarKeyDown() {
-    if (!isAttackingChar) {
-        isAttackingChar = true;
-        if (isFrog) {
-            critter.textures = frogAttackTextures;
-        } else {
-            critter.textures = snailAttackTextures;
-        }
-        critter.loop = true;
-        critter.onComplete = function () {
-            attackSound.src = "./attacksound.wav";
-            attackSound.play();
-            if (critter.position.x > 2200) {
-                castleTakeDamage(10); // Damage calculation
-            }
-            isAttackingChar = false;
-            if (isFrog) {
-                critter.textures = frogIdleTextures;
-            } else {
-                critter.textures = snailIdleTextures;
-                critter.loop = true;
-                critter.play();
-            }
-            critter.play();
-        };
-        critter.play();
-    }
-}
+                function handleSpacebarKeyDown() {
+                    if (!isAttackingChar) {
+                        isAttackingChar = true;
+                        if (isFrog) {
+                            critter.textures = frogAttackTextures;
+                        } else {
+                            critter.textures = snailAttackTextures;
+                        }
+                        critter.loop = true;
+                        critter.onComplete = function () {
+                            attackSound.src = "./attacksound.wav";
+                            attackSound.play();
+                            if (critter.position.x > 2200) {
+                                castleTakeDamage(10); // Damage calculation
+                            }
+                            isAttackingChar = false;
+                            if (isFrog) {
+                                critter.textures = frogIdleTextures;
+                            } else {
+                                critter.textures = snailIdleTextures;
+                                critter.loop = true;
+                                critter.play();
+                            }
+                            critter.play();
+                        };
+                        critter.play();
+                    }
+                }
 
-function handleNonSpacebarKeyDown() {
-    if (!isMoving) {
-        isMoving = true;
-        if (isFrog) {
-            critter.textures = frogWalkTextures;
-        } else {
-            critter.textures = snailWalkTextures;
-        }
-        critter.loop = true;
-        critter.play();
-    }
-}
+                function handleNonSpacebarKeyDown() {
+                    if (!isMoving) {
+                        isMoving = true;
+                        if (isFrog) {
+                            critter.textures = frogWalkTextures;
+                        } else {
+                            critter.textures = snailWalkTextures;
+                        }
+                        critter.loop = true;
+                        critter.play();
+                    }
+                }
 
-function handleSpacebarKeyUp() {
-    if (isAttackingChar) {
-        isAttackingChar = false;
-        isMoving = false;
-        if (isFrog) {
-            critter.textures = frogIdleTextures;
-        } else {
-            critter.textures = snailIdleTextures;
-            critter.loop = true;
-            critter.play();
-        }
-        if (isFrog) {
-            critter.stop();
-        }
-    }
-}
+                function handleSpacebarKeyUp() {
+                    if (isAttackingChar) {
+                        isAttackingChar = false;
+                        isMoving = false;
+                        if (isFrog) {
+                            critter.textures = frogIdleTextures;
+                        } else {
+                            critter.textures = snailIdleTextures;
+                            critter.loop = true;
+                            critter.play();
+                        }
+                        if (isFrog) {
+                            critter.stop();
+                        }
+                    }
+                }
 
-function handleKeyRelease() {
-    // No arrow keys to release
-}
+                function handleKeyRelease() {
+                    // No arrow keys to release
+                }
 
-function handleTouchStart(e) {
-    touchStartX = e.changedTouches[0].clientX;
-}
+                function handleTouchStart(e) {
+                    touchStartX = e.changedTouches[0].clientX;
+                }
 
-function handleTouchEnd(e) {
-    touchEndX = e.changedTouches[0].clientX;
+                function handleTouchEnd(e) {
+                    touchEndX = e.changedTouches[0].clientX;
 
-    // Calculate swipe direction and distance
-    const swipeDistance = touchEndX - touchStartX;
-    if (Math.abs(swipeDistance) > 50) {
-        if (swipeDistance > 0) {
-            // Right swipe
-            handleNonSpacebarKeyDown();
-        } else {
-            // Left swipe
-            handleKeyRelease();
-        }
-    } else {
-        // If the swipe distance is less than 50, treat it as a tap
-        handleSpacebarKeyDown();
-    }
+                    // Calculate swipe direction and distance
+                    const swipeDistance = touchEndX - touchStartX;
+                    if (Math.abs(swipeDistance) > 50) {
+                      
+                            // Right swipe
+                            handleNonSpacebarKeyDown();
+                      
+                        
+                    } 
+                  
+                }
 
-    updateVelocity();
-}
-
-// Automatically set the critter's direction to right
-xDir = 1;
-critter.scale.x = 0.5;
+                // Automatically set the critter's direction to right
+                xDir = 1;
+                critter.scale.x = 0.5;
 
 
 
