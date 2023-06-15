@@ -307,7 +307,7 @@
 
                 let touchStartX = 0;
                 let touchEndX = 0;
-
+                let isTouchActive = false;
                 // Event Listeners
                 window.addEventListener("keydown", handleKeyDown);
                 window.addEventListener("keyup", handleKeyUp);
@@ -320,108 +320,111 @@
 
 
                 // Functions
-                function handleKeyDown(e) {
-                    switch (e.keyCode) {
-                        case SPACEBAR_KEYCODE:
-                            handleSpacebarKeyDown();
-                            break;
-                        default:
-                            handleNonSpacebarKeyDown();
-                            break;
-                    }
+function handleKeyDown(e) {
+    switch (e.keyCode) {
+        case SPACEBAR_KEYCODE:
+            handleSpacebarKeyDown();
+            break;
+        default:
+            handleNonSpacebarKeyDown();
+            break;
+    }
 
-                    updateVelocity();
-                }
+    updateVelocity();
+}
 
-                function handleKeyUp(e) {
-                    switch (e.keyCode) {
-                        case SPACEBAR_KEYCODE:
-                            handleSpacebarKeyUp();
-                            break;
-                        default:
-                            handleKeyRelease();
-                            break;
-                    }
+function handleKeyUp(e) {
+    switch (e.keyCode) {
+        case SPACEBAR_KEYCODE:
+            handleSpacebarKeyUp();
+            break;
+        default:
+            handleKeyRelease();
+            break;
+    }
 
-                    updateVelocity();
-                }
+    updateVelocity();
+}
 
-                function handleSpacebarKeyDown() {
-                    if (!isAttackingChar) {
-                        isAttackingChar = true;
-                        if (isFrog) {
-                            critter.textures = frogAttackTextures;
-                        } else {
-                            critter.textures = snailAttackTextures;
-                        }
-                        critter.loop = true;
-                        critter.onComplete = function () {
-                            attackSound.src = "./attacksound.wav";
-                            attackSound.play();
-                            if (critter.position.x > 2200) {
-                                castleTakeDamage(10); // Damage calculation
-                            }
-                            isAttackingChar = false;
-                            if (isFrog) {
-                                critter.textures = frogIdleTextures;
-                            } else {
-                                critter.textures = snailIdleTextures;
-                                critter.loop = true;
-                                critter.play();
-                            }
-                            critter.play();
-                        };
-                        critter.play();
-                    }
-                }
+function handleSpacebarKeyDown() {
+    if (!isAttackingChar) {
+        isAttackingChar = true;
+        if (isFrog) {
+            critter.textures = frogAttackTextures;
+        } else {
+            critter.textures = snailAttackTextures;
+        }
+        critter.loop = true;
+        critter.onComplete = function () {
+            attackSound.src = "./attacksound.wav";
+            attackSound.play();
+            if (critter.position.x > 2200) {
+                castleTakeDamage(10); // Damage calculation
+            }
+            isAttackingChar = false;
+            if (isFrog) {
+                critter.textures = frogIdleTextures;
+            } else {
+                critter.textures = snailIdleTextures;
+                critter.loop = true;
+                critter.play();
+            }
+            critter.play();
+        };
+        critter.play();
+    }
+}
 
-                function handleNonSpacebarKeyDown() {
-                    if (!isMoving) {
-                        isMoving = true;
-                        if (isFrog) {
-                            critter.textures = frogWalkTextures;
-                        } else {
-                            critter.textures = snailWalkTextures;
-                        }
-                        critter.loop = true;
-                        critter.play();
-                    }
-                    else{isMoving=false;
-                        if (isFrog) {
-                            critter.textures = frogIdleTextures;
-                        } else {
-                            critter.textures = snailIdleTextures;
-                                critter.loop = true;
-                                critter.play();
-                        }
-                    
-                    
-                    }
-                }
+function handleNonSpacebarKeyDown() {
+    if (!isMoving) {
+        isMoving = true;
+        if (isFrog) {
+            critter.textures = frogWalkTextures;
+        } else {
+            critter.textures = snailWalkTextures;
+        }
+        critter.loop = true;
+        critter.play();
+    } else {
+        isMoving = false;
+        if (isFrog) {
+            critter.textures = frogIdleTextures;
+        } else {
+            critter.textures = snailIdleTextures;
+            critter.loop = true;
+            critter.play();
+        }
+    }
+}
 
-                function handleSpacebarKeyUp() {
-                    if (isAttackingChar) {
-                        isAttackingChar = false;
-                        isMoving = false;
-                        if (isFrog) {
-                            critter.textures = frogIdleTextures;
-                        } else {
-                            critter.textures = snailIdleTextures;
-                            critter.loop = true;
-                            critter.play();
-                        }
-                        if (isFrog) {
-                            critter.stop();
-                        }
-                    }
-                }
+function handleSpacebarKeyUp() {
+    if (isAttackingChar) {
+        isAttackingChar = false;
+        isMoving = false;
+        if (isFrog) {
+            critter.textures = frogIdleTextures;
+        } else {
+            critter.textures = snailIdleTextures;
+            critter.loop = true;
+            critter.play();
+        }
+        if (isFrog) {
+            critter.stop();
+        }
+        if (isTouchActive) {
+            handleSpacebarKeyDown();
+        }
+    }
+}
 
-                function handleKeyRelease() {
-                    // No arrow keys to release
-                }
+function handleKeyRelease() {
+    // No arrow keys to release
+}
 
-                function handleTouchStart(e) {
+function handleTouchStart(e) {
     touchStartX = e.changedTouches[0].clientX;
+    isTouchActive = true;
+    handleSpacebarKeyDown();
 }
 
 function handleTouchEnd(e) {
@@ -438,16 +441,22 @@ function handleTouchEnd(e) {
         // Tap
         if (!isAttackingChar && !isMoving) {
             handleSpacebarKeyDown();
+        } else if (isAttackingChar) {
+            handleSpacebarKeyUp();
         }
     }
-    
+
+    if (isTouchActive) {
+        handleSpacebarKeyUp();
+        isTouchActive = false;
+    }
+
     updateVelocity();
 }
 
-
-                // Automatically set the critter's direction to right
-                xDir = 1;
-                critter.scale.x = 0.5;
+// Automatically set the critter's direction to right
+xDir = 1;
+critter.scale.x = 0.5;
 
 
 
