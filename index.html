@@ -421,25 +421,29 @@
                 }
 
                 function handleTouchStart(e) {
-                    touchStartX = e.changedTouches[0].clientX;
-                    handleSpacebarKeyDown();
-                }
+    touchStartX = e.changedTouches[0].clientX;
+}
 
-                function handleTouchEnd(e) {
-                    touchEndX = e.changedTouches[0].clientX;
+function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].clientX;
 
-                    // Calculate swipe direction and distance
-                    const swipeDistance = touchEndX - touchStartX;
-                    if (Math.abs(swipeDistance) > 50) {
+    // Calculate swipe direction and distance
+    const swipeDistance = touchEndX - touchStartX;
+    if (Math.abs(swipeDistance) > 50) {
+        // Right swipe
+        if (!isAttackingChar && !isMoving) {
+            handleNonSpacebarKeyDown();
+        }
+    } else {
+        // Tap
+        if (!isAttackingChar && !isMoving) {
+            handleSpacebarKeyDown();
+        }
+    }
+    
+    updateVelocity();
+}
 
-                        // Right swipe
-                        handleNonSpacebarKeyDown();
-
-
-                    }
-                    handleSpacebarKeyUp();
-                    updateVelocity();
-                }
 
                 // Automatically set the critter's direction to right
                 xDir = 1;
