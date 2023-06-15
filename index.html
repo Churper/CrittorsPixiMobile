@@ -437,13 +437,10 @@ function handleTouchMove(e) {
             if (!isAttackingChar && !isMoving) {
                 if (swipeDistance > 0) {
                     handleNonSpacebarKeyDown();
-                } else {
-                    handleKeyRelease();
-                    updateVelocity();
-                }
+                } 
             }
         }
-        else{}
+        else{handleNonSpacebarKeyDown();}
     }
 }
 
