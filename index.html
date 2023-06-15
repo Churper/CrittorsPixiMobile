@@ -435,7 +435,11 @@ function handleTouchEnd(e) {
     if (Math.abs(swipeDistance) > 50) {
         // Right swipe
         if (!isAttackingChar && !isMoving) {
-            handleNonSpacebarKeyDown();
+            if (swipeDistance > 0) {
+                handleNonSpacebarKeyDown();
+            } else {
+                handleKeyRelease();
+            }
         }
     } else {
         // Tap
@@ -453,6 +457,7 @@ function handleTouchEnd(e) {
 
     updateVelocity();
 }
+
 
 // Automatically set the critter's direction to right
 xDir = 1;
