@@ -416,11 +416,13 @@ function handleKeyRelease() {
 
 function handleTouchStart(e) {
     touchStartX = e.changedTouches[0].clientX;
+    updateVelocity();
     handleSpacebarKeyDown();
 }
 
 function handleTouchEnd(e) {
     touchEndX = e.changedTouches[0].clientX;
+    updateVelocity();
     handleKeyRelease();
 
     // Calculate swipe direction and distance
@@ -429,7 +431,7 @@ function handleTouchEnd(e) {
         if (swipeDistance > 0) {
             // Right swipe
             handleNonSpacebarKeyDown();
-            updateVelocity();
+         
         } else {
             // Left swipe
             handleKeyRelease();
