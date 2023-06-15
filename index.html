@@ -442,6 +442,7 @@ function handleTouchMove(e) {
                 }
             }
         }
+        else{handleNonSpacebarKeyDown();}
     }
 }
 
@@ -450,7 +451,7 @@ function handleTouchEnd(e) {
 
     if (!isSwiping) {
         if (!isAttackingChar && !isMoving) {
-            handleSpacebarKeyDown();
+            //handleSpacebarKeyDown();
         } else if (isAttackingChar) {
             handleSpacebarKeyUp();
         }
