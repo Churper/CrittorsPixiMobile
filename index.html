@@ -428,13 +428,13 @@ function handleTouchStart(e) {
     handleNonSpacebarKeyDown();
     }
     else if(isCombat){  handleSpacebarKeyDown();      }
-    else if(isMoving){  handleNonSpacebarKeyDown(); }
+    else if(isMoving){  updateVelocity(); handleNonSpacebarKeyDown(); }
 }
 
 
 function handleTouchEnd(e) {
 
-   if(isAttacking){ handleSpacebarKeyUp();}
+   if(isAttacking){   updateVelocity(); handleSpacebarKeyUp();}
 }
 
 
