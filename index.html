@@ -386,7 +386,17 @@
                         critter.loop = true;
                         critter.play();
                     }
-                    else{isMoving=false;}
+                    else{isMoving=false;
+                        if (isFrog) {
+                            critter.textures = frogIdleTextures;
+                        } else {
+                            critter.textures = snailIdleTextures;
+                                critter.loop = true;
+                                critter.play();
+                        }
+                    
+                    
+                    }
                 }
 
                 function handleSpacebarKeyUp() {
@@ -412,6 +422,7 @@
 
                 function handleTouchStart(e) {
                     touchStartX = e.changedTouches[0].clientX;
+                    handleSpacebarKeyDown();
                 }
 
                 function handleTouchEnd(e) {
@@ -426,6 +437,7 @@
 
 
                     }
+                    handleSpacebarKeyUp();
                     updateVelocity();
                 }
 
