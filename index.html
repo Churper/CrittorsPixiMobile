@@ -425,10 +425,10 @@ function handleKeyRelease() {
 function handleTouchStart(e) {
     if(!isMoving)
     {
-    handleNonSpacebarKeyDown();
+    handleNonSpacebarKeyDown(); updateVelocity(); 
     }
     else if(isCombat){  handleSpacebarKeyDown();      }
-    else if(isMoving){  updateVelocity(); handleNonSpacebarKeyDown(); }
+    else if(isMoving){  handleNonSpacebarKeyDown(); updateVelocity(); }
 }
 
 
