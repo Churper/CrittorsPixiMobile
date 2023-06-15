@@ -438,11 +438,11 @@ function handleTouchMove(e) {
                 if (swipeDistance > 0) {
                     handleNonSpacebarKeyDown();
                 } else {
-                    handleNonSpacebarKeyDown();
+                    handleKeyRelease();
                 }
             }
         }
-        else{handleNonSpacebarKeyDown();}
+        else{handleKeyRelease();}
     }
 }
 
