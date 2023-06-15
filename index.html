@@ -436,6 +436,7 @@ function handleTouchMove(e) {
             isSwiping = true;
             if (!isAttackingChar && !isMoving) {
                 if (swipeDistance > 0) {
+                    isMoving=true;
                     handleNonSpacebarKeyDown();
                 } else {
                     handleKeyRelease();
