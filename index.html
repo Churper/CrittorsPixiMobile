@@ -433,14 +433,10 @@ function handleTouchMove(e) {
         const touchCurrentX = e.changedTouches[0].clientX;
         const swipeDistance = touchCurrentX - touchStartX;
         if (Math.abs(swipeDistance) > 50) {
-            isSwiping = true;
-            if (!isAttackingChar && !isMoving) {
-                if (swipeDistance > 0) {
+          
                     handleNonSpacebarKeyDown();
-                } 
-            }
+    
         }
-        else{handleNonSpacebarKeyDown();}
     }
 }
 
