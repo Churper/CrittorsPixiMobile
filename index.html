@@ -313,7 +313,7 @@
                 window.addEventListener("keyup", handleKeyUp);
                 window.addEventListener("touchstart", handleTouchStart);
                 window.addEventListener("touchend", handleTouchEnd);
-                window.addEventListener("touchmove", handleTouchMove);
+                
 
                 //let touchStartX = 0;
                 //let touchEndX = 0;
@@ -423,41 +423,18 @@ function handleKeyRelease() {
 }
 
 function handleTouchStart(e) {
-    touchStartX = e.changedTouches[0].clientX;
-    isTouchActive = true;
-    isSwiping = false;
+    if(!isMoving)
+    {
+    handleNonSpacebarKeyDown();
+    }
+    else if(isCombat){  handleSpacebarKeyDown();      }
+    else if(isMoving){  handleNonSpacebarKeyDown(); }
 }
 
-function handleTouchMove(e) {
-    if (isTouchActive) {
-        const touchCurrentX = e.changedTouches[0].clientX;
-        const swipeDistance = touchCurrentX - touchStartX;
-        if (Math.abs(swipeDistance) > 50) {
-          
-                    handleNonSpacebarKeyDown();
-    
-        }
-    }
-}
 
 function handleTouchEnd(e) {
-    touchEndX = e.changedTouches[0].clientX;
 
-    if (!isSwiping) {
-        if (!isAttackingChar && !isMoving) {
-            //handleSpacebarKeyDown();
-        } else if (isAttackingChar) {
-            handleSpacebarKeyUp();
-        }
-    }
-
-    if (isTouchActive) {
-        handleSpacebarKeyUp();
-        isTouchActive = false;
-        isSwiping = false;
-    }
-
-    updateVelocity();
+   if(isAttacking){ handleSpacebarKeyUp();}
 }
 
 
