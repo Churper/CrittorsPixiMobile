@@ -299,14 +299,23 @@
                 }
 
 
-            
-// Constants
-const SPACEBAR_KEYCODE = 32;
 
-// Variables
+                // Constants
+                const SPACEBAR_KEYCODE = 32;
 
-let touchStartX = 0;
-let touchEndX = 0;
+                // Variables
+
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                // Event Listeners
+                window.addEventListener("keydown", handleKeyDown);
+                window.addEventListener("keyup", handleKeyUp);
+                window.addEventListener("touchstart", handleTouchStart);
+                window.addEventListener("touchend", handleTouchEnd);
+
+                //let touchStartX = 0;
+//let touchEndX = 0;
 
 // Event Listeners
 window.addEventListener("keydown", handleKeyDown);
@@ -380,16 +389,6 @@ function handleNonSpacebarKeyDown() {
         }
         critter.loop = true;
         critter.play();
-    } else {
-        isMoving = false;
-        if (isFrog) {
-            critter.textures = frogIdleTextures;
-        } else {
-            critter.textures = snailIdleTextures;
-            critter.loop = true;
-            critter.play();
-        }
-        critter.play();
     }
 }
 
@@ -416,14 +415,10 @@ function handleKeyRelease() {
 
 function handleTouchStart(e) {
     touchStartX = e.changedTouches[0].clientX;
-    updateVelocity();
-    handleSpacebarKeyDown();
 }
 
 function handleTouchEnd(e) {
     touchEndX = e.changedTouches[0].clientX;
-    updateVelocity();
-    handleKeyRelease();
 
     // Calculate swipe direction and distance
     const swipeDistance = touchEndX - touchStartX;
@@ -431,18 +426,22 @@ function handleTouchEnd(e) {
         if (swipeDistance > 0) {
             // Right swipe
             handleNonSpacebarKeyDown();
-         
         } else {
             // Left swipe
             handleKeyRelease();
-            updateVelocity();
         }
+    } else {
+        // If the swipe distance is less than 50, treat it as a tap
+        handleSpacebarKeyDown();
     }
+
+    updateVelocity();
 }
 
 // Automatically set the critter's direction to right
 xDir = 1;
 critter.scale.x = 0.5;
+
 
 
                 function updateVelocity() {
@@ -482,7 +481,7 @@ critter.scale.x = 0.5;
                 window.addEventListener("keydown", handleKeyDown);
                 window.addEventListener("keyup", handleKeyUp);
                 window.addEventListener('touchstart', handleTouchStart);
-window.addEventListener('touchend', handleTouchEnd);
+                window.addEventListener('touchend', handleTouchEnd);
                 const maxX = foreground.width - critter.width / 2; // set maximum X position
                 const minX = critter.width / 2; // set minimum X position
                 const maxY = app.screen.height * 0.85; // set maximum Y position
