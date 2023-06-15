@@ -434,7 +434,23 @@ function handleTouchStart(e) {
 
 function handleTouchEnd(e) {
 
-   if(isAttacking){   updateVelocity(); handleSpacebarKeyUp();}
+   if(isCombat){     if (isAttackingChar) {
+        isAttackingChar = false;
+        isMoving = false;
+        if (isFrog) {
+            critter.textures = frogIdleTextures;
+        } else {
+            critter.textures = snailIdleTextures;
+            critter.loop = true;
+            critter.play();
+        }
+        if (isFrog) {
+            critter.stop();
+        }
+        if (isTouchActive) {
+            handleSpacebarKeyDown();
+        }
+    }}
 }
 
 
