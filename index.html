@@ -153,7 +153,7 @@
                 //console.log(app.screen.height);
                 foreground.y = Math.max(app.screen.height);
                 const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
-                const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.35, mountainVelocity2, foreground); // Adjust the position as needed
+                const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.31, mountainVelocity2, foreground); // Adjust the position as needed
                 //const mountain3 = createMountainSprite('mountain1', app.screen.width * 0.75, mountainVelocity1,foreground);
                 //mountain3.position.set(500, app.screen.height - (foreground.height * .18) );
 
@@ -874,7 +874,7 @@ enemy.scale.set(randomScale);
 
 
 
-        snailPortrait.on('pointertap', handleSnailClick);
+        //snailPortrait.on('pointertap', handleSnailClick);
         frogPortrait.on('pointertap', handleFrogClick);
         // Add click event listener
         app.stage.interactive = true;
