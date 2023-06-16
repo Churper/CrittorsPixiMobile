@@ -150,7 +150,7 @@
                 foreground.anchor.set(0, 1);
                 foreground.x = 0;
 
-                console.log(app.screen.height);
+                //console.log(app.screen.height);
                 foreground.y = Math.max(app.screen.height);
                 const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
                 const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.35, mountainVelocity2, foreground); // Adjust the position as needed
@@ -172,7 +172,9 @@
 
                 const hpBarWidth = 180;
                 const hpBarHeight = 16;
-                const hpBarX = PIXI.Loader.shared.resources['foreground'].texture.width + (PIXI.Loader.shared.resources['foreground'].texture.width / 30);
+               
+                const hpBarX = PIXI.Loader.shared.resources['foreground'].texture.width - (PIXI.Loader.shared.resources['foreground'].texture.width / 5);
+                console.log(hpBarX);
                 const hpBarY = app.screen.height - 40 - hpBarHeight - 210; // Adjusted position
                 const hpBarBackgroundColor = 0x000000;
                 const hpBar = new PIXI.Graphics();
@@ -196,7 +198,7 @@
 
                
                 // Calculate the castle position based on the screen width and height
-                castle.position.set(foreground.width - castle.width * 0.5, app.screen.height - castle.height * 0.15);
+                castle.position.set(foreground.width - castle.width * 0.05, app.screen.height - castle.height * 0.15);
 
                 function createMountainSprite(resourceName, xPos, velocity, foreground) {
                     const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
@@ -380,11 +382,12 @@ function handleSpacebarKeyDown() {
     } else {
       critter.textures = snailAttackTextures;
     }
-    critter.loop = true;
+    critter.loop = false;
     critter.onComplete = function () {
       attackSound.src = "./attacksound.wav";
       attackSound.play();
-      if (critter.position.x > 2200) {
+      console.log( castle.position.x - 300 );
+      if (critter.position.x > hp - 300) {
         castleTakeDamage(10); // Damage calculation
       }
       isAttackingChar = false;
@@ -498,10 +501,13 @@ updateVelocity();
                 function updateVelocity() {
                     velocity.x = xDir * speed;
                     velocity.y = yDir * speed;
+                   // console.log(isMoving);
+                    if(isMoving){
                     mountainVelocity1.x = mountainVelocityX;
                     mountainVelocity1.y = mountainVelocityY;
                     mountainVelocity2.x = mountainVelocityX;
                     mountainVelocity2.y = mountainVelocityY;
+                    }
                 }
 
                 // Function to update the HP bar based on the castle's health
@@ -548,7 +554,13 @@ updateVelocity();
                             if (!isCombat) {
                                 critter.position.x += velocity.x;
                                 critter.position.y += velocity.y;
-                    
+                      // Update mountain positions
+                      mountain1.position.x -= velocity.x * mountain1Speed;
+                    mountain2.position.x -= velocity.x * mountain2Speed;
+
+                    // Update background position for parallax effect
+                    background.position.x = -critter.position.x * parallaxRatio;
+                    background.position.y = -critter.position.y * 0.2;
                             }
                         }
                     }
@@ -567,9 +579,9 @@ updateVelocity();
                     } else if (critter.position.x < minX) {
                         critter.position.x = minX;
                     }
-
+//console.log(critter.position.x);
                     // Check character's X position
-                    if (critter.position.x > 2200) {
+                    if (critter.position.x > 1500) {
                         hpBar.visible = true; // Show the HP bar
                         hpBarBackground.visible = true;
                     } else {
@@ -577,13 +589,7 @@ updateVelocity();
                         hpBarBackground.visible = false; // Hide the HP bar
                     }
 
-                    // Update mountain positions
-                    mountain1.position.x -= velocity.x * mountain1Speed;
-                    mountain2.position.x -= velocity.x * mountain2Speed;
-
-                    // Update background position for parallax effect
-                    background.position.x = -critter.position.x * parallaxRatio;
-                    background.position.y = -critter.position.y * 0.2;
+                  
 
                     // Update cloud position
                     clouds.position.x -= cloudSpeed;
@@ -629,7 +635,7 @@ updateVelocity();
             let hasAttacked = false; // Flag to track if the enemy has attacked
 
             app.ticker.add(() => {
-                console.log(enemy.position.x);
+               // console.log(enemy.position.x);
 
                 if (enemy.isAlive && enemy.position.x - critter.position.x > 140) {
                     enemy.position.x += enemy.vx;
