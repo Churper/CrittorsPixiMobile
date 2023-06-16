@@ -310,147 +310,149 @@
                 let touchStartX = 0;
                 let touchEndX = 0;
                 let isTouchActive = false;
-                // Event Listeners
-                window.addEventListener("keydown", handleKeyDown);
-                window.addEventListener("keyup", handleKeyUp);
-                window.addEventListener("touchstart", handleTouchStart);
-                window.addEventListener("touchend", handleTouchEnd);
-               //window.addEventListener('pointertap', handleFrogSpawn);
+      // Event Listeners
+window.addEventListener("keydown", handleKeyDown);
+window.addEventListener("keyup", handleKeyUp);
+window.addEventListener("touchstart", handleTouchStart);
+window.addEventListener("touchend", handleTouchEnd);
+window.addEventListener("touchmove", handleTouchMove);
 
-                //window.addEventListener("pointertap", handleTouchEnd);
-                app.stage.interactive = true;
-       // app.stage.on('click', handleFrogSpawn);
-       critter.on('pointertap', handleFrogSpawn);
+app.stage.interactive = true;
+critter.on('pointertap', handleFrogSpawn);
 
-                //let touchStartX = 0;
-                //let touchEndX = 0;
+function handleFrogSpawn() {
+  isFrog = true;
+  console.log("HERE");
+  if (!isMoving) {
+    isMoving = true;
+    if (isFrog) {
+      critter.textures = frogWalkTextures;
+    } else {
+      critter.textures = snailWalkTextures;
+    }
+    critter.loop = true;
+    critter.play();
+  } else {
+    isMoving = false;
+    if (isFrog) {
+      critter.textures = frogIdleTextures;
+    } else {
+      critter.textures = snailIdleTextures;
+      critter.loop = true;
+      critter.play();
+    }
+  }
+  updateVelocity();
+}
 
-                function handleFrogSpawn() {
-            isFrog = true;
-            console.log("HERER");
-            if (!isMoving) {
-                        isMoving = true;
-                        if (isFrog) {
-                            critter.textures = frogWalkTextures;
-                        } else {
-                            critter.textures = snailWalkTextures;
-                        }
-                        critter.loop = true;
-                        critter.play();
-                    } else {
-                        isMoving = false;
-                        if (isFrog) {
-                            critter.textures = frogIdleTextures;
-                        } else {
-                            critter.textures = snailIdleTextures;
-                            critter.loop = true;
-                            critter.play();
-                        }
-                    }
-                    updateVelocity();
-           
-        }
+function handleKeyDown(e) {
+  switch (e.keyCode) {
+    case SPACEBAR_KEYCODE:
+      handleSpacebarKeyDown();
+      break;
+    default:
+      handleNonSpacebarKeyDown();
+      break;
+  }
+  updateVelocity();
+}
 
-                // Functions
-                function handleKeyDown(e) {
-                    switch (e.keyCode) {
-                        case SPACEBAR_KEYCODE:
-                            handleSpacebarKeyDown();
-                            break;
-                        default:
-                            handleNonSpacebarKeyDown();
-                            break;
-                    }
-                    updateVelocity();
-                }
+function handleKeyUp(e) {
+  switch (e.keyCode) {
+    case SPACEBAR_KEYCODE:
+      handleSpacebarKeyUp();
+      break;
+    default:
+      handleKeyRelease();
+      break;
+  }
+  updateVelocity();
+}
 
-                function handleKeyUp(e) {
-                    switch (e.keyCode) {
-                        case SPACEBAR_KEYCODE:
-                            handleSpacebarKeyUp();
-                            break;
-                        default:
-                            handleKeyRelease();
-                            break;
-                    }
+function handleSpacebarKeyDown() {
+  if (!isAttackingChar) {
+    isAttackingChar = true;
+    if (isFrog) {
+      critter.textures = frogAttackTextures;
+    } else {
+      critter.textures = snailAttackTextures;
+    }
+    critter.loop = true;
+    critter.onComplete = function () {
+      attackSound.src = "./attacksound.wav";
+      attackSound.play();
+      if (critter.position.x > 2200) {
+        castleTakeDamage(10); // Damage calculation
+      }
+      isAttackingChar = false;
+      if (isFrog) {
+        critter.textures = frogIdleTextures;
+      } else {
+        critter.textures = snailIdleTextures;
+        critter.loop = true;
+        critter.play();
+      }
+      critter.play();
+    };
+    critter.play();
+  }
+}
 
-                    updateVelocity();
-                }
+function handleNonSpacebarKeyDown() {
+  // Add your code here
+}
 
-                function handleSpacebarKeyDown() {
-                    if (!isAttackingChar) {
-                        isAttackingChar = true;
-                        if (isFrog) {
-                            critter.textures = frogAttackTextures;
-                        } else {
-                            critter.textures = snailAttackTextures;
-                        }
-                        critter.loop = true;
-                        critter.onComplete = function () {
-                            attackSound.src = "./attacksound.wav";
-                            attackSound.play();
-                            if (critter.position.x > 2200) {
-                                castleTakeDamage(10); // Damage calculation
-                            }
-                            isAttackingChar = false;
-                            if (isFrog) {
-                                critter.textures = frogIdleTextures;
-                            } else {
-                                critter.textures = snailIdleTextures;
-                                critter.loop = true;
-                                critter.play();
-                            }
-                            critter.play();
-                        };
-                        critter.play();
-                    }
-                }
+function handleSpacebarKeyUp() {
+  if (isAttackingChar) {
+    isAttackingChar = false;
+    isMoving = false;
+    if (isFrog) {
+      critter.textures = frogIdleTextures;
+    } else {
+      critter.textures = snailIdleTextures;
+      critter.loop = true;
+      critter.play();
+    }
+    if (isFrog) {
+      critter.stop();
+    }
+    if (isTouchActive) {
+      handleSpacebarKeyDown();
+    }
+  }
+}
 
-                function handleNonSpacebarKeyDown() {
-                   
-                }
+function handleKeyRelease() {
+  // Add your code here
+}
 
-                function handleSpacebarKeyUp() {
-                    if (isAttackingChar) {
-                        isAttackingChar = false;
-                        isMoving = false;
-                        if (isFrog) {
-                            critter.textures = frogIdleTextures;
-                        } else {
-                            critter.textures = snailIdleTextures;
-                            critter.loop = true;
-                            critter.play();
-                        }
-                        if (isFrog) {
-                            critter.stop();
-                        }
-                        if (isTouchActive) {
-                            handleSpacebarKeyDown();
-                        }
-                    }
-                }
-
-                function handleKeyRelease() {
-
-                }
-
-                function handleTouchStart(e) {
-                    if (e.target.classList.contains("critter")) {
+function handleTouchStart(e) {
+  if (e.target.classList.contains("critter")) {
     e.preventDefault();
     e.stopPropagation();
   }
-                        handleSpacebarKeyDown();
-                    
-                }
+  handleSpacebarKeyDown();
+  isTouchActive = true;
+}
 
+function handleTouchEnd(e) {
+  handleSpacebarKeyUp();
+  isTouchActive = false;
+}
 
-                function handleTouchEnd(e) {
-                    handleSpacebarKeyUp();
-                }
+function handleTouchMove(e) {
+  if (isTouchActive) {
+    if (e.target.classList.contains("critter")) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    handleSpacebarKeyDown();
+  }
+}
 
+// Automatically set the critter's direction to right
+xDir = 1;
 
-                // Automatically set the critter's direction to right
-                xDir = 1;
 
 
 
