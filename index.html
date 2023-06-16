@@ -427,14 +427,23 @@ function handleKeyRelease() {
 }
 
 function handleTouchStart(e) {
-  if (e.target.classList.contains("critter")) {
+  const touch = e.data.originalEvent.touches[0];
+  const touchX = touch.clientX;
+  const touchY = touch.clientY;
+
+  // Check if the touch position overlaps with the critter's bounds
+  if (critter.containsPoint(touchX, touchY)) {
     e.preventDefault();
     e.stopPropagation();
     handleFrogSpawn(); // Call handleFrogSpawn directly when tapping on the critter
+    isTouchActive = true;
+    return; // Exit the function to prevent the execution of handleSpacebarKeyDown
   }
+  
   handleSpacebarKeyDown();
   isTouchActive = true;
 }
+
 
 
 function handleTouchEnd(e) {
