@@ -324,8 +324,8 @@ let pointerHoldInterval;
       // Event Listeners
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
-window.addEventListener("touchend", handleTouchEnd);
-window.addEventListener("touchstart", handleTouchEnd);
+app.stage.on("touchstart", handleTouchStart);
+app.stage.on("touchend", handleTouchEnd);;
 
 
 app.stage.interactive = true;
@@ -420,7 +420,7 @@ function handleSpacebarKeyDown() {
   }
 }
 
-app.stage.interactive = true;
+
 function handleSpacebarKeyUp() {
   if (isAttackingChar) {
     isAttackingChar = false;
