@@ -453,7 +453,7 @@ function handleTouchStart(e) {
     } else {
       critter.textures = snailAttackTextures;
     }
-    critter.loop = false;
+    critter.loop = true;
     critter.onComplete = function () {
       attackSound.src = "./attacksound.wav";
       attackSound.play();
