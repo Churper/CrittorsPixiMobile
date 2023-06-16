@@ -318,8 +318,10 @@ window.addEventListener("touchend", handleTouchEnd);
 window.addEventListener("touchmove", handleTouchMove);
 
 app.stage.interactive = true;
-critter.on('pointertap', handleFrogSpawn);
-
+//ritter.on('pointertap', handleFrogSpawn);
+handleFrogSpawn();
+xDir = 1;
+updateVelocity();
 function handleFrogSpawn() {
   isFrog = true;
   console.log("HERE");
@@ -366,6 +368,7 @@ function handleKeyUp(e) {
       handleKeyRelease();
       break;
   }
+  
   updateVelocity();
 }
 
@@ -420,6 +423,9 @@ function handleSpacebarKeyUp() {
       handleSpacebarKeyDown();
     }
   }
+  handleFrogSpawn();
+xDir = 1;
+updateVelocity();
 }
 
 function handleKeyRelease() {
@@ -427,14 +433,15 @@ function handleKeyRelease() {
 }
 
 function handleTouchStart(e) {
- // handleSpacebarKeyDown();
+    
+  handleSpacebarKeyDown();
   isTouchActive = true;
 }
 
 
 
 function handleTouchEnd(e) {
-  //handleSpacebarKeyUp();
+  handleSpacebarKeyUp();
   isTouchActive = false;
 }
 
@@ -444,12 +451,12 @@ function handleTouchMove(e) {
       e.preventDefault();
       e.stopPropagation();
     }
-   // handleSpacebarKeyDown();
+    handleSpacebarKeyDown();
   }
 }
 
 // Automatically set the critter's direction to right
-xDir = 1;
+
 
 
 
