@@ -435,7 +435,7 @@
                 function handleTouchStart(e) {
                     if (e.target.classList.contains("critter")) {
                        handleFrogSpawn();
-    return;
+                       e.stopPropagation();
   }
                         handleSpacebarKeyDown();
                     
