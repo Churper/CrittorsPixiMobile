@@ -323,7 +323,7 @@
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
 window.addEventListener("touchend", handleTouchEnd);
-
+window.addEventListener("touchstart", handleTouchEnd);
 
 
 app.stage.interactive = true;
@@ -444,52 +444,25 @@ function handleKeyRelease() {
 }
 
 
-let touchHoldTimeout = null;
 
 function handleTouchStart(e) {
-  isTouchHold = false;
-  touchHoldTimeout = setTimeout(function() {
-    isTouchHold = true;
-    // Code to execute when touch hold is detected
     if (!isAttackingChar) {
-      isAttackingChar = true;
-      if (isFrog) {
-        critter.textures = frogAttackTextures;
-      } else {
-        critter.textures = snailAttackTextures;
-      }
-      critter.loop = false;
-      critter.onComplete = function () {
-        attackSound.src = "./attacksound.wav";
-        attackSound.play();
-        console.log( castle.position.x - 300 );
-        if (critter.position.x > castle.position.x - castle.width/1.1) {
-          console.log("takingDamage");
-          castleTakeDamage(10); // Damage calculation
-        }
-        isAttackingChar = false;
-        if (isFrog) {
-          critter.textures = frogIdleTextures;
-        } else {
-          critter.textures = snailIdleTextures;
-          critter.loop = true;
-          critter.play();
-        }
-        critter.play();
-      };
-      critter.play();
+    isAttackingChar = true;
+    if (isFrog) {
+      critter.textures = frogAttackTextures;
+    } else {
+      critter.textures = snailAttackTextures;
     }
-  }, 500); // Adjust the hold duration as needed
-}
-
-function handleTouchEnd(e) {
-  clearTimeout(touchHoldTimeout);
-  if (isTouchHold) {
-    // Code to execute when touch hold is released
-    isTouchHold = false;
-    if (isAttackingChar) {
+    critter.loop = false;
+    critter.onComplete = function () {
+      attackSound.src = "./attacksound.wav";
+      attackSound.play();
+      console.log( castle.position.x - 300 );
+      if (critter.position.x > castle.position.x - castle.width/1.1) {
+        console.log("takingDamage");
+        castleTakeDamage(10); // Damage calculation
+      }
       isAttackingChar = false;
-      isMoving = false;
       if (isFrog) {
         critter.textures = frogIdleTextures;
       } else {
@@ -497,18 +470,37 @@ function handleTouchEnd(e) {
         critter.loop = true;
         critter.play();
       }
-      if (isFrog) {
-        critter.stop();
-      }
-      if (isTouchActive) {
-        handleSpacebarKeyDown();
-      }
-    }
-    handleFrogSpawn();
-    xDir = 1;
-    updateVelocity();
+      critter.play();
+    };
+    critter.play();
   }
 }
+
+
+
+function handleTouchEnd(e) {
+    if (isAttackingChar) {
+    isAttackingChar = false;
+    isMoving = false;
+    if (isFrog) {
+      critter.textures = frogIdleTextures;
+    } else {
+      critter.textures = snailIdleTextures;
+      critter.loop = true;
+      critter.play();
+    }
+    if (isFrog) {
+      critter.stop();
+    }
+    if (isTouchActive) {
+      handleSpacebarKeyDown();
+    }
+  }
+  handleFrogSpawn();
+xDir = 1;
+updateVelocity();
+}
+
 
 
 // Automatically set the critter's direction to right
