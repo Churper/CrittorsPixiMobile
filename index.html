@@ -103,9 +103,9 @@
             PIXI.Loader.shared.add([
                 { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
                 { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
-                { name: 'critter', url: 'https://i.imgur.com/yX1cfEj.png' },
-                { name: 'critter_walk', url: 'https://i.imgur.com/TKZnXKG.png' },
-                { name: 'critter_attack', url: 'https://i.imgur.com/gJGYMLn.png' },
+                { name: 'critter', url: 'https://i.imgur.com/Fl29VZM.png' },
+                { name: 'critter_walk', url: 'https://i.imgur.com/CLqwc9P.png' },
+                { name: 'critter_attack', url: 'https://i.imgur.com/knXBNGy.png' },
                 { name: 'snail_idle', url: 'https://i.imgur.com/gbZmBqc.png' },
                 { name: 'snail_walk', url: 'https://i.imgur.com/OsyKwTi.png' },
                 { name: 'snail_attack', url: 'https://i.imgur.com/AA1JGFE.png' },
@@ -218,10 +218,10 @@
                 const frogIdleTextures = [frogIdleTexture];
                 const frogWalkTextures = createAnimationTextures('frog_walk', 10, 351);
                 const frogAttackTextures = createAnimationTextures('frog_attack', 12, 351);
-                const critterAttackTextures = createAnimationTextures('critter_attack', 13, 333);
+                const critterAttackTextures = createAnimationTextures('critter_attack', 13, 266);
                 const critterIdleTexture = PIXI.Loader.shared.resources['critter'].texture;
                 const snailIdleTextures = createAnimationTextures('snail_idle', 20, 459);
-                const critterWalkTextures = createAnimationTextures('critter_walk', 12, 335);
+                const critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
                 const snailWalkTextures = createAnimationTextures('snail_walk', 20, 459);
                 const snailAttackTextures = createAnimationTextures('snail_attack', 24, 459);
                 const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
@@ -433,14 +433,16 @@
                 }
 
                 function handleTouchStart(e) {
-                    if (!isMoving) {
-                        handleNonSpacebarKeyDown(); updateVelocity();
-                    }
+                    if (e.target.classList.contains("critter")) {
+    return;
+  }
+                        handleSpacebarKeyDown();
+                    
                 }
 
 
                 function handleTouchEnd(e) {
-
+                    handleSpacebarKeyUp();
                 }
 
 
