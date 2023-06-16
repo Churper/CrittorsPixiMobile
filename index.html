@@ -170,10 +170,22 @@
                 // Add the foreground sprite to the stage or container
                 //app.stage.addChild(foreground);
 
+              
+
+                const castleTexture = PIXI.Texture.from('castle');
+                const castle = new PIXI.Sprite(castleTexture);
+                castle.anchor.set(1, 1); // Set the anchor point to the bottom right of the castle
+
+               
+                // Calculate the castle position based on the screen width and height
+                castle.position.set(foreground.width - castle.width * 0.05, app.screen.height - castle.height * 0.15);
+
+
+
                 const hpBarWidth = 180;
                 const hpBarHeight = 16;
                
-                const hpBarX = PIXI.Loader.shared.resources['foreground'].texture.width - (PIXI.Loader.shared.resources['foreground'].texture.width / 5);
+                const hpBarX = castle.position.x - castle.width/1.1;
                 console.log(hpBarX);
                 const hpBarY = app.screen.height - 40 - hpBarHeight - 210; // Adjusted position
                 const hpBarBackgroundColor = 0x000000;
@@ -192,13 +204,8 @@
                 hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
                 hpBarBackground.endFill();
 
-                const castleTexture = PIXI.Texture.from('castle');
-                const castle = new PIXI.Sprite(castleTexture);
-                castle.anchor.set(1, 1); // Set the anchor point to the bottom right of the castle
 
-               
-                // Calculate the castle position based on the screen width and height
-                castle.position.set(foreground.width - castle.width * 0.05, app.screen.height - castle.height * 0.15);
+
 
                 function createMountainSprite(resourceName, xPos, velocity, foreground) {
                     const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
@@ -262,7 +269,7 @@
 
                 const velocity = new PIXI.Point();
                 const parallaxRatio = 0.5;
-                const speed = 2;
+                const speed = 1.25;
                 const pressedKeys = new Set();
                 let xDir = 0;
                 let yDir = 0;
@@ -387,7 +394,8 @@ function handleSpacebarKeyDown() {
       attackSound.src = "./attacksound.wav";
       attackSound.play();
       console.log( castle.position.x - 300 );
-      if (critter.position.x > hp - 300) {
+      if (critter.position.x > castle.position.x - castle.width/1.1) {
+        console.log("takingDamage");
         castleTakeDamage(10); // Damage calculation
       }
       isAttackingChar = false;
@@ -605,7 +613,7 @@ updateVelocity();
                 });
 
                 app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
-
+                spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures);
                 setInterval(() => {
                     spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures);
                 }, 10000);
@@ -620,9 +628,13 @@ updateVelocity();
         function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures) {
 
             const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-            enemy.scale.set(0.5);
+            const minScale = 0.2;
+const maxScale = 1.1;
+const randomScale = minScale + Math.random() * (maxScale - minScale);
+
+enemy.scale.set(randomScale);
             enemy.anchor.set(0.5, 0.5); // Set anchor point to the middle of the enemy
-            enemy.position.set(foreground.width, app.screen.height - foreground.height / 1.7);
+            enemy.position.set(foreground.width, app.screen.height - enemy.height);
             enemy.animationSpeed = 0.25;
             enemy.loop = true;
             enemy.isAlive = true;
