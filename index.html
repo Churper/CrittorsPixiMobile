@@ -451,7 +451,7 @@ function handleTouchStart(e) {
     } else {
       critter.textures = snailAttackTextures;
     }
-    critter.loop = true;
+    critter.loop = false;
     critter.onComplete = function () {
       attackSound.src = "./attacksound.wav";
       attackSound.play();
@@ -628,8 +628,8 @@ updateVelocity();
         function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures) {
 
             const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-            const minScale = 0.2;
-const maxScale = 1.1;
+            const minScale = 0.5;
+const maxScale = 1;
 const randomScale = minScale + Math.random() * (maxScale - minScale);
 
 enemy.scale.set(randomScale);
