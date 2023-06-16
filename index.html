@@ -323,7 +323,7 @@
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
 window.addEventListener("touchend", handleTouchEnd);
-window.addEventListener("touchmove", handleTouchMove);
+
 
 
 app.stage.interactive = true;
@@ -444,23 +444,52 @@ function handleKeyRelease() {
 }
 
 
+let touchHoldTimeout = null;
 
-function handleTouchMove(e) {
+function handleTouchStart(e) {
+  isTouchHold = false;
+  touchHoldTimeout = setTimeout(function() {
+    isTouchHold = true;
+    // Code to execute when touch hold is detected
     if (!isAttackingChar) {
-    isAttackingChar = true;
-    if (isFrog) {
-      critter.textures = frogAttackTextures;
-    } else {
-      critter.textures = snailAttackTextures;
-    }
-    critter.loop = false;
-    critter.onComplete = function () {
-      attackSound.src = "./attacksound.wav";
-      attackSound.play();
-      if (critter.position.x > 2200) {
-        castleTakeDamage(10); // Damage calculation
+      isAttackingChar = true;
+      if (isFrog) {
+        critter.textures = frogAttackTextures;
+      } else {
+        critter.textures = snailAttackTextures;
       }
+      critter.loop = false;
+      critter.onComplete = function () {
+        attackSound.src = "./attacksound.wav";
+        attackSound.play();
+        console.log( castle.position.x - 300 );
+        if (critter.position.x > castle.position.x - castle.width/1.1) {
+          console.log("takingDamage");
+          castleTakeDamage(10); // Damage calculation
+        }
+        isAttackingChar = false;
+        if (isFrog) {
+          critter.textures = frogIdleTextures;
+        } else {
+          critter.textures = snailIdleTextures;
+          critter.loop = true;
+          critter.play();
+        }
+        critter.play();
+      };
+      critter.play();
+    }
+  }, 500); // Adjust the hold duration as needed
+}
+
+function handleTouchEnd(e) {
+  clearTimeout(touchHoldTimeout);
+  if (isTouchHold) {
+    // Code to execute when touch hold is released
+    isTouchHold = false;
+    if (isAttackingChar) {
       isAttackingChar = false;
+      isMoving = false;
       if (isFrog) {
         critter.textures = frogIdleTextures;
       } else {
@@ -468,37 +497,18 @@ function handleTouchMove(e) {
         critter.loop = true;
         critter.play();
       }
-      critter.play();
-    };
-    critter.play();
+      if (isFrog) {
+        critter.stop();
+      }
+      if (isTouchActive) {
+        handleSpacebarKeyDown();
+      }
+    }
+    handleFrogSpawn();
+    xDir = 1;
+    updateVelocity();
   }
 }
-
-
-
-function handleTouchEnd(e) {
-    if (isAttackingChar) {
-    isAttackingChar = false;
-    isMoving = false;
-    if (isFrog) {
-      critter.textures = frogIdleTextures;
-    } else {
-      critter.textures = snailIdleTextures;
-      critter.loop = true;
-      critter.play();
-    }
-    if (isFrog) {
-      critter.stop();
-    }
-    if (isTouchActive) {
-      handleSpacebarKeyDown();
-    }
-  }
-  handleFrogSpawn();
-xDir = 1;
-updateVelocity();
-}
-
 
 
 // Automatically set the critter's direction to right
