@@ -315,7 +315,7 @@ window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
 window.addEventListener("touchstart", handleTouchStart);
 window.addEventListener("touchend", handleTouchEnd);
-window.addEventListener("touchmove", handleTouchMove);
+
 
 app.stage.interactive = true;
 //ritter.on('pointertap', handleFrogSpawn);
@@ -433,7 +433,6 @@ function handleKeyRelease() {
 }
 
 function handleTouchStart(e) {
-    
   handleSpacebarKeyDown();
   isTouchActive = true;
 }
@@ -445,15 +444,7 @@ function handleTouchEnd(e) {
   isTouchActive = false;
 }
 
-function handleTouchMove(e) {
-  if (isTouchActive) {
-    if (e.target.classList.contains("critter")) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    handleSpacebarKeyDown();
-  }
-}
+
 
 // Automatically set the critter's direction to right
 
