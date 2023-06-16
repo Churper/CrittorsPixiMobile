@@ -315,6 +315,8 @@
                 window.addEventListener("keyup", handleKeyUp);
                 window.addEventListener("touchstart", handleTouchStart);
                 window.addEventListener("touchend", handleTouchEnd);
+               //window.addEventListener('pointertap', handleFrogSpawn);
+
                 //window.addEventListener("pointertap", handleTouchEnd);
                 app.stage.interactive = true;
        // app.stage.on('click', handleFrogSpawn);
@@ -433,8 +435,11 @@
                 }
 
                 function handleTouchStart(e) {
-                    
-                       // handleSpacebarKeyDown();
+                    if (e.target.classList.contains("critter")) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+                        handleSpacebarKeyDown();
                     
                 }
 
