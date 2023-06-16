@@ -430,11 +430,12 @@ function handleTouchStart(e) {
   if (e.target.classList.contains("critter")) {
     e.preventDefault();
     e.stopPropagation();
-    handleFrogSpawn(); // Call handleFrogSpawn directly on touch start
+    handleFrogSpawn(); // Call handleFrogSpawn directly when tapping on the critter
   }
   handleSpacebarKeyDown();
   isTouchActive = true;
 }
+
 
 function handleTouchEnd(e) {
   handleSpacebarKeyUp();
