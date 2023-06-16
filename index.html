@@ -322,8 +322,8 @@
       // Event Listeners
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
-window.addEventListener("touchstart", handleTouchStart);
 window.addEventListener("touchend", handleTouchEnd);
+window.addEventListener("touchmove", handleTouchMove);
 
 
 app.stage.interactive = true;
@@ -443,7 +443,9 @@ function handleKeyRelease() {
   // Add your code here
 }
 
-function handleTouchStart(e) {
+
+
+function handleTouchMove(e) {
     if (!isAttackingChar) {
     isAttackingChar = true;
     if (isFrog) {
@@ -628,8 +630,8 @@ updateVelocity();
         function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures) {
 
             const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-            const minScale = 0.5;
-const maxScale = 1;
+            const minScale = 0.2;
+const maxScale = 1.1;
 const randomScale = minScale + Math.random() * (maxScale - minScale);
 
 enemy.scale.set(randomScale);
