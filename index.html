@@ -319,6 +319,8 @@
                 let touchStartX = 0;
                 let touchEndX = 0;
                 let isTouchActive = false;
+                let isPointerDown = false;
+let pointerHoldInterval;
       // Event Listeners
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
@@ -327,6 +329,11 @@ window.addEventListener("touchstart", handleTouchEnd);
 
 
 app.stage.interactive = true;
+
+app.stage.on("pointerdown", handleTouchStart);
+app.stage.on("pointertap", handleTouchTap);
+app.stage.on("pointerup", handleTouchEnd);
+
 //ritter.on('pointertap', handleFrogSpawn);
 handleFrogSpawn();
 xDir = 1;
@@ -334,7 +341,8 @@ updateVelocity();
 function handleFrogSpawn() {
   isFrog = true;
   console.log("HERE");
-  if (!isMoving) {
+  if (!isMoving)  {
+    if(isCombat){}else{
     isMoving = true;
     if (isFrog) {
       critter.textures = frogWalkTextures;
@@ -342,7 +350,7 @@ function handleFrogSpawn() {
       critter.textures = snailWalkTextures;
     }
     critter.loop = true;
-    critter.play();
+    critter.play();}
   } else {
     isMoving = false;
     if (isFrog) {
@@ -412,10 +420,7 @@ function handleSpacebarKeyDown() {
   }
 }
 
-function handleNonSpacebarKeyDown() {
-  // Add your code here
-}
-
+app.stage.interactive = true;
 function handleSpacebarKeyUp() {
   if (isAttackingChar) {
     isAttackingChar = false;
@@ -439,13 +444,18 @@ xDir = 1;
 updateVelocity();
 }
 
-function handleKeyRelease() {
-  // Add your code here
+
+// Function to handle pointerdown event
+function handleTouchStart(event) {
+  // Set the pointer state to down
+  isPointerDown = true;
+
+  // Start a timer to simulate continuous action
+  pointerHoldInterval = setInterval(handleTouchHold, 100);
 }
 
-
-
-function handleTouchStart(e) {
+// Function to handle pointerhold action
+function handleTouchHold() {
     if (!isAttackingChar) {
     isAttackingChar = true;
     if (isFrog) {
@@ -453,7 +463,7 @@ function handleTouchStart(e) {
     } else {
       critter.textures = snailAttackTextures;
     }
-    critter.loop = true;
+    critter.loop = false;
     critter.onComplete = function () {
       attackSound.src = "./attacksound.wav";
       attackSound.play();
@@ -465,6 +475,7 @@ function handleTouchStart(e) {
       isAttackingChar = false;
       if (isFrog) {
         critter.textures = frogIdleTextures;
+        // critter.loop = true;
       } else {
         critter.textures = snailIdleTextures;
         critter.loop = true;
@@ -476,10 +487,23 @@ function handleTouchStart(e) {
   }
 }
 
+// Function to handle pointertap event
+function handleTouchTap(event) {
+  // Trigger single tap action here
+  // For example, you can call the handleSpacebarKeyDown function
+  //handleSpacebarKeyDown();
+}
 
+// Function to handle pointerup event
+function handleTouchEnd(event) {
+  // Clear the pointer hold interval
+  clearInterval(pointerHoldInterval);
 
-function handleTouchEnd(e) {
-    if (isAttackingChar) {
+  // Set the pointer state to up
+  isPointerDown = false;
+
+  // Add your existing code here for handling touch end
+  if (isAttackingChar) {
     isAttackingChar = false;
     isMoving = false;
     if (isFrog) {
@@ -493,12 +517,14 @@ function handleTouchEnd(e) {
       critter.stop();
     }
     if (isTouchActive) {
-      handleSpacebarKeyDown();
+      ////handleSpacebarKeyDown();
     }
   }
+ 
   handleFrogSpawn();
 xDir = 1;
 updateVelocity();
+
 }
 
 
@@ -564,17 +590,19 @@ updateVelocity();
                     if (!isAttackingChar) {
                         if (isMoving) {
                             if (!isCombat) {
+                                if(!isPointerDown){
                                 critter.position.x += velocity.x;
                                 critter.position.y += velocity.y;
                       // Update mountain positions
                       mountain1.position.x -= velocity.x * mountain1Speed;
                     mountain2.position.x -= velocity.x * mountain2Speed;
-
+                                }
                     // Update background position for parallax effect
                     background.position.x = -critter.position.x * parallaxRatio;
                     background.position.y = -critter.position.y * 0.2;
                             }
                         }
+                        else{}
                     }
                     if (isCombat) {
 
