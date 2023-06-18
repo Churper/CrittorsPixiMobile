@@ -16,11 +16,39 @@
       min-height: 512px;
       height: 100vh;
     }
+
+    #game-container {
+      position: relative;
+    }
+
+    #ui-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  
+}
+
+#health-bar {
+  width: 200px;
+  height: 20px;
+  background-color: #ccc;
+  border: 2px solid #000;
+  position: relative;
+}
+
+#health-bar-fill {
+  height: 100%;
+  background-color: #f00;
+}
+
   </style>
 </head>
 
 <body>
-  <div id="game-container"></div>
+  <div id="game-container">   <div id="ui-overlay"><div id="health-bar"> <div id="health-bar-fill"></div>
+</div></div></div>
+  
 
   <script>
     const app = new PIXI.Application({
@@ -32,7 +60,10 @@
     });
 
     document.body.appendChild(app.view);
+  
     let isGameStarted = false;
+    let playerMaxHP = 100;
+    let playerHP = playerMaxHP;
     const flashDuration = 100; // Adjust as needed (in milliseconds)
 const flashColor = 0xff5555; // Bright red color
     const attackSound = new Audio();
@@ -42,11 +73,20 @@ const flashColor = 0xff5555; // Bright red color
     let isCombat = false;
     let playAgain = false;
     const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
-    const menuSprite = new PIXI.Sprite(menuTexture);
-    menuSprite.anchor.set(0.5);
-    menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
-    app.stage.addChild(menuSprite);
+const menuSprite = new PIXI.Sprite(menuTexture);
+menuSprite.anchor.set(0.5);
 
+// Set the size of the menuSprite to match the app.screen size
+menuSprite.width = app.screen.width;
+menuSprite.height = app.screen.height;
+
+// Position the menuSprite at the center of the screen
+menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
+
+// Add the menuSprite to the stage
+app.stage.addChild(menuSprite);
+
+document.body.appendChild(app.view);
     const startText = new PIXI.Text('Choose your character!', {
       fontSize: 24,
       fill: 'white',
@@ -66,13 +106,7 @@ const flashColor = 0xff5555; // Bright red color
     app.stage.addChild(frogPortrait);
     let isFrog = false;
 
-    const snailPortraitTexture = PIXI.Texture.from('https://i.imgur.com/NlA9b11.png');
-    const snailPortrait = new PIXI.Sprite(snailPortraitTexture);
-    snailPortrait.interactive = true;
-    snailPortrait.buttonMode = true;
-    snailPortrait.position.set(140, 0);
-    app.stage.addChild(snailPortrait);
-
+  
     let isPointerDown = false;
       function getisPointerdown() {
     return isPointerDown;
@@ -298,6 +332,7 @@ const flashColor = 0xff5555; // Bright red color
 
 
 
+
         // Constants
         const SPACEBAR_KEYCODE = 32;
 
@@ -351,7 +386,9 @@ const flashColor = 0xff5555; // Bright red color
                 castleTakeDamage(10); // Damage calculation
               }
               isAttackingChar = false;
+             
               critter.textures = frogIdleTextures;
+              
               critter.play();
             };
             critter.play();
@@ -398,6 +435,10 @@ const flashColor = 0xff5555; // Bright red color
           //updateVelocity();
 
         }
+
+
+
+
 
 
         function updateVelocity() {
@@ -466,7 +507,9 @@ const flashColor = 0xff5555; // Bright red color
                 }
                 else{
                   console.log("enemies in range");
+                  if(!getisPointerdown()){
                   critter.textures=frogIdleTextures;
+                  }
                 }
                 }
                 // Update background position for parallax effect
@@ -552,6 +595,10 @@ enemy.vx = -2; // Set the enemy's horizontal velocity
 let isAttacking = false; // Flag to track if enemy is attacking
 let hasAttacked = false; // Flag to track if the enemy has attacked
 
+
+
+
+
  // Add enemy to the enemies array
  enemies.push(enemy);
       app.ticker.add(() => {
@@ -562,7 +609,8 @@ let hasAttacked = false; // Flag to track if the enemy has attacked
         } else {
           if (!enemyAdded) {
       enemiesInRange++;
-      critter.textures=frogIdleTextures;
+      if(!getisPointerdown()){
+      critter.textures=frogIdleTextures;}
       enemyAdded = true;
     } 
          // console.log(isCombat);
@@ -610,7 +658,8 @@ let hasAttacked = false; // Flag to track if the enemy has attacked
     if (currentFrame === enemy.totalFrames - 5) {
       if (enemy.isAlive) {
         critter.tint = flashColor;
-
+         playerHP -= 5;
+updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
         setTimeout(() => {
           critter.tint = 0xffffff;
         }, flashDuration);
@@ -650,6 +699,7 @@ let hasAttacked = false; // Flag to track if the enemy has attacked
     }
   });
 }
+
 
     function critterAttack(critter, enemy, enemyDeath) {
       // Reduce enemy's HP
@@ -761,6 +811,11 @@ let hasAttacked = false; // Flag to track if the enemy has attacked
       }
     }
 
+// Update the health bar based on the current health value
+function updatePlayerHealthBar(health) {
+  const playerHealthBarFill = document.getElementById('health-bar-fill');
+  playerHealthBarFill.style.width = health + '%';
+}
 
 
 
