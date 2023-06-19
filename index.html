@@ -235,7 +235,7 @@
         const frogGhostPlayer = new PIXI.Sprite(frogGhostTextures);
 
         frogGhostPlayer.anchor.set(0, 0);
-        frogGhostPlayer.scale.set(0.4);
+        frogGhostPlayer.scale.set(0.35);
 
 
         const containerHeight = document.getElementById('game-container').clientHeight;
@@ -356,7 +356,7 @@
 
         function createAnimatedSprite(textures) {
           const sprite = new PIXI.AnimatedSprite(textures);
-          sprite.scale.set(0.6);
+          sprite.scale.set(0.5);
           sprite.anchor.set(0, 0);
           sprite.position.set(app.screen.width / 3, app.screen.height - foreground.height / 1.6);
           sprite.animationSpeed = 0.25;
@@ -587,6 +587,7 @@
       const minScale = 0.3;
       const maxScale = 0.7;
       const randomScale = minScale + Math.random() * (maxScale - minScale);
+      const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
 
       enemy.scale.set(randomScale);
       enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, 0.5);
@@ -599,7 +600,7 @@
       enemy.currentHP = 100;
       enemy.play();
       enemy.scale.x *= -1; // Flip the enemy horizontally
-      enemy.vx = -2; // Set the enemy's horizontal velocity
+      enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
       let isAttacking = false; // Flag to track if enemy is attacking
       let hasAttacked = false; // Flag to track if the enemy has attacked
 
