@@ -590,9 +590,12 @@
       const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
 
       enemy.scale.set(randomScale);
-      enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, 0.5);
-      enemy.position.set(foreground.width, app.screen.height - foreground.height / 1.6 - (Math.random() * 120 - 60));
-      enemy.zIndex = -enemy.position.y;
+      enemy.anchor.set(0.7 + (randomScale - 0.5) * (1 - randomScale) * 2, .5);
+      enemy.position.set(foreground.width, app.screen.height - 160 - (Math.random() * 100 - 50));
+      enemy.zIndex = -enemy.position.y + 10000;
+      console.log("ZINEX:",-enemy.position.y);
+      console.log("enemy.zIndex:",enemy.zIndex);
+
       enemy.animationSpeed = 0.25;
       enemy.loop = true;
       enemy.isAlive = true;
@@ -643,7 +646,7 @@
               isCombat = true;
               handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
               if (enemy.isAlive && !getisDead()) {
-                console.log("here");
+                //console.log("here");
                 drawEnemyHPBar(enemy);
               }
             } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
@@ -655,7 +658,7 @@
         } else {
           if (runOnce === 0) {
             runOnce = 1;
-            console.log("MADE");
+            //("MADE");
             app.stage.removeChild(enemy);
             if (enemy.hpBarBackground && enemy.hpBar) {
               app.stage.removeChild(enemy.hpBarBackground);
@@ -673,7 +676,9 @@
           return;
         }
       });
-
+      enemies.sort((a, b) => a.position.y - b.position.y);
+      enemies.forEach((enemy) => app.stage.removeChild(enemy));
+      enemies.forEach((enemy) => app.stage.addChild(enemy));
     }
 
     let isPlayerAttacking = false;
@@ -689,7 +694,7 @@
   app.stage.addChild(frogGhostPlayer);
 
   let startY = frogGhostPlayer.y; // starting position
-  let targetY = startY - 600; // target position
+  let targetY = startY - 400; // target position
   let speed = 1.5; // speed of the movement
   let wobbleSpeed = 0.05; // speed of the wobble
   let wobbleAmplitude = 7.5; // initial amplitude of the wobble
@@ -732,11 +737,11 @@
 
                 if (enemy.textures != critterWalkTextures) {
                   enemy.textures = critterWalkTextures;
-                  console.log("ohhey");
+                 // console.log("ohhey");
                   enemy.gotoAndPlay(0);
                 }
                 if (!hasDied) {
-                  console.log("playerhp", playerHP);
+                 // console.log("playerhp", playerHP);
                   hasDied = true;
                   frogGhostPlayer.position.set(critter.position.x, critter.position.y);
                   critter.tint = 0xffffff;
@@ -818,7 +823,7 @@
 
     function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures) {
       let isReset = false;
-      console.log(getEnemies());
+    //  console.log(getEnemies());
 
       if (!isReset) {
         setEnemiesInRange(0);
@@ -843,7 +848,7 @@
         // Loop through the enemies array and remove each enemy
         for (let i = 0; i < getEnemies().length; i++) {
           let enemy = getEnemies()[i];
-          console.log(i);
+         // console.log(i);
           app.stage.removeChild(enemy);
           app.stage.removeChild(enemy.hpBar);
           app.stage.removeChild(enemy.hpBarBackground);
@@ -902,7 +907,7 @@
         playerEXP += 10;
         updateEXP(playerEXP);
 
-        console.log(enemiesInRange);
+       // console.log(enemiesInRange);
         app.stage.removeChild(enemyDeath);
         //isCombat=false;
       };
