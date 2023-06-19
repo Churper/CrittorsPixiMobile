@@ -134,6 +134,7 @@
     let isGameStarted = false;
     let playerMaxHP = 100;
     let playerHP = playerMaxHP;
+    let playerEXP = 0;
     const flashDuration = 100; // Adjust as needed (in milliseconds)
     const flashColor = 0xff5555; // Bright red color
     const attackSound = new Audio();
@@ -973,7 +974,8 @@
 
       // Remove the death animation after it completes
       enemyDeath.onComplete = () => {
-        updateEXP(10);
+        playerEXP +=10;
+        updateEXP(playerEXP );
 
         console.log(enemiesInRange);
         app.stage.removeChild(enemyDeath);
@@ -1057,8 +1059,8 @@
     }
 
     function updateEXP(exp) {
-      const playerHealthBarFill = document.getElementById('exp-bar-fill');
-      playerHealthBarFill.style.width = exp + '%';
+      const playerEXPBarFill = document.getElementById('exp-bar-fill');
+      playerEXPBarFill.style.width = exp + '%';
     }
 
 
