@@ -669,13 +669,22 @@
 
       let runOnce = 0;
       if (enemy.textures !== critterWalkTextures) {
-              enemy.textures = critterWalkTextures;
-            }
+        enemy.textures = critterWalkTextures;
+      }
       app.ticker.add(() => {
         if (app.stage.children.includes(enemy)) {
           if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 140) || getisDead()) {
             enemy.loop = true;
-            
+
+            if (enemy.visible) {
+              if (enemy.textures !== critterWalkTextures) {
+                enemy.textures = critterWalkTextures;
+                enemy.play();
+                console.log("TULO");
+              }
+              enemy.loop = true;
+            }
+
             enemy.position.x += enemy.vx;
           } else {
             if (!enemyAdded) {
@@ -699,15 +708,6 @@
               hasAttacked = true;
               critterAttack(critter, enemy, enemiesInRange, enemyDeath);
               isPlayerAttacking = false; // Reset player attack flag after calling critterAttack
-            }  if (getisDead()) {
-              if (enemy.visible) {
-                if (enemy.textures !== critterWalkTextures) {
-                  enemy.textures = critterWalkTextures;
-                  enemy.play();
-                  console.log("TULO");
-                }
-                enemy.loop = true;
-              }
             }
           }
         } else {
@@ -977,8 +977,8 @@
 
       // Remove the death animation after it completes
       enemyDeath.onComplete = () => {
-        playerEXP +=10;
-        updateEXP(playerEXP );
+        playerEXP += 10;
+        updateEXP(playerEXP);
 
         console.log(enemiesInRange);
         app.stage.removeChild(enemyDeath);
