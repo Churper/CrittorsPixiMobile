@@ -6,7 +6,6 @@
   <title>Crittors</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.1/pixi.min.js"></script>
 
-
   <style>
     html,
     body {
@@ -128,9 +127,6 @@
     }
 
 
-
-
-
     let isGameStarted = false;
     let playerMaxHP = 100;
     let playerHP = playerMaxHP;
@@ -146,18 +142,12 @@
     const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
     const menuSprite = new PIXI.Sprite(menuTexture);
     menuSprite.anchor.set(0.5);
-
-    // Set the size of the menuSprite to match the app.screen size
     menuSprite.width = app.screen.width;
     menuSprite.height = app.screen.height;
-
-    // Position the menuSprite at the center of the screen
     menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
-
-    // Add the menuSprite to the stage
     app.stage.addChild(menuSprite);
-
     document.body.appendChild(app.view);
+
     const startText = new PIXI.Text('Choose your character!', {
       fontSize: 24,
       fill: 'white',
@@ -184,12 +174,10 @@
     }
 
     function startGame() {
-      // Remove menu elements
       app.stage.removeChild(menuSprite);
       app.stage.removeChild(startText);
       const sound = new Audio();
       sound.src = "./theme.ogg";
-
       sound.volume = .2;
       sound.play();
 
@@ -229,8 +217,6 @@
         { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
         { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
       ]).load(setup);
-      // hpBar.visible = false; // Initially hide the HP bar
-
 
       function setup() {
 
@@ -257,27 +243,18 @@
         const foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
         foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width;
         foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height;
-        // console.log(app.screen.width / window.innerWidth );
         foreground.anchor.set(0, 1);
         foreground.x = 0;
 
-        //console.log(app.screen.height);
         foreground.y = Math.max(app.screen.height);
         const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
         const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.35, mountainVelocity2, foreground); // Adjust the position as needed
-
-        // Adjust the x position if needed
         foreground.x = 0;
 
         const castleTexture = PIXI.Texture.from('castle');
         const castle = new PIXI.Sprite(castleTexture);
-        castle.anchor.set(1, 1); // Set the anchor point to the bottom right of the castle
-
-
-        // Calculate the castle position based on the screen width and height
+        castle.anchor.set(1, 1);
         castle.position.set(foreground.width - castle.width * 0.05, app.screen.height - castle.height * 0.15);
-
-
 
         const hpBarWidth = 180;
         const hpBarHeight = 16;
@@ -292,16 +269,14 @@
         hpBar.endFill();
         const hpBarBackground = new PIXI.Graphics();
         const hpBarBorderColor = 0x000000; // Black color
-        const hpBarBorderThickness = 4; // Adjust the thickness as desired
+        const hpBarBorderThickness = 4;
         hpBarBackground.lineStyle(hpBarBorderThickness, hpBarBorderColor);
-        hpBarBackground.beginFill(hpBarBackgroundColor, 0.5); // Set the alpha value for transparency
+        hpBarBackground.beginFill(hpBarBackgroundColor, 0.5);
         hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
         hpBarBackground.endFill();
-        hpBarBackground.beginFill(hpBarBackgroundColor, 1); // Set the alpha value for transparency
+        hpBarBackground.beginFill(hpBarBackgroundColor, 1);
         hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
         hpBarBackground.endFill();
-
-
 
 
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
@@ -309,10 +284,7 @@
           const scaleFactor = Math.max(app.screen.height * 0.5 / sprite.height, app.screen.width * 1.2 / sprite.width);
           sprite.scale.set(scaleFactor);
           sprite.anchor.set(0, 1);
-
-          // Calculate the mountain sprite position based on the screen height and sprite height
           sprite.position.set(xPos, app.screen.height - (foreground.height * 0.275));
-
           sprite.zIndex = -1;
           sprite.velocity = velocity;
           return sprite;
@@ -401,45 +373,31 @@
           return sprite;
         }
 
-
-
-
         // Constants
         const SPACEBAR_KEYCODE = 32;
 
         // Variables
-
         let touchStartX = 0;
         let touchEndX = 0;
         let isTouchActive = false;
-
         let pointerHoldInterval;
 
-
         app.stage.interactive = true;
-
         app.stage.on("pointerdown", handleTouchStart);
-        app.stage.on("pointertap", handleTouchTap);
         app.stage.on("pointerup", handleTouchEnd);
 
-        //ritter.on('pointertap', handleFrogSpawn);
 
         xDir = 1;
         updateVelocity();
 
-
-        // Function to handle pointerdown event
         function handleTouchStart(event) {
-          // Set the pointer state to down
           isPointerDown = true;
-
           // Start a timer to simulate continuous action
           pointerHoldInterval = setInterval(handleTouchHold, 10);
         }
 
         // Function to handle pointerhold action
         function handleTouchHold() {
-          //console.log("touch hold",isAttackingChar);
           if (!isAttackingChar) {
             isAttackingChar = true;
             if (isFrog) {
@@ -464,13 +422,6 @@
             };
             critter.play();
           }
-        }
-
-        // Function to handle pointertap event
-        function handleTouchTap(event) {
-          // Trigger single tap action here
-          // For example, you can call the handleSpacebarKeyDown function
-          //handleSpacebarKeyDown();
         }
 
         // Function to handle pointerup event
@@ -552,18 +503,14 @@
         }
 
 
-        const maxX = foreground.width - critter.width / 2; // set maximum X position
-        const minX = critter.width / 2; // set minimum X position
-        const maxY = app.screen.height * 0.85; // set maximum Y position
-        const minY = app.screen.height * 0.5; // set minimum Y position
-        //const parallaxRatio = 0.2;
+        const maxX = foreground.width - critter.width / 2;
+        const minX = critter.width / 2;
+        const maxY = app.screen.height * 0.85;
+        const minY = app.screen.height * 0.5;
         const cloudSpeed = 1 / 3.5;
         const mountain1Speed = 0.2;
         const mountain2Speed = 0.05;
-        //console.log(isFrog);
         app.ticker.add(() => {
-          //console.log(critter.textures);
-
 
           if (!isAttackingChar) {
             if (!getisDead()) {
@@ -591,16 +538,11 @@
               }
             }
 
-
-
-
             if (critter.position.x > maxX - 100) {
               critter.position.x = maxX - 100;
             } else if (critter.position.x < minX) {
               critter.position.x = minX;
             }
-            //console.log(critter.position.x);
-            // Check character's X position
             if (critter.position.x > 1500) {
               hpBar.visible = true; // Show the HP bar
               hpBarBackground.visible = true;
@@ -680,7 +622,6 @@
               if (enemy.textures !== critterWalkTextures) {
                 enemy.textures = critterWalkTextures;
                 enemy.play();
-                console.log("TULO");
               }
               enemy.loop = true;
             }
@@ -734,50 +675,34 @@
 
     }
 
+    let isPlayerAttacking = false;
 
-    let isPlayerAttacking = false; // Flag to track if the player is attacking
-
-    // player attack event handler
     function onPlayerAttack() {
-      // Perform player attack logic
-
       isPlayerAttacking = true;
     }
-
 
 
     function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
       setIsDead(true);
       frogGhostPlayer.alpha = 0.5;
       app.stage.addChild(frogGhostPlayer);
-      //console.log(app.stage.height);
 
-      // Move the frogGhostPlayer upwards until off the top of the screen
-      let targetY = app.stage.height; // Adjust the value to set the target position
-      let speed = 1.5; // Adjust the value to change the speed of the movement
-      let wobbleSpeed = 0.05; // Adjust the value to change the speed of the wobble
-      let wobbleAmplitude = 7.5; // Adjust the value to change the initial amplitude of the wobble
-      let wobbleDamping = 0.99; // Adjust the value to change the damping factor of the wobble
+      let targetY = app.stage.height; // target position
+      let speed = 1.5; //  speed of the movement
+      let wobbleSpeed = 0.05; // speed of the wobble
+      let wobbleAmplitude = 7.5; //  initial amplitude of the wobble
+      let wobbleDamping = 0.99; // damping factor of the wobble
 
       let moveInterval = setInterval(() => {
         frogGhostPlayer.y -= speed;
-        // console.log(frogGhostPlayer.y);
-
-        // Calculate the wobble offset
         let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
-
-        // Apply the wobble effect to the x position
         frogGhostPlayer.x += wobbleOffset;
-
-        // Reduce the amplitude of the wobble over time
         wobbleAmplitude *= wobbleDamping;
-
         if (frogGhostPlayer.y <= 200) {
-
           resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
           clearInterval(moveInterval);
         }
-      }, 16); // Adjust the interval delay as needed (16ms = 60fps)
+      }, 16); // (16ms = 60fps)
     }
 
 
@@ -937,18 +862,12 @@
         // Callback function to remove enemy after death animation
         if (app.stage.children.includes(enemy)) {
           setEnemiesInRange(getEnemiesInRange() - 1);
-
-
           isCombat = false;
-
           app.stage.removeChild(enemy);
           getEnemies().splice(getEnemies().indexOf(enemy), 1);
-
-
           playDeathAnimation(enemy, enemyDeath);
           app.stage.removeChild(enemy.hpBar);
           app.stage.removeChild(enemy.hpBarBackground);
-
         }
       } else {
         if (enemy.isAlive === true) {
@@ -964,7 +883,6 @@
         //console.log(enemy.currentHP);
       }
     }
-
 
 
     function playDeathAnimation(enemy, enemyDeath) {
@@ -984,7 +902,6 @@
         app.stage.removeChild(enemyDeath);
         //isCombat=false;
       };
-
 
     }
 
@@ -1031,8 +948,6 @@
     }
 
 
-
-
     function handleFrogClick() {
       isFrog = true;
 
@@ -1047,7 +962,6 @@
     function handleSnailClick() {
       isFrog = false;
 
-      // critter.textures = frog;
       if (!isGameStarted) {
         isGameStarted = true;
 
@@ -1055,7 +969,6 @@
       }
     }
 
-    // Update the health bar based on the current health value
     function updatePlayerHealthBar(health) {
       const playerHealthBarFill = document.getElementById('health-bar-fill');
       playerHealthBarFill.style.width = health + '%';
@@ -1065,9 +978,6 @@
       const playerEXPBarFill = document.getElementById('exp-bar-fill');
       playerEXPBarFill.style.width = exp + '%';
     }
-
-
-
     frogPortrait.on('pointertap', handleFrogClick);
 
   </script>
