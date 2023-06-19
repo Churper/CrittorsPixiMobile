@@ -22,33 +22,66 @@
     }
 
     #ui-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 10px;
-  
-}
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 10px;
+    }
 
-#health-bar {
-  width: 200px;
-  height: 20px;
-  background-color: #ccc;
-  border: 2px solid #000;
-  position: relative;
-}
+    #health-bar {
+      width: 200px;
+      height: 20px;
+      background-color: #ccc;
+      border: 2px solid #000;
+      position: relative;
+    }
 
-#health-bar-fill {
-  height: 100%;
-  background-color: #f00;
-}
+    #health-bar-fill {
+      height: 100%;
+      background-color: #f00;
 
+    }
+
+    #exp-bar {
+      width: 200px;
+      height: 20px;
+      background-color: #ccc;
+      border: 2px solid #000;
+      position: relative;
+      margin-top: 5px;
+    }
+
+    #exp-bar-fill {
+      height: 100%;
+      background-color: #dbb948;
+      width: 3%;
+      /* Set the initial width to 1% */
+    }
+
+    .bar-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
-  <div id="game-container">   <div id="ui-overlay"><div id="health-bar"> <div id="health-bar-fill"></div>
-</div></div></div>
-  
+  <div id="game-container">
+    <div id="ui-overlay">
+      <div id="health-bar">
+        <div id="health-bar-fill"></div>
+        <span class="bar-text">HP</span>
+      </div>
+      <div id="exp-bar">
+        <div id="exp-bar-fill"></div>
+        <span class="bar-text">EXP</span>
+      </div>
+    </div>
+  </div>
+
 
   <script>
     const app = new PIXI.Application({
@@ -60,12 +93,49 @@
     });
 
     document.body.appendChild(app.view);
-  
+    let isDead = false;
+    function getisDead() {
+      return isDead;
+    }
+
+    function setIsDead(value) {
+      isDead = value;
+    }
+
+    let enemiesInRange = 0;
+    function getEnemiesInRange() {
+      return enemiesInRange;
+    }
+
+    function setEnemiesInRange(value) {
+      enemiesInRange = value;
+    }
+
+
+    let enemies = [];
+
+    function getEnemies() {
+      return enemies;
+    }
+
+    function addEnemies(enemy) {
+      console.log("added an eneymy");
+      return enemies.push(enemy);
+    }
+
+    function clearEnemies(value) {
+      enemies = [];
+    }
+
+
+
+
+
     let isGameStarted = false;
     let playerMaxHP = 100;
     let playerHP = playerMaxHP;
     const flashDuration = 100; // Adjust as needed (in milliseconds)
-const flashColor = 0xff5555; // Bright red color
+    const flashColor = 0xff5555; // Bright red color
     const attackSound = new Audio();
     attackSound.src = "./attacksound.wav";
     const hitSound = new Audio();
@@ -73,20 +143,20 @@ const flashColor = 0xff5555; // Bright red color
     let isCombat = false;
     let playAgain = false;
     const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
-const menuSprite = new PIXI.Sprite(menuTexture);
-menuSprite.anchor.set(0.5);
+    const menuSprite = new PIXI.Sprite(menuTexture);
+    menuSprite.anchor.set(0.5);
 
-// Set the size of the menuSprite to match the app.screen size
-menuSprite.width = app.screen.width;
-menuSprite.height = app.screen.height;
+    // Set the size of the menuSprite to match the app.screen size
+    menuSprite.width = app.screen.width;
+    menuSprite.height = app.screen.height;
 
-// Position the menuSprite at the center of the screen
-menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
+    // Position the menuSprite at the center of the screen
+    menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
 
-// Add the menuSprite to the stage
-app.stage.addChild(menuSprite);
+    // Add the menuSprite to the stage
+    app.stage.addChild(menuSprite);
 
-document.body.appendChild(app.view);
+    document.body.appendChild(app.view);
     const startText = new PIXI.Text('Choose your character!', {
       fontSize: 24,
       fill: 'white',
@@ -106,11 +176,11 @@ document.body.appendChild(app.view);
     app.stage.addChild(frogPortrait);
     let isFrog = false;
 
-  
+
     let isPointerDown = false;
-      function getisPointerdown() {
-    return isPointerDown;
-  }
+    function getisPointerdown() {
+      return isPointerDown;
+    }
 
     function startGame() {
       // Remove menu elements
@@ -141,6 +211,7 @@ document.body.appendChild(app.view);
 
       PIXI.Loader.shared.add([
         { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
+        { name: 'frog_ghost', url: 'https://i.imgur.com/45E9OPW.png' },
         { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
         { name: 'critter', url: 'https://i.imgur.com/Fl29VZM.png' },
         { name: 'critter_walk', url: 'https://i.imgur.com/CLqwc9P.png' },
@@ -158,7 +229,7 @@ document.body.appendChild(app.view);
         { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
       ]).load(setup);
       // hpBar.visible = false; // Initially hide the HP bar
-    
+
 
       function setup() {
 
@@ -171,7 +242,13 @@ document.body.appendChild(app.view);
 
         const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
         const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
+        const frogGhost = PIXI.Texture.from('frog_ghost');
 
+        const frogGhostTextures = PIXI.Loader.shared.resources['frog_ghost'].texture;
+        const frogGhostPlayer = new PIXI.Sprite(frogGhostTextures);
+
+        frogGhostPlayer.anchor.set(0, 0);
+        frogGhostPlayer.scale.set(0.4);
 
 
         const containerHeight = document.getElementById('game-container').clientHeight;
@@ -205,7 +282,7 @@ document.body.appendChild(app.view);
         const hpBarHeight = 16;
 
         const hpBarX = castle.position.x - castle.width / 1.1;
-       // console.log(hpBarX);
+        // console.log(hpBarX);
         const hpBarY = app.screen.height - 40 - hpBarHeight - 210; // Adjusted position
         const hpBarBackgroundColor = 0x000000;
         const hpBar = new PIXI.Graphics();
@@ -223,7 +300,7 @@ document.body.appendChild(app.view);
         hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
         hpBarBackground.endFill();
 
-   
+
 
 
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
@@ -271,17 +348,10 @@ document.body.appendChild(app.view);
         snail.position.set(app.screen.width / 2, app.screen.height / 2);
         snail.play();
 
-        if (isFrog) {
-          critter.textures = frogWalkTextures;
-          critter.loop = true;
-          critter.play();
+        critter.textures = frogWalkTextures;
+        critter.loop = true;
+        critter.play();
 
-        } else {
-          critter.textures = snailIdleTextures;
-          critter.loop = true;
-          critter.play();
-
-        }
 
         enemyDeath.animationSpeed = 0.2;
         enemyDeath.loop = false;
@@ -314,7 +384,7 @@ document.body.appendChild(app.view);
         function createAnimatedSprite(textures) {
           const sprite = new PIXI.AnimatedSprite(textures);
           sprite.scale.set(0.6);
-          sprite.anchor.set(0,0);
+          sprite.anchor.set(0, 0);
           sprite.position.set(app.screen.width / 3, app.screen.height - foreground.height / 1.6);
           sprite.animationSpeed = 0.25;
           sprite.zIndex = 1;
@@ -337,7 +407,7 @@ document.body.appendChild(app.view);
         const SPACEBAR_KEYCODE = 32;
 
         // Variables
-       
+
         let touchStartX = 0;
         let touchEndX = 0;
         let isTouchActive = false;
@@ -352,10 +422,10 @@ document.body.appendChild(app.view);
         app.stage.on("pointerup", handleTouchEnd);
 
         //ritter.on('pointertap', handleFrogSpawn);
-        
+
         xDir = 1;
         updateVelocity();
-    
+
 
         // Function to handle pointerdown event
         function handleTouchStart(event) {
@@ -380,15 +450,15 @@ document.body.appendChild(app.view);
             critter.onComplete = function () {
               attackSound.src = "./attacksound.wav";
               attackSound.play();
-             // console.log(castle.position.x - 300);
+              // console.log(castle.position.x - 300);
               if (critter.position.x > castle.position.x - castle.width / 1.1) {
                 console.log("takingDamage");
                 castleTakeDamage(10); // Damage calculation
               }
               isAttackingChar = false;
-             
+
               critter.textures = frogIdleTextures;
-              
+
               critter.play();
             };
             critter.play();
@@ -415,22 +485,23 @@ document.body.appendChild(app.view);
             isAttackingChar = false;
             isMoving = false;
             if (isFrog) {
-              if(!isCombat){
-              critter.textures = frogWalkTextures;
-              critter.loop = true;
-              critter.play();}
-             else {
-              critter.textures = frogIdleTextures;
-             
-            }
-          
+              if (!isCombat) {
+                critter.textures = frogWalkTextures;
+                critter.loop = true;
+                critter.play();
+              }
+              else {
+                critter.textures = frogIdleTextures;
+
+              }
+
             }
             if (isTouchActive) {
               ////handleSpacebarKeyDown();
             }
           }
 
-       
+
           xDir = 1;
           //updateVelocity();
 
@@ -455,6 +526,7 @@ document.body.appendChild(app.view);
 
         // Function to update the HP bar based on the castle's health
         function updateHPBar(health, maxHealth) {
+
           const hpRatio = health / maxHealth;
           const newHpWidth = Math.max(0, hpBarWidth * hpRatio);
           hpBar.clear();
@@ -489,60 +561,54 @@ document.body.appendChild(app.view);
         const mountain2Speed = 0.05;
         //console.log(isFrog);
         app.ticker.add(() => {
+          //console.log(critter.textures);
 
-           console.log(isCombat);
-          // Update critter position
+
           if (!isAttackingChar) {
-            
+            if (!getisDead()) {
               if (!isCombat) {
                 if (!isPointerDown) {
-                  if(enemiesInRange === 0)
-                  {
-        
-                  critter.position.x += velocity.x;
-                  critter.position.y += velocity.y;
-                  // Update mountain positions
-                  mountain1.position.x -= velocity.x * mountain1Speed;
-                  mountain2.position.x -= velocity.x * mountain2Speed;
-                }
-                else{
-                  console.log("enemies in range");
-                  if(!getisPointerdown()){
-                  critter.textures=frogIdleTextures;
+                  if (getEnemiesInRange() === 0) {
+
+                    critter.position.x += velocity.x;
+                    //critter.position.y += velocity.y;
+                    // Update mountain positions
+                    mountain1.position.x -= velocity.x * mountain1Speed;
+                    mountain2.position.x -= velocity.x * mountain2Speed;
                   }
-                }
+                  else {
+                    // console.log("enemies in range");
+                    if (!getisPointerdown()) {
+                      critter.textures = frogIdleTextures;
+                    }
+                  }
                 }
                 // Update background position for parallax effect
                 background.position.x = -critter.position.x * parallaxRatio;
                 background.position.y = -critter.position.y * 0.2;
-              
+
+              }
             }
-        
-          }
-       
-
-          // Keep critter within bounds
-          if (critter.position.y > maxY) {
-            critter.position.y = maxY;
-          } else if (critter.position.y < minY) {
-            critter.position.y = minY;
-          }
-          if (critter.position.x > maxX - 100) {
-            critter.position.x = maxX - 100;
-          } else if (critter.position.x < minX) {
-            critter.position.x = minX;
-          }
-          //console.log(critter.position.x);
-          // Check character's X position
-          if (critter.position.x > 1500) {
-            hpBar.visible = true; // Show the HP bar
-            hpBarBackground.visible = true;
-          } else {
-            hpBar.visible = false;
-            hpBarBackground.visible = false; // Hide the HP bar
-          }
 
 
+
+
+            if (critter.position.x > maxX - 100) {
+              critter.position.x = maxX - 100;
+            } else if (critter.position.x < minX) {
+              critter.position.x = minX;
+            }
+            //console.log(critter.position.x);
+            // Check character's X position
+            if (critter.position.x > 1500) {
+              hpBar.visible = true; // Show the HP bar
+              hpBarBackground.visible = true;
+            } else {
+              hpBar.visible = false;
+              hpBarBackground.visible = false; // Hide the HP bar
+            }
+
+          }
 
           // Update cloud position
           clouds.position.x -= cloudSpeed;
@@ -556,83 +622,114 @@ document.body.appendChild(app.view);
           app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + app.screen.width / 2));
           app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
         });
-        critter.position.set(app.screen.width / 3, app.screen.height - foreground.height /1.2 );
+
+        critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 1.2);
 
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
-        spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures);
+        spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
         setInterval(() => {
-          spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures);
+          if (!getisDead()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures); }
         }, 10000);
 
       }
 
     }
     //frogPortrait.on('pointertap', handleFrogSpawn);
-  let enemiesInRange = 0;
-    const enemies = [];
-
-    function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures) {
-let enemyAdded = false;
-     const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-const minScale = 0.3;
-const maxScale = .70;
-const randomScale = minScale + Math.random() * (maxScale - minScale);
-const valued = (Math.random() * 120 - 60);
-enemy.scale.set(randomScale);
-enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, 0.5);
-enemy.position.set(foreground.width, app.screen.height - foreground.height / 2 - (valued));
-console.log(randomScale);
-enemy.zIndex = -valued;
-
-enemy.animationSpeed = 0.25;
-enemy.loop = true;
-enemy.isAlive = true;
-enemy.isVisible
-enemy.currentHP = 100;
-enemy.play();
-enemy.scale.x *= -1; // Flip the enemy horizontally
-enemy.vx = -2; // Set the enemy's horizontal velocity
-let isAttacking = false; // Flag to track if enemy is attacking
-let hasAttacked = false; // Flag to track if the enemy has attacked
 
 
 
+    function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
+      let enemyAdded = false;
+      const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
+      const minScale = 0.3;
+      const maxScale = 0.7;
+      const randomScale = minScale + Math.random() * (maxScale - minScale);
 
+      enemy.scale.set(randomScale);
+      enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, 0.5);
+      enemy.position.set(foreground.width, app.screen.height - foreground.height / 1.6 - (Math.random() * 120 - 60));
+      enemy.zIndex = -enemy.position.y;
+      enemy.animationSpeed = 0.25;
+      enemy.loop = true;
+      enemy.isAlive = true;
+      enemy.isVisible;
+      enemy.currentHP = 100;
+      enemy.play();
+      enemy.scale.x *= -1; // Flip the enemy horizontally
+      enemy.vx = -2; // Set the enemy's horizontal velocity
+      let isAttacking = false; // Flag to track if enemy is attacking
+      let hasAttacked = false; // Flag to track if the enemy has attacked
 
- // Add enemy to the enemies array
- enemies.push(enemy);
+      // Add enemy to the enemies array
+      addEnemies(enemy);
+      if (enemy.isAlive) {
+        app.stage.addChild(enemy);
+      }
+
+      let runOnce = 0;
       app.ticker.add(() => {
-        console.log("ENEMIES IN RANGE:",enemiesInRange);
+        if (app.stage.children.includes(enemy)) {
+          if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 140) || getisDead()) {
+            enemy.loop = true;
+            if (enemy.textures !== critterWalkTextures) {
+              enemy.textures = critterWalkTextures;
+            }
+            enemy.position.x += enemy.vx;
+          } else {
+            if (!enemyAdded) {
+              setEnemiesInRange(getEnemiesInRange() + 1);
 
-        if (enemy.isAlive && enemy.position.x - critter.position.x > 140) {
-          enemy.position.x += enemy.vx;
-        } else {
-          if (!enemyAdded) {
-      enemiesInRange++;
-      if(!getisPointerdown()){
-      critter.textures=frogIdleTextures;}
-      enemyAdded = true;
-    } 
-         // console.log(isCombat);
+              if (!getisPointerdown() && !getisDead()) {
+                critter.textures = frogIdleTextures;
+              }
+              enemyAdded = true;
+            }
 
-          if (!isAttacking) {
-            isAttacking = true;
-            isCombat = true;
-            handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures);
-            drawEnemyHPBar(enemy);
-          } else if (!hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking) {
-            hasAttacked = true;
-            critterAttack(critter, enemy);
-            isPlayerAttacking = false; // Reset player attack flag after calling critterAttack
+            if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
+              isAttacking = true;
+              isCombat = true;
+              handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
+              if (enemy.isAlive && !getisDead()) {
+                console.log("here");
+                drawEnemyHPBar(enemy);
+              }
+            } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
+              hasAttacked = true;
+              critterAttack(critter, enemy, enemiesInRange, enemyDeath);
+              isPlayerAttacking = false; // Reset player attack flag after calling critterAttack
+            } else if (getisDead()) {
+              if (enemy.visible) {
+                if (enemy.textures !== critterWalkTextures) {
+                  enemy.textures = critterWalkTextures;
+                }
+                enemy.loop = true;
+              }
+            }
           }
-       
+        } else {
+          if (runOnce === 0) {
+            runOnce = 1;
+            console.log("MADE");
+            app.stage.removeChild(enemy);
+            if (enemy.hpBarBackground && enemy.hpBar) {
+              app.stage.removeChild(enemy.hpBarBackground);
+              app.stage.removeChild(enemy.hpBar);
+            }
+
+            // Remove the enemy object from the enemies array
+            const index = getEnemies().indexOf(enemy);
+            if (index !== -1) {
+              getEnemies().splice(index, 1);
+            }
+            app.ticker.remove(() => { });
+          }
+
+          return;
         }
       });
-      enemies.sort((a, b) => a.position.y - b.position.y);
-      enemies.forEach((enemy) => app.stage.removeChild(enemy));
-      enemies.forEach((enemy) => app.stage.addChild(enemy));
 
     }
+
 
     let isPlayerAttacking = false; // Flag to track if the player is attacking
 
@@ -643,91 +740,228 @@ let hasAttacked = false; // Flag to track if the enemy has attacked
       isPlayerAttacking = true;
     }
 
-    function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures) {
-  if (isFrog) {
-    // Rest of the code...
-  }
 
-  enemy.textures = critterAttackTextures;
-  enemy.loop = true;
-  enemy.gotoAndPlay(0);
 
-  let hasPlayedSound = false;
+    function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
+      setIsDead(true);
+      frogGhostPlayer.alpha = 0.5;
+      app.stage.addChild(frogGhostPlayer);
+      //console.log(app.stage.height);
 
-  enemy.onFrameChange = (currentFrame) => {
-    if (currentFrame === enemy.totalFrames - 5) {
-      if (enemy.isAlive) {
-        critter.tint = flashColor;
-         playerHP -= 5;
-updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
-        setTimeout(() => {
-          critter.tint = 0xffffff;
-        }, flashDuration);
+      // Move the frogGhostPlayer upwards until off the top of the screen
+      let targetY = app.stage.height; // Adjust the value to set the target position
+      let speed = 1.5; // Adjust the value to change the speed of the movement
+      let wobbleSpeed = 0.05; // Adjust the value to change the speed of the wobble
+      let wobbleAmplitude = 7.5; // Adjust the value to change the initial amplitude of the wobble
+      let wobbleDamping = 0.99; // Adjust the value to change the damping factor of the wobble
 
-        hitSound.play();
-        hasPlayedSound = true;
-      }
+      let moveInterval = setInterval(() => {
+        frogGhostPlayer.y -= speed;
+        // console.log(frogGhostPlayer.y);
+
+        // Calculate the wobble offset
+        let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
+
+        // Apply the wobble effect to the x position
+        frogGhostPlayer.x += wobbleOffset;
+
+        // Reduce the amplitude of the wobble over time
+        wobbleAmplitude *= wobbleDamping;
+
+        if (frogGhostPlayer.y <= 200) {
+
+          resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
+          clearInterval(moveInterval);
+        }
+      }, 16); // Adjust the interval delay as needed (16ms = 60fps)
     }
-  };
 
-  let hasAttackedCritter = false;
 
-  app.ticker.add(() => {
-    if (enemy.currentFrame === 0) {
-      hasPlayedSound = false;
-      if (enemy.position.x - critter.position.x < 150) {
-        if (enemies.length === 0) {
-          isCombat = false;
+
+    function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
+      enemy.textures = critterAttackTextures;
+      enemy.loop = true;
+      enemy.gotoAndPlay(0);
+      let hasDied = false;
+      let hasPlayedSound = false;
+
+      function onFrameChange(currentFrame) {
+        if (currentFrame === enemy.totalFrames - 5) {
+          if (enemy.isAlive) {
+            if (!getisDead()) {
+              if (!hasDied) {
+                critter.tint = flashColor;
+                playerHP -= 5;
+              }
+              updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
+              if (playerHP <= 0) {
+                playerHP = 0;
+
+                if (enemy.textures != critterWalkTextures) {
+                  enemy.textures = critterWalkTextures;
+                  console.log("ohhey");
+                  enemy.gotoAndPlay(0);
+                }
+                if (!hasDied) {
+                  console.log("playerhp", playerHP);
+                  hasDied = true;
+                  frogGhostPlayer.position.set(critter.position.x, critter.position.y);
+                  critter.tint = 0xffffff;
+                  app.stage.removeChild(critter);
+                  app.stage.removeChild(enemy.hpBar);
+                  app.stage.removeChild(enemy.hpBarBackground);
+                  playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures);
+                }
+                return;
+              }
+              setTimeout(() => {
+                critter.tint = 0xffffff;
+              }, flashDuration);
+              if (enemy.isAlive) {
+                hitSound.play();
+              }
+              hasPlayedSound = true;
+            }
+          }
+        }
+      }
+
+      enemy.onFrameChange = onFrameChange;
+
+      let hasAttackedCritter = false;
+
+      const tickerHandler = () => {
+        if (enemy.currentFrame === 0) {
+          hasPlayedSound = false;
+          if (enemy.position.x - critter.position.x < 150) {
+            if (getEnemies().length === 0) {
+              isCombat = false;
+            } else {
+              // Additional logic for enemy attacks
+            }
+
+            if (critter.textures === frogAttackTextures) {
+              if (!hasAttackedCritter) {
+                critterAttack(critter, enemy, enemiesInRange, enemyDeath);
+                hasAttackedCritter = true;
+              }
+            } else if (critter.textures === snailAttackTextures) {
+              if (!hasAttackedCritter) {
+                critterAttack(critter, enemy, enemiesInRange, enemyDeath);
+                hasAttackedCritter = true;
+              }
+            }
+          }
         } else {
-          // Additional logic for enemy attacks
+          hasAttackedCritter = false;
+        }
+      };
+
+      app.ticker.add(tickerHandler);
+
+      const removeEnemy = () => {
+        if (app.stage.children.includes(enemy)) {
+          app.stage.removeChild(enemy);
+          app.stage.removeChild(enemy.hpBar);
+          app.stage.removeChild(enemy.hpBarBackground);
         }
 
-        if (critter.textures === frogAttackTextures) {
-          if (!hasAttackedCritter) {
-            critterAttack(critter, enemy, enemyDeath);
-            hasAttackedCritter = true;
-          }
-        } else if (critter.textures === snailAttackTextures) {
-          if (!hasAttackedCritter) {
-            critterAttack(critter, enemy, enemyDeath);
-            hasAttackedCritter = true;
-          }
+        const index = getEnemies().indexOf(enemy);
+        if (index !== -1) {
+          getEnemies().splice(index, 1);
         }
-      }
-    } else {
-      hasAttackedCritter = false;
+
+        app.ticker.remove(tickerHandler);
+        enemy.onFrameChange = null; // Remove the onFrameChange event listener
+      };
+
+      app.ticker.add(() => {
+        if (!app.stage.children.includes(enemy)) {
+          removeEnemy();
+        }
+      });
     }
-  });
-}
 
 
-    function critterAttack(critter, enemy, enemyDeath) {
+    function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures) {
+      let isReset = false;
+      console.log(getEnemies());
+
+      if (!isReset) {
+        setEnemiesInRange(0);
+
+        app.stage.removeChild(frogGhostPlayer);
+        critter.position.set(app.screen.width / 20, app.screen.height - 250);
+        playerHP = 100;
+        updatePlayerHealthBar(100);
+        // Reset castle health
+        castleHealth = 100;
+
+        // Remove any existing enemy death sprites
+        // Set isCombat and playAgain to false
+        isCombat = false;
+        playAgain = false;
+        setIsDead(false);
+        critter.loop = true;
+        critter.textures = frogWalkTextures;
+        critter.gotoAndPlay(0);
+        app.stage.addChild(critter);
+
+        // Loop through the enemies array and remove each enemy
+        for (let i = 0; i < getEnemies().length; i++) {
+          let enemy = getEnemies()[i];
+          console.log(i);
+          app.stage.removeChild(enemy);
+          app.stage.removeChild(enemy.hpBar);
+          app.stage.removeChild(enemy.hpBarBackground);
+          // Destroy the enemy object to free up memory
+
+
+
+        }
+
+        // Clear the enemies array
+        enemies.length = 0;
+      }
+    }
+
+
+    function critterAttack(critter, enemy, enemiesInRange, enemyDeath) {
       // Reduce enemy's HP
-      if (enemy && enemy.currentHP - 20 <= 0) {
+      if (enemy.currentHP - 20 <= 0) {
+
         // Callback function to remove enemy after death animation
         if (app.stage.children.includes(enemy)) {
-          enemy.isAlive = false;
-          enemiesInRange--;
+          setEnemiesInRange(getEnemiesInRange() - 1);
 
-         
-          isCombat=false;
-        
+
+          isCombat = false;
+
           app.stage.removeChild(enemy);
-          enemies.splice(enemies.indexOf(enemy), 1);
-         
+          getEnemies().splice(getEnemies().indexOf(enemy), 1);
+
+
           playDeathAnimation(enemy, enemyDeath);
           app.stage.removeChild(enemy.hpBar);
           app.stage.removeChild(enemy.hpBarBackground);
-         
+
         }
       } else {
-        enemy.currentHP -= 20;
-        drawEnemyHPBar(enemy);
+        if (enemy.isAlive === true) {
+          if (getisDead() === false) {
+            enemy.currentHP -= 20;
+            drawEnemyHPBar(enemy);
+          }
+          else {
+            app.stage.removeChild(enemy.hpBarBackground);
+            app.stage.removeChild(enemy.hpBar);
+          }
+        }
         //console.log(enemy.currentHP);
       }
     }
 
-  
+
 
     function playDeathAnimation(enemy, enemyDeath) {
       // Add the death animation sprite to the stage
@@ -739,9 +973,11 @@ updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
 
       // Remove the death animation after it completes
       enemyDeath.onComplete = () => {
-        
+        updateEXP(5);
+
+        console.log(enemiesInRange);
         app.stage.removeChild(enemyDeath);
-       //isCombat=false;
+        //isCombat=false;
       };
 
 
@@ -759,31 +995,36 @@ updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
       if (enemy.hpBarBackground && enemy.hpBar) {
         app.stage.removeChild(enemy.hpBarBackground);
         app.stage.removeChild(enemy.hpBar);
+        enemy.hpBarBackground = null;
+        enemy.hpBar = null;
       }
 
-      // Create new HP bar graphics
-      enemy.hpBarBackground = new PIXI.Graphics();
-      enemy.hpBarBackground.beginFill(0x000000);
-      enemy.hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-      enemy.hpBarBackground.endFill();
-      app.stage.addChild(enemy.hpBarBackground);
+      if (!getisDead()) {
+        // Create new HP bar graphics
+        enemy.hpBarBackground = new PIXI.Graphics();
+        enemy.hpBarBackground.beginFill(0x000000);
+        enemy.hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+        enemy.hpBarBackground.endFill();
+        app.stage.addChild(enemy.hpBarBackground);
 
-      enemy.hpBar = new PIXI.Graphics();
-      enemy.hpBar.beginFill(0xff0000);
-      enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-      enemy.hpBar.endFill();
-      app.stage.addChild(enemy.hpBar);
+        enemy.hpBar = new PIXI.Graphics();
+        enemy.hpBar.beginFill(0xff0000);
+        enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+        enemy.hpBar.endFill();
+        app.stage.addChild(enemy.hpBar);
 
-      // Update the HP bar based on the enemy's health
-      const maxHealth = 100; // Replace with actual max health of enemy
-      const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
-      const hpBarRatio = enemy.currentHP / maxHealth;
-      const hpBarWidthActual = hpBarWidth * hpBarRatio;
-      enemy.hpBar.clear();
-      enemy.hpBar.beginFill(0xff0000);
-      enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidthActual, hpBarHeight);
-      enemy.hpBar.endFill();
+        // Update the HP bar based on the enemy's health
+        const maxHealth = 100; // Replace with actual max health of enemy
+        const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
+        const hpBarRatio = enemy.currentHP / maxHealth;
+        const hpBarWidthActual = hpBarWidth * hpBarRatio;
+        enemy.hpBar.clear();
+        enemy.hpBar.beginFill(0xff0000);
+        enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidthActual, hpBarHeight);
+        enemy.hpBar.endFill();
+      }
     }
+
 
 
 
@@ -798,8 +1039,6 @@ updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
       }
     }
 
-
-
     function handleSnailClick() {
       isFrog = false;
 
@@ -811,20 +1050,20 @@ updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
       }
     }
 
-// Update the health bar based on the current health value
-function updatePlayerHealthBar(health) {
-  const playerHealthBarFill = document.getElementById('health-bar-fill');
-  playerHealthBarFill.style.width = health + '%';
-}
+    // Update the health bar based on the current health value
+    function updatePlayerHealthBar(health) {
+      const playerHealthBarFill = document.getElementById('health-bar-fill');
+      playerHealthBarFill.style.width = health + '%';
+    }
+
+    function updateEXP(exp) {
+      const playerHealthBarFill = document.getElementById('exp-bar-fill');
+      playerHealthBarFill.style.width = exp + '%';
+    }
 
 
 
-
-    //snailPortrait.on('pointertap', handleSnailClick);
     frogPortrait.on('pointertap', handleFrogClick);
-    // Add click event listener
-    app.stage.interactive = true;
-    app.stage.on('click', handleClick);
 
   </script>
 </body>
