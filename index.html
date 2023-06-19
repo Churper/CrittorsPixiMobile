@@ -684,27 +684,30 @@
 
 
     function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
-      setIsDead(true);
-      frogGhostPlayer.alpha = 0.5;
-      app.stage.addChild(frogGhostPlayer);
+  setIsDead(true);
+  frogGhostPlayer.alpha = 0.5;
+  app.stage.addChild(frogGhostPlayer);
 
-      let targetY = app.stage.height; // target position
-      let speed = 1.5; //  speed of the movement
-      let wobbleSpeed = 0.05; // speed of the wobble
-      let wobbleAmplitude = 7.5; //  initial amplitude of the wobble
-      let wobbleDamping = 0.99; // damping factor of the wobble
+  let startY = frogGhostPlayer.y; // starting position
+  let targetY = startY - 600; // target position
+  let speed = 1.5; // speed of the movement
+  let wobbleSpeed = 0.05; // speed of the wobble
+  let wobbleAmplitude = 7.5; // initial amplitude of the wobble
+  let wobbleDamping = 0.99; // damping factor of the wobble
 
-      let moveInterval = setInterval(() => {
-        frogGhostPlayer.y -= speed;
-        let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
-        frogGhostPlayer.x += wobbleOffset;
-        wobbleAmplitude *= wobbleDamping;
-        if (frogGhostPlayer.y <= 200) {
-          resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
-          clearInterval(moveInterval);
-        }
-      }, 16); // (16ms = 60fps)
+  let moveInterval = setInterval(() => {
+    frogGhostPlayer.y -= speed;
+    let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
+    frogGhostPlayer.x += wobbleOffset;
+    wobbleAmplitude *= wobbleDamping;
+    if (frogGhostPlayer.y <= targetY) {
+      frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
+      resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
+      clearInterval(moveInterval);
     }
+  }, 16); // (16ms = 60fps)
+}
+
 
 
 
