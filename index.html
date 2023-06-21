@@ -832,6 +832,11 @@
           return;
         }
         if (app.stage.children.includes(enemy)) {
+        enemies.sort((a, b) => a.position.y - b.position.y);
+        enemies.forEach((enemy) => app.stage.removeChild(enemy));
+      enemies.forEach((enemy) => app.stage.addChild(enemy));
+        }
+        if (app.stage.children.includes(enemy)) {
           if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 150) || getisDead()) {
             if (app.stage.children.includes(enemy.hpBarBackground)) {
               app.stage.removeChild(enemy.hpBarBackground);
@@ -894,9 +899,7 @@
           return;
         }
       });
-      enemies.sort((a, b) => a.position.y - b.position.y);
-      enemies.forEach((enemy) => app.stage.removeChild(enemy));
-      enemies.forEach((enemy) => app.stage.addChild(enemy));
+     
     }
 
     let isPlayerAttacking = false;
