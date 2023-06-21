@@ -65,8 +65,8 @@
       position: absolute;
       left: -44px;
       top: 0px;
-
-      filter: grayscale(0%);
+      filter: sepia(0%);
+      
     }
 
     #health-bar {
@@ -801,7 +801,8 @@
 
       enemy.scale.set(randomScale);
       enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, .5);
-      enemy.position.set(foreground.width, app.screen.height - 160 - (Math.random() * 100 - 50));
+      enemy.position.set(foreground.width, app.screen.height - 160 - (Math.random() * 50));
+
       enemy.zIndex = -enemy.position.y + 10000;
       console.log("ZINEX:", -enemy.position.y);
       console.log("enemy.zIndex:", enemy.zIndex);
@@ -831,7 +832,7 @@
           return;
         }
         if (app.stage.children.includes(enemy)) {
-          if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 140) || getisDead()) {
+          if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 150) || getisDead()) {
             if (app.stage.children.includes(enemy.hpBarBackground)) {
               app.stage.removeChild(enemy.hpBarBackground);
             }
@@ -1208,7 +1209,7 @@
 
     function updateGrayscale(hpPercentage) {
       const grayscalePercentage = 100 - hpPercentage;
-      document.getElementById('character-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
+      document.getElementById('character-portrait').style.filter = `sepia(${grayscalePercentage}%)`;
     }
 
     function updateEXP(exp) {
