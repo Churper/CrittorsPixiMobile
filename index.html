@@ -319,7 +319,6 @@ app.stage.addChild(anotherBackground);
         hpBarBackground.beginFill(hpBarBackgroundColor, 1);
         hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
         hpBarBackground.endFill();
-
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
   const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
 
@@ -330,8 +329,11 @@ app.stage.addChild(anotherBackground);
 
   sprite.scale.set(scaleFactor);
   sprite.anchor.set(0, 1);
-  
-  const foregroundHeightOffset = foreground ? foreground.height * scaleFactor * 0.3 : 0; // Adjusted offset calculation
+
+  const minHeightOffset = foreground ? foreground.height * 0.36 : 0;
+  const heightOffsetRatio = (1 - scaleFactor) * 0.3; // Adjust this ratio based on your preference
+
+  const foregroundHeightOffset = foreground ? minHeightOffset + sprite.height * heightOffsetRatio : 0; // Adjusted offset calculation
   sprite.position.set(xPos, app.screen.height - foregroundHeightOffset);
   sprite.zIndex = -1;
   sprite.velocity = velocity;
