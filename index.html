@@ -44,7 +44,7 @@
     #health-bar {
       width: 200px;
       height: 20px;
-      background-color: #ccc;
+      background-color: #cccccc00;
       border: 2px solid #000;
       position: relative;
     }
@@ -71,11 +71,13 @@
     }
 
     .bar-text {
+      font-family: "Marker Felt", cursive;
       position: absolute;
       top: 50%;
-      left: 50%;
+      left: 7%;
       transform: translate(-50%, -50%);
       font-weight: bold;
+
     }
   </style>
 </head>
@@ -86,9 +88,11 @@
       <div id="character-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
+        <div class="bar-text">hp</div>
       </div>
       <div id="exp-bar">
         <div id="exp-bar-fill"></div>
+        <div class="bar-text">exp</div>
       </div>
     </div>
   </div>
@@ -155,16 +159,17 @@
     const menuSprite = new PIXI.Sprite(menuTexture);
     menuSprite.anchor.set(0.5);
     menuSprite.width = app.screen.width;
-    menuSprite.height = app.screen.height;
+    menuSprite.height = app.screen.height-26;
     menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
     app.stage.addChild(menuSprite);
     document.body.appendChild(app.view);
 
     const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/5zdfKQG.png');
     const frogPortrait = new PIXI.Sprite(frogPortraitTexture);
+    frogPortrait.anchor.set(0,0);
     frogPortrait.interactive = true;
     frogPortrait.buttonMode = true;
-    frogPortrait.position.set(440, 0);
+    menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
     app.stage.addChild(frogPortrait);
     let isFrog = false;
 
