@@ -224,7 +224,7 @@
 
 
       PIXI.Loader.shared.add([
-        { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
+        { name: 'background', url: 'https://i.imgur.com/HNTGehL.png' },
         { name: 'frog_ghost', url: 'https://i.imgur.com/45E9OPW.png' },
         { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
         { name: 'critter', url: 'https://i.imgur.com/Fl29VZM.png' },
@@ -243,14 +243,18 @@
         { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
       ]).load(setup);
 
+    
+
       function setup() {
 
-        const texture = PIXI.Loader.shared.resources['background'].texture;
-        const background = new PIXI.Sprite(texture);
-        background.anchor.set(0, 0);
-        background.position.set(0, 0); // Adjust the position as needed
-        background.width = app.screen.width * 4.8;
-        background.height = app.screen.height * 1.6;
+    
+        const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
+const background = new PIXI.Sprite(backgroundTexture);
+background.width = app.screen.width * 2;
+background.height = app.screen.height;
+background.anchor.set(.5, 0);
+background.position.set(0 , 0); // Adjust the position as needed
+
 
         const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
         const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
@@ -305,15 +309,19 @@
 
 
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
-          const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
-          const scaleFactor = Math.max(app.screen.height * 0.5 / sprite.height, app.screen.width * 1.2 / sprite.width);
-          sprite.scale.set(scaleFactor);
-          sprite.anchor.set(0, 1);
-          sprite.position.set(xPos, app.screen.height - (foreground.height * 0.2));
-          sprite.zIndex = -1;
-          sprite.velocity = velocity;
-          return sprite;
-        }
+  const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
+  const scaleFactor = Math.min(
+    app.screen.width * 1.7 / sprite.width, // Adjusted scale factor calculation
+    app.screen.height * 1.7 / sprite.height // Adjusted scale factor calculation
+  );
+  sprite.scale.set(scaleFactor);
+  sprite.anchor.set(0, 1);
+  sprite.position.set(xPos, app.screen.height - (foreground.height * 0.2));
+  sprite.zIndex = -1;
+  sprite.velocity = velocity;
+  return sprite;
+}
+
 
 
 
@@ -498,7 +506,9 @@
             mountainVelocity1.y = mountainVelocityY;
             mountainVelocity2.x = mountainVelocityX;
             mountainVelocity2.y = mountainVelocityY;
+          
           }
+        
         }
 
         // Function to update the HP bar based on the castle's health
@@ -542,10 +552,11 @@
               if (!isCombat) {
                 if (!isPointerDown) {
                   if (getEnemiesInRange() === 0) {
-
+                    background.position.x = background.position.x + 1;
                     critter.position.x += velocity.x;
                     //critter.position.y += velocity.y;
                     // Update mountain positions
+                   // background.position.x += 2;
                     mountain1.position.x -= velocity.x * mountain1Speed;
                     mountain2.position.x -= velocity.x * mountain2Speed;
                   }
@@ -557,8 +568,8 @@
                   }
                 }
                 // Update background position for parallax effect
-                background.position.x = -critter.position.x * parallaxRatio;
-                background.position.y = -critter.position.y * 0.2;
+               // background.position.x = -critter.position.x * parallaxRatio;
+               // background.position.y = -critter.position.y * 0.2;
 
               }
             }
@@ -594,9 +605,9 @@
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 1.2);
 
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
-        spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
+        spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,background);
         setInterval(() => {
-          if (!getisDead()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures); }
+          if (!getisDead()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,background); }
         }, 10000);
 
       }
@@ -606,7 +617,28 @@
 
 
 
-    function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,background) {
       let enemyAdded = false;
       const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
       const minScale = 0.3;
