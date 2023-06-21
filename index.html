@@ -311,17 +311,21 @@ background.position.set(0 , 0); // Adjust the position as needed
 
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
   const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
+  
   const scaleFactor = Math.min(
-    app.screen.width * 1.7 / sprite.width, // Adjusted scale factor calculation
-    app.screen.height * 1.7 / sprite.height // Adjusted scale factor calculation
+    app.screen.height * 0.6 / sprite.height, // Adjusted scale factor calculation
+    app.screen.width * 1.5 / sprite.width
   );
+
   sprite.scale.set(scaleFactor);
   sprite.anchor.set(0, 1);
   sprite.position.set(xPos, app.screen.height - (foreground.height * 0.2));
   sprite.zIndex = -1;
   sprite.velocity = velocity;
+
   return sprite;
 }
+
 
 
         const frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
