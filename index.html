@@ -20,7 +20,8 @@
     }
 
     #ui-overlay {
-      visibility: hidden; /* Initially hidden */
+      visibility: hidden;
+      /* Initially hidden */
       position: fixed;
       bottom: 0;
       left: 55%;
@@ -28,30 +29,31 @@
     }
 
     #pause-text {
-  visibility: hidden;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: "Marker Felt",cursive;
-  color: black;
-  text-shadow: 0px 0px 12px white;
-    font-size: 74px;
-}
+      visibility: hidden;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: "Marker Felt", cursive;
+      color: black;
+      text-shadow: 0px 0px 12px white;
+      font-size: 74px;
+    }
 
     #pause-button {
-      visibility: hidden; /* Initially hidden */
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background-image: url("https://i.imgur.com/HTeDEQJ.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
-}
+      visibility: hidden;
+      /* Initially hidden */
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-image: url("https://i.imgur.com/HTeDEQJ.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+    }
 
     #character-portrait {
       width: 46px;
@@ -63,7 +65,7 @@
       position: absolute;
       left: -44px;
       top: 0px;
-      
+
       filter: grayscale(0%);
     }
 
@@ -92,7 +94,8 @@
     #exp-bar-fill {
       height: 100%;
       background-color: #dbb948;
-      width: 3%; /* Set the initial width to 1% */
+      width: 3%;
+      /* Set the initial width to 1% */
     }
 
     .bar-text {
@@ -111,7 +114,7 @@
     <div id="pause-text">paused</div>
     <div id="pause-button"></div>
     <div id="ui-overlay">
-    
+
       <div id="character-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
@@ -153,48 +156,48 @@
       enemiesInRange = value;
     }
 
-    
+
     let isPaused = false;
     function getisPaused() {
       return isPaused;
     }
 
     function setisPaused(value) {
-  isPaused = value;
-  
-  // Get the pause text element
-  var pauseText = document.getElementById("pause-text");
+      isPaused = value;
 
-  // Swap the visibility based on the isPaused value
-  if (isPaused) {
-    pauseText.style.visibility = "visible";
-  } else {
-    pauseText.style.visibility = "hidden";
-  }
-}
+      // Get the pause text element
+      var pauseText = document.getElementById("pause-text");
 
-document.addEventListener("DOMContentLoaded", function () {
-  var pauseButton = document.getElementById("pause-button");
+      // Swap the visibility based on the isPaused value
+      if (isPaused) {
+        pauseText.style.visibility = "visible";
+      } else {
+        pauseText.style.visibility = "hidden";
+      }
+    }
 
-  pauseButton.addEventListener("click", function () {
-    setisPaused(!getisPaused());
-    console.log("PAUSED");
-  });
-});
+    document.addEventListener("DOMContentLoaded", function () {
+      var pauseButton = document.getElementById("pause-button");
 
-document.addEventListener("DOMContentLoaded", function () {
-  var pauseButton = document.getElementById("pause-button");
+      pauseButton.addEventListener("click", function () {
+        setisPaused(!getisPaused());
+        console.log("PAUSED");
+      });
+    });
 
-  pauseButton.addEventListener("mousedown", function () {
-    pauseButton.style.backgroundImage = 'url("https://i.imgur.com/gGcCLKj.png")';
-    console.log("Button Pressed");
-  });
+    document.addEventListener("DOMContentLoaded", function () {
+      var pauseButton = document.getElementById("pause-button");
 
-  pauseButton.addEventListener("mouseup", function () {
-    pauseButton.style.backgroundImage = 'url("https://i.imgur.com/HTeDEQJ.png")';
-    console.log("Button Released");
-  });
-});
+      pauseButton.addEventListener("mousedown", function () {
+        pauseButton.style.backgroundImage = 'url("https://i.imgur.com/gGcCLKj.png")';
+        console.log("Button Pressed");
+      });
+
+      pauseButton.addEventListener("mouseup", function () {
+        pauseButton.style.backgroundImage = 'url("https://i.imgur.com/HTeDEQJ.png")';
+        console.log("Button Released");
+      });
+    });
 
 
 
@@ -253,15 +256,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startGame() {
 
-      
-   
+
+
 
       window.addEventListener('blur', () => {
-        
-  setisPaused(true); 
-  
-  // Add code to pause the game logic here
-});
+
+        setisPaused(true);
+
+        // Add code to pause the game logic here
+      });
 
 
 
@@ -335,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-      
+
 
 
 
@@ -365,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         frogGhostPlayer.anchor.set(0, 0);
         frogGhostPlayer.scale.set(0.35);
-       
+
 
         const containerHeight = document.getElementById('game-container').clientHeight;
         const containerWidth = document.getElementById('game-container').clientWidth;
@@ -496,7 +499,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-        
+
 
         function createAnimatedSprite(textures) {
           const sprite = new PIXI.AnimatedSprite(textures);
@@ -536,97 +539,97 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function handleTouchStart(event) {
           if (getisPaused()) {
-      setisPaused(false);
-      return;
-    }
-
-  function handleMouseLeave(event) {
-    console.log('Mouse has left the screen');
-    handleTouchEnd(event);
-    // Perform any additional actions you want here
-  }
-
-  function handleTouchHold() {
-    if (getisPaused()) {
-      return;
-    }
-
-    if (!isAttackingChar) {
-      if (!getisDead()) {
-        isAttackingChar = true;
-
-        critter.textures = frogAttackTextures;
-        critter.loop = false;
-        critter.onComplete = function () {
-          if (!isAttackingChar) {
-            return; // Return early if attack was interrupted (paused)
+            setisPaused(false);
+            return;
           }
 
-          attackSound.src = "./attacksound.wav";
-          attackSound.play();
-
-          if (critter.position.x > castle.position.x - castle.width / 1.1) {
-            console.log("takingDamage");
-            castleTakeDamage(10); // Damage calculation
+          function handleMouseLeave(event) {
+            console.log('Mouse has left the screen');
+            handleTouchEnd(event);
+            // Perform any additional actions you want here
           }
 
-          isAttackingChar = false;
-          critter.textures = frogIdleTextures;
-          critter.play();
-        };
+          function handleTouchHold() {
+            if (getisPaused()) {
+              return;
+            }
 
-        critter.play();
-      }
-    }
-  }
+            if (!isAttackingChar) {
+              if (!getisDead()) {
+                isAttackingChar = true;
 
-  isPointerDown = true;
-  pointerHoldInterval = setInterval(handleTouchHold, 10);
+                critter.textures = frogAttackTextures;
+                critter.loop = false;
+                critter.onComplete = function () {
+                  if (!isAttackingChar) {
+                    return; // Return early if attack was interrupted (paused)
+                  }
 
-  // Add an event listener to check if the mouse leaves the document
-  document.addEventListener("mouseout", handleMouseLeave);
+                  attackSound.src = "./attacksound.wav";
+                  attackSound.play();
 
-  // Remove the event listener when touch ends
-  document.addEventListener("touchend", function () {
-    clearInterval(pointerHoldInterval);
-    document.removeEventListener("mouseout", handleMouseLeave);
-  });
-}
+                  if (critter.position.x > castle.position.x - castle.width / 1.1) {
+                    console.log("takingDamage");
+                    castleTakeDamage(10); // Damage calculation
+                  }
 
-// Function to handle pointerup event
-function handleTouchEnd(event) {
-  // Clear the pointer hold interval
-  clearInterval(pointerHoldInterval);
+                  isAttackingChar = false;
+                  critter.textures = frogIdleTextures;
+                  critter.play();
+                };
 
-  // Set the pointer state to up
-  isPointerDown = false;
+                critter.play();
+              }
+            }
+          }
 
-  // Add your existing code here for handling touch end
-  if (isAttackingChar) {
-    isAttackingChar = false;
-    isMoving = false;
+          isPointerDown = true;
+          pointerHoldInterval = setInterval(handleTouchHold, 10);
 
-    if (!isCombat) {
-      critter.textures = frogWalkTextures;
-      critter.loop = true;
-      critter.play();
-    } else {
-      critter.textures = frogIdleTextures;
-    }
+          // Add an event listener to check if the mouse leaves the document
+          document.addEventListener("mouseout", handleMouseLeave);
 
-    if (isTouchActive) {
-      ////handleSpacebarKeyDown();
-    }
-  }
+          // Remove the event listener when touch ends
+          document.addEventListener("touchend", function () {
+            clearInterval(pointerHoldInterval);
+            document.removeEventListener("mouseout", handleMouseLeave);
+          });
+        }
 
-  xDir = 1;
-  //updateVelocity();
-}
+        // Function to handle pointerup event
+        function handleTouchEnd(event) {
+          // Clear the pointer hold interval
+          clearInterval(pointerHoldInterval);
+
+          // Set the pointer state to up
+          isPointerDown = false;
+
+          // Add your existing code here for handling touch end
+          if (isAttackingChar) {
+            isAttackingChar = false;
+            isMoving = false;
+
+            if (!isCombat) {
+              critter.textures = frogWalkTextures;
+              critter.loop = true;
+              critter.play();
+            } else {
+              critter.textures = frogIdleTextures;
+            }
+
+            if (isTouchActive) {
+              ////handleSpacebarKeyDown();
+            }
+          }
+
+          xDir = 1;
+          //updateVelocity();
+        }
 
 
 
 
-     
+
 
 
         function updateVelocity() {
@@ -689,14 +692,14 @@ function handleTouchEnd(event) {
             unPauser = 1;
             return;
           }
-if(unPauser === 1){
-critter.play();
-getEnemies().forEach(enemy => {
+          if (unPauser === 1) {
+            critter.play();
+            getEnemies().forEach(enemy => {
               enemy.play();
             });
             unPauser = 0;
             return;
-}
+          }
 
 
           if (!isAttackingChar) {
@@ -757,7 +760,7 @@ getEnemies().forEach(enemy => {
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
         spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
         setInterval(() => {
-          if (!getisDead()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background); }
+          if (!getisDead() && !getisPaused()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background); }
         }, 12000);
 
       }
@@ -821,28 +824,28 @@ getEnemies().forEach(enemy => {
       }
 
       let runOnce = 0;
-    
+
       app.ticker.add(() => {
         if (getisPaused()) {
-    // Game is paused, skip logic
-    return;
-  }
+          // Game is paused, skip logic
+          return;
+        }
         if (app.stage.children.includes(enemy)) {
           if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 140) || getisDead()) {
             if (app.stage.children.includes(enemy.hpBarBackground)) {
-  app.stage.removeChild(enemy.hpBarBackground);
-}
+              app.stage.removeChild(enemy.hpBarBackground);
+            }
 
-if (app.stage.children.includes(enemy.hpBar)) {
-  app.stage.removeChild(enemy.hpBar);
-}
+            if (app.stage.children.includes(enemy.hpBar)) {
+              app.stage.removeChild(enemy.hpBar);
+            }
 
             if (enemy.visible) {
               if (enemy.textures !== critterWalkTextures) {
                 enemy.textures = critterWalkTextures;
                 enemy.play();
               }
-              
+
             }
 
             enemy.position.x += enemy.vx;
@@ -867,8 +870,8 @@ if (app.stage.children.includes(enemy.hpBar)) {
                 //console.log("here");
                 drawEnemyHPBar(enemy);
               }
-           
-           
+
+
             } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
               hasAttacked = true;
               critterAttack(critter, enemy, enemiesInRange, enemyDeath);
@@ -876,17 +879,17 @@ if (app.stage.children.includes(enemy.hpBar)) {
             }
           }
         } else {
-            app.stage.removeChild(enemy);
-            if (enemy.hpBarBackground && enemy.hpBar) {
-              app.stage.removeChild(enemy.hpBarBackground);
-              app.stage.removeChild(enemy.hpBar);
-            }
-            // Remove the enemy object from the enemies array
-            const index = getEnemies().indexOf(enemy);
-            if (index !== -1) {
-              getEnemies().splice(index, 1);
-            }
-            app.ticker.remove(() => { });
+          app.stage.removeChild(enemy);
+          if (enemy.hpBarBackground && enemy.hpBar) {
+            app.stage.removeChild(enemy.hpBarBackground);
+            app.stage.removeChild(enemy.hpBar);
+          }
+          // Remove the enemy object from the enemies array
+          const index = getEnemies().indexOf(enemy);
+          if (index !== -1) {
+            getEnemies().splice(index, 1);
+          }
+          app.ticker.remove(() => { });
           return;
         }
       });
@@ -940,7 +943,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
       function onFrameChange(currentFrame) {
 
         if (currentFrame === enemy.totalFrames - 5) {
-          
+
           if (enemy.isAlive) {
             if (!getisDead()) {
               if (!hasDied) {
@@ -970,14 +973,14 @@ if (app.stage.children.includes(enemy.hpBar)) {
                 critter.tint = 0xffffff;
               }, flashDuration);
               if (enemy.isAlive) {
-                
+
                 hitSound.play();
               }
               hasPlayedSound = true;
             }
           }
-        
-      }
+
+        }
       }
 
       enemy.onFrameChange = onFrameChange;
@@ -985,7 +988,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
       let hasAttackedCritter = false;
 
       const tickerHandler = () => {
-     
+
         if (enemy.currentFrame === 0) {
           hasPlayedSound = false;
           if (enemy.position.x - critter.position.x < 150) {
@@ -1083,7 +1086,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
 
 
     function critterAttack(critter, enemy, enemiesInRange, enemyDeath) {
-     
+
       // Reduce enemy's HP
       if (enemy.currentHP - 20 <= 0) {
 
@@ -1094,7 +1097,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
           app.stage.removeChild(enemy);
           getEnemies().splice(getEnemies().indexOf(enemy), 1);
           playDeathAnimation(enemy, enemyDeath);
-        
+
         }
       } else {
         if (enemy.isAlive === true) {
@@ -1102,7 +1105,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
             enemy.currentHP -= 20;
             drawEnemyHPBar(enemy);
           }
-         
+
         }
         //console.log(enemy.currentHP);
       }
@@ -1213,7 +1216,7 @@ if (app.stage.children.includes(enemy.hpBar)) {
       playerEXPBarFill.style.width = exp + '%';
     }
 
-  
+
 
     frogPortrait.on('pointertap', handleFrogClick);
 
