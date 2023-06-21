@@ -22,10 +22,24 @@
 
     #ui-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      padding: 10px;
+      bottom: 0;
+      left: 55%;
+      transform: translateX(-50%);
     }
+
+    #character-portrait {
+  width: 50px;
+  height: 50px;
+  background-image: url("https://i.imgur.com/yzzwAH6.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  left: -51px;
+  top: -0px;
+  border: 1px solid #000;
+  filter: grayscale(0%);
+}
 
     #health-bar {
       width: 200px;
@@ -38,7 +52,6 @@
     #health-bar-fill {
       height: 100%;
       background-color: #f00;
-
     }
 
     #exp-bar {
@@ -47,7 +60,7 @@
       background-color: #ccc;
       border: 2px solid #000;
       position: relative;
-      margin-top: 5px;
+      margin-top: -2px;
     }
 
     #exp-bar-fill {
@@ -70,13 +83,12 @@
 <body>
   <div id="game-container">
     <div id="ui-overlay">
+      <div id="character-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
-        <span class="bar-text">HP</span>
       </div>
       <div id="exp-bar">
         <div id="exp-bar-fill"></div>
-        <span class="bar-text">EXP</span>
       </div>
     </div>
   </div>
@@ -148,18 +160,7 @@
     app.stage.addChild(menuSprite);
     document.body.appendChild(app.view);
 
-    const startText = new PIXI.Text('Choose your character!', {
-      fontSize: 24,
-      fill: 'white',
-      align: 'center',
-    });
-
-    startText.anchor.set(0.5);
-    startText.position.set(app.screen.width / 2, app.screen.height / 2 + 100);
-    app.stage.addChild(startText);
-
-
-    const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/yzzwAH6.png');
+    const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/5zdfKQG.png');
     const frogPortrait = new PIXI.Sprite(frogPortraitTexture);
     frogPortrait.interactive = true;
     frogPortrait.buttonMode = true;
@@ -174,8 +175,21 @@
     }
 
     function startGame() {
+
+
+
+    const loadingTexture = PIXI.Texture.from('https://i.imgur.com/ztUFh3a.png');
+    const loadingSprite = new PIXI.Sprite(loadingTexture);
+    loadingSprite.anchor.set(0.5);
+    loadingSprite.width = app.screen.width;
+    loadingSprite.height = app.screen.height;
+    loadingSprite.position.set(app.screen.width / 2, app.screen.height / 2);
+   
+
+    loadingSprite.alpha = 1; // Start fully opaque
+
       app.stage.removeChild(menuSprite);
-      app.stage.removeChild(startText);
+      app.stage.addChild(loadingSprite);
       const sound = new Audio();
       sound.src = "./theme.ogg";
       sound.volume = .2;
@@ -197,6 +211,12 @@
       let keysPressed = 0;
       let hp = 100;
       const hpBarColor = 0xff0000;
+
+
+
+
+
+
 
       PIXI.Loader.shared.add([
         { name: 'background', url: 'https://i.imgur.com/tvoaqaY.png' },
@@ -326,9 +346,9 @@
         critter.play();
 
 
-        enemyDeath.animationSpeed = 0.2;
+        enemyDeath.animationSpeed = 0.175;
         enemyDeath.loop = false;
-        enemyDeath.anchor.set(0.5);
+        enemyDeath.anchor.set(0.2, 0);
         enemyDeath.scale.set(0.35);
 
         const velocity = new PIXI.Point();
@@ -565,7 +585,7 @@
           app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + app.screen.width / 2));
           app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
         });
-
+        app.stage.removeChild(loadingSprite);
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 1.2);
 
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
@@ -590,7 +610,7 @@
       const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
 
       enemy.scale.set(randomScale);
-      enemy.anchor.set(0.7 + (randomScale - 0.5) * (1 - randomScale) * 2, .5);
+      enemy.anchor.set(0.5 + (randomScale - 0.5) * (1 - randomScale) * 2, .5);
       enemy.position.set(foreground.width, app.screen.height - 160 - (Math.random() * 100 - 50));
       enemy.zIndex = -enemy.position.y + 10000;
       console.log("ZINEX:",-enemy.position.y);
@@ -978,15 +998,28 @@
       }
     }
 
+
+// Update the grayscale effect based on HP bar value
+
+
     function updatePlayerHealthBar(health) {
       const playerHealthBarFill = document.getElementById('health-bar-fill');
       playerHealthBarFill.style.width = health + '%';
+      updateGrayscale(health);
     }
+
+    function updateGrayscale(hpPercentage) {
+  const grayscalePercentage = 100 - hpPercentage;
+  document.getElementById('character-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
+}
 
     function updateEXP(exp) {
       const playerEXPBarFill = document.getElementById('exp-bar-fill');
       playerEXPBarFill.style.width = exp + '%';
     }
+
+
+
     frogPortrait.on('pointertap', handleFrogClick);
 
   </script>
