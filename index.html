@@ -33,7 +33,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt",cursive;
   color: black;
   text-shadow: 0px 0px 12px white;
     font-size: 74px;
@@ -47,8 +47,8 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   cursor: pointer;
 }
 
@@ -107,7 +107,7 @@
 
 <body>
   <div id="game-container">
-    <div id="pause-text">PAUSED</div>
+    <div id="pause-text">paused</div>
     <div id="pause-button"></div>
     <div id="ui-overlay">
     
@@ -800,7 +800,14 @@ getEnemies().forEach(enemy => {
   }
         if (app.stage.children.includes(enemy)) {
           if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > 140) || getisDead()) {
-        
+            if (app.stage.children.includes(enemy.hpBarBackground)) {
+  app.stage.removeChild(enemy.hpBarBackground);
+}
+
+if (app.stage.children.includes(enemy.hpBar)) {
+  app.stage.removeChild(enemy.hpBar);
+}
+
             if (enemy.visible) {
               if (enemy.textures !== critterWalkTextures) {
                 enemy.textures = critterWalkTextures;
@@ -831,6 +838,7 @@ getEnemies().forEach(enemy => {
                 //console.log("here");
                 drawEnemyHPBar(enemy);
               }
+           
            
             } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
               hasAttacked = true;
@@ -925,8 +933,6 @@ getEnemies().forEach(enemy => {
                   frogGhostPlayer.position.set(critter.position.x, critter.position.y);
                   critter.tint = 0xffffff;
                   app.stage.removeChild(critter);
-                  app.stage.removeChild(enemy.hpBar);
-                  app.stage.removeChild(enemy.hpBarBackground);
                   playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures, background);
                 }
                 return;
@@ -1059,8 +1065,7 @@ getEnemies().forEach(enemy => {
           app.stage.removeChild(enemy);
           getEnemies().splice(getEnemies().indexOf(enemy), 1);
           playDeathAnimation(enemy, enemyDeath);
-          app.stage.removeChild(enemy.hpBar);
-          app.stage.removeChild(enemy.hpBarBackground);
+        
         }
       } else {
         if (enemy.isAlive === true) {
@@ -1068,10 +1073,7 @@ getEnemies().forEach(enemy => {
             enemy.currentHP -= 20;
             drawEnemyHPBar(enemy);
           }
-          else {
-            app.stage.removeChild(enemy.hpBarBackground);
-            app.stage.removeChild(enemy.hpBar);
-          }
+         
         }
         //console.log(enemy.currentHP);
       }
