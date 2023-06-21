@@ -40,6 +40,7 @@
 }
 
     #pause-button {
+      visibility: hidden; /* Initially hidden */
   position: fixed;
   top: 10px;
   left: 10px;
@@ -722,6 +723,7 @@ getEnemies().forEach(enemy => {
         });
         app.stage.removeChild(loadingSprite);
         document.getElementById("ui-overlay").style.visibility = "visible";
+        document.getElementById("pause-button").style.visibility = "visible";
 
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 1.2);
 
