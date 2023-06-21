@@ -195,6 +195,7 @@
 
       app.stage.removeChild(menuSprite);
       app.stage.addChild(loadingSprite);
+      app.stage.addChild(frogPortrait);
       const sound = new Audio();
       sound.src = "./theme.ogg";
       sound.volume = .2;
@@ -321,8 +322,6 @@ background.position.set(0 , 0); // Adjust the position as needed
   sprite.velocity = velocity;
   return sprite;
 }
-
-
 
 
         const frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
@@ -701,7 +700,7 @@ background.position.set(0 , 0); // Adjust the position as needed
             if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
               isAttacking = true;
               isCombat = true;
-              handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
+              handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,background);
               if (enemy.isAlive && !getisDead()) {
                 //console.log("here");
                 drawEnemyHPBar(enemy);
@@ -745,7 +744,7 @@ background.position.set(0 , 0); // Adjust the position as needed
     }
 
 
-    function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
+    function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures,background) {
   setIsDead(true);
   frogGhostPlayer.alpha = 0.5;
   app.stage.addChild(frogGhostPlayer);
@@ -764,7 +763,7 @@ background.position.set(0 , 0); // Adjust the position as needed
     wobbleAmplitude *= wobbleDamping;
     if (frogGhostPlayer.y <= targetY) {
       frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
-      resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
+      resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures,background);
       clearInterval(moveInterval);
     }
   }, 16); // (16ms = 60fps)
@@ -773,7 +772,7 @@ background.position.set(0 , 0); // Adjust the position as needed
 
 
 
-    function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
+    function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,background) {
       enemy.textures = critterAttackTextures;
       enemy.loop = true;
       enemy.gotoAndPlay(0);
@@ -805,7 +804,7 @@ background.position.set(0 , 0); // Adjust the position as needed
                   app.stage.removeChild(critter);
                   app.stage.removeChild(enemy.hpBar);
                   app.stage.removeChild(enemy.hpBarBackground);
-                  playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures);
+                  playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures,background);
                 }
                 return;
               }
@@ -878,7 +877,7 @@ background.position.set(0 , 0); // Adjust the position as needed
     }
 
 
-    function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures) {
+    function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures,background) {
       let isReset = false;
     //  console.log(getEnemies());
 
@@ -886,6 +885,7 @@ background.position.set(0 , 0); // Adjust the position as needed
         setEnemiesInRange(0);
 
         app.stage.removeChild(frogGhostPlayer);
+        background.position.set(0 , 0); // Adjust the position as needed
         critter.position.set(app.screen.width / 20, app.screen.height - 250);
         playerHP = 100;
         updatePlayerHealthBar(100);
