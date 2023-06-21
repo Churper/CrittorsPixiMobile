@@ -197,6 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+
     let enemies = [];
 
     function getEnemies() {
@@ -252,12 +254,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function startGame() {
 
       
+   
 
       window.addEventListener('blur', () => {
+        
   setisPaused(true); 
   
   // Add code to pause the game logic here
 });
+
+
 
 
 
@@ -328,6 +334,11 @@ document.addEventListener("DOMContentLoaded", function () {
       function setup() {
 
 
+
+      
+
+
+
         const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
         const background = new PIXI.Sprite(backgroundTexture);
         background.width = app.screen.width * 2.75;
@@ -354,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         frogGhostPlayer.anchor.set(0, 0);
         frogGhostPlayer.scale.set(0.35);
-
+       
 
         const containerHeight = document.getElementById('game-container').clientHeight;
         const containerWidth = document.getElementById('game-container').clientWidth;
@@ -484,6 +495,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
+
+        
+
         function createAnimatedSprite(textures) {
           const sprite = new PIXI.AnimatedSprite(textures);
           sprite.scale.set(0.5);
@@ -521,85 +535,93 @@ document.addEventListener("DOMContentLoaded", function () {
         updateVelocity();
 
         function handleTouchStart(event) {
-          isPointerDown = true;
-          // Start a timer to simulate continuous action
-          pointerHoldInterval = setInterval(handleTouchHold, 10);
-        }
-
-        // Function to handle pointerhold action
-        function handleTouchHold() {
-  if (getisPaused()) {
-    return;
+  function handleMouseLeave(event) {
+    console.log('Mouse has left the screen');
+    handleTouchEnd(event);
+    // Perform any additional actions you want here
   }
-  
-  if (!isAttackingChar) {
-    if (!getisDead()) {
-      isAttackingChar = true;
 
-      critter.textures = frogAttackTextures;
-      critter.loop = false;
-      critter.onComplete = function() {
-        if (!isAttackingChar) {
-          return; // Return early if attack was interrupted (paused)
-        }
+  function handleTouchHold() {
+    if (getisPaused()) {
+      return;
+    }
 
-        attackSound.src = "./attacksound.wav";
-        attackSound.play();
+    if (!isAttackingChar) {
+      if (!getisDead()) {
+        isAttackingChar = true;
 
-        if (critter.position.x > castle.position.x - castle.width / 1.1) {
-          console.log("takingDamage");
-          castleTakeDamage(10); // Damage calculation
-        }
-//comment to regit
-        isAttackingChar = false;
-        critter.textures = frogIdleTextures;
+        critter.textures = frogAttackTextures;
+        critter.loop = false;
+        critter.onComplete = function () {
+          if (!isAttackingChar) {
+            return; // Return early if attack was interrupted (paused)
+          }
+
+          attackSound.src = "./attacksound.wav";
+          attackSound.play();
+
+          if (critter.position.x > castle.position.x - castle.width / 1.1) {
+            console.log("takingDamage");
+            castleTakeDamage(10); // Damage calculation
+          }
+
+          isAttackingChar = false;
+          critter.textures = frogIdleTextures;
+          critter.play();
+        };
+
         critter.play();
-      };
-
-      critter.play();
+      }
     }
   }
+
+  isPointerDown = true;
+  pointerHoldInterval = setInterval(handleTouchHold, 10);
+
+  // Add an event listener to check if the mouse leaves the document
+  document.addEventListener("mouseout", handleMouseLeave);
+
+  // Remove the event listener when touch ends
+  document.addEventListener("touchend", function () {
+    clearInterval(pointerHoldInterval);
+    document.removeEventListener("mouseout", handleMouseLeave);
+  });
+}
+
+// Function to handle pointerup event
+function handleTouchEnd(event) {
+  // Clear the pointer hold interval
+  clearInterval(pointerHoldInterval);
+
+  // Set the pointer state to up
+  isPointerDown = false;
+
+  // Add your existing code here for handling touch end
+  if (isAttackingChar) {
+    isAttackingChar = false;
+    isMoving = false;
+
+    if (!isCombat) {
+      critter.textures = frogWalkTextures;
+      critter.loop = true;
+      critter.play();
+    } else {
+      critter.textures = frogIdleTextures;
+    }
+
+    if (isTouchActive) {
+      ////handleSpacebarKeyDown();
+    }
+  }
+
+  xDir = 1;
+  //updateVelocity();
 }
 
 
-        // Function to handle pointerup event
-        function handleTouchEnd(event) {
-          // Clear the pointer hold interval
-          clearInterval(pointerHoldInterval);
-
-          // Set the pointer state to up
-          isPointerDown = false;
-
-          // Add your existing code here for handling touch end
-          if (isAttackingChar) {
-            isAttackingChar = false;
-            isMoving = false;
-
-            if (!isCombat) {
-              critter.textures = frogWalkTextures;
-              critter.loop = true;
-              critter.play();
-            }
-            else {
-              critter.textures = frogIdleTextures;
-
-            }
 
 
-            if (isTouchActive) {
-              ////handleSpacebarKeyDown();
-            }
-          }
-
-
-          xDir = 1;
-          //updateVelocity();
-
-        }
-
-
-
-
+     
 
 
         function updateVelocity() {
