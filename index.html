@@ -535,6 +535,11 @@ document.addEventListener("DOMContentLoaded", function () {
         updateVelocity();
 
         function handleTouchStart(event) {
+          if (getisPaused()) {
+      setisPaused(false);
+      return;
+    }
+
   function handleMouseLeave(event) {
     console.log('Mouse has left the screen');
     handleTouchEnd(event);
