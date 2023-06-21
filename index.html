@@ -330,7 +330,7 @@ app.stage.addChild(anotherBackground);
   sprite.scale.set(scaleFactor);
   sprite.anchor.set(0, 1);
 
-  const minHeightOffset = foreground ? foreground.height * 0.36 : 0;
+  const minHeightOffset = foreground ? foreground.height * 0.34 : 0;
   const heightOffsetRatio = (1 - scaleFactor) * 0.3; // Adjust this ratio based on your preference
 
   const foregroundHeightOffset = foreground ? minHeightOffset + sprite.height * heightOffsetRatio : 0; // Adjusted offset calculation
@@ -456,9 +456,7 @@ app.stage.addChild(anotherBackground);
             isAttackingChar = true;
             if (isFrog) {
               critter.textures = frogAttackTextures;
-            } else {
-              critter.textures = snailAttackTextures;
-            }
+            } 
             critter.loop = false;
             critter.onComplete = function () {
               attackSound.src = "./attacksound.wav";
@@ -490,7 +488,7 @@ app.stage.addChild(anotherBackground);
           if (isAttackingChar) {
             isAttackingChar = false;
             isMoving = false;
-            if (isFrog) {
+           
               if (!isCombat) {
                 critter.textures = frogWalkTextures;
                 critter.loop = true;
@@ -501,7 +499,7 @@ app.stage.addChild(anotherBackground);
 
               }
 
-            }
+            
             if (isTouchActive) {
               ////handleSpacebarKeyDown();
             }
@@ -573,11 +571,7 @@ app.stage.addChild(anotherBackground);
               if (!isCombat) {
                 if (!isPointerDown) {
                   if (getEnemiesInRange() === 0) {
-                    //background.position.x = background.position.x + .75;
                     critter.position.x += velocity.x;
-                    //critter.position.y += velocity.y;
-                    // Update mountain positions
-                   // background.position.x += 2;
                     mountain1.position.x -= velocity.x * mountain1Speed;
                     mountain2.position.x -= velocity.x * mountain2Speed;
                   }
@@ -711,6 +705,8 @@ app.stage.addChild(anotherBackground);
             }
 
             enemy.position.x += enemy.vx;
+            enemy.position.y += Math.random() * 1 - .5; // Random value between -1 and 1
+
           } else {
             if (!enemyAdded) {
               setEnemiesInRange(getEnemiesInRange() + 1);
