@@ -253,11 +253,20 @@
 
     
         const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
-const background = new PIXI.Sprite(backgroundTexture);
+        const background = new PIXI.Sprite(backgroundTexture);
 background.width = app.screen.width * 2.75;
 background.height = app.screen.height;
-background.anchor.set(.5, 0);
-background.position.set(0 , 0); // Adjust the position as needed
+background.anchor.set(0.5, 0);
+background.position.set(0, 0);
+
+const anotherBackground = new PIXI.Sprite(backgroundTexture);
+anotherBackground.width = app.screen.width * 2.75;
+anotherBackground.height = app.screen.height;
+anotherBackground.anchor.set(0.5, 0);
+anotherBackground.position.set(app.screen.width * 2.75, 0);
+
+app.stage.addChild(background);
+app.stage.addChild(anotherBackground);
 
 
         const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
@@ -311,23 +320,25 @@ background.position.set(0 , 0); // Adjust the position as needed
         hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
         hpBarBackground.endFill();
 
-
         function createMountainSprite(resourceName, xPos, velocity, foreground) {
   const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
-  
+
   const scaleFactor = Math.min(
-    app.screen.height * 0.6 / sprite.height, // Adjusted scale factor calculation
+    app.screen.height * 0.6 / sprite.height,
     app.screen.width * 1.5 / sprite.width
   );
 
   sprite.scale.set(scaleFactor);
   sprite.anchor.set(0, 1);
-  sprite.position.set(xPos, app.screen.height - (foreground.height * 0.3));
+  
+  const foregroundHeightOffset = foreground ? foreground.height * 0.3 * scaleFactor : 0; // Adjusted offset calculation
+  sprite.position.set(xPos, app.screen.height - foregroundHeightOffset);
   sprite.zIndex = -1;
   sprite.velocity = velocity;
 
   return sprite;
 }
+
 
 
 
