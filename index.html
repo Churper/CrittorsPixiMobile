@@ -194,8 +194,9 @@
     loadingSprite.alpha = 1; // Start fully opaque
 
       app.stage.removeChild(menuSprite);
+      app.stage.removeChild(frogPortrait);
       app.stage.addChild(loadingSprite);
-      app.stage.addChild(frogPortrait);
+
       const sound = new Audio();
       sound.src = "./theme.ogg";
       sound.volume = .2;
