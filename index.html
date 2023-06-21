@@ -324,20 +324,21 @@ app.stage.addChild(anotherBackground);
   const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
 
   const scaleFactor = Math.min(
-    app.screen.height * 0.7 / sprite.height,
+    app.screen.height * 0.6 / sprite.height,
     app.screen.width * 1.5 / sprite.width
   );
 
   sprite.scale.set(scaleFactor);
   sprite.anchor.set(0, 1);
   
-  const foregroundHeightOffset = foreground ? foreground.height * (1 - scaleFactor) * 0.3 : 0; // Adjusted offset calculation
+  const foregroundHeightOffset = foreground ? foreground.height * scaleFactor * 0.3 : 0; // Adjusted offset calculation
   sprite.position.set(xPos, app.screen.height - foregroundHeightOffset);
   sprite.zIndex = -1;
   sprite.velocity = velocity;
 
   return sprite;
 }
+
 
 
 
