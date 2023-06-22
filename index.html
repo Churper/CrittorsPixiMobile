@@ -227,7 +227,7 @@
       enemies = [];
     }
 
-
+    let isAttackingChar = false;
     let isGameStarted = false;
     let playerMaxHP = 100;
     let playerHP = playerMaxHP;
@@ -367,7 +367,7 @@
 
         app.stage.addChild(background);
         app.stage.addChild(anotherBackground);
-
+   
 
         const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
         const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
@@ -488,7 +488,7 @@
         let xDir = 0;
         let yDir = 0;
         let isMoving = false;
-        let isAttackingChar = false;
+        
 
         function createAnimationTextures(resourceName, frameCount, frameHeight) {
           const textures = [];
@@ -529,6 +529,7 @@
         // Constants
         const SPACEBAR_KEYCODE = 32;
         // Variables
+        let stopAttacking = false;
         let attackAnimationPlayed = false; // Flag variable to track if attack animation has played
         let isTouchActive = false;
         let pointerHoldInterval;
@@ -540,103 +541,111 @@
         critter.loop = true;
         let isHoldReleased = false;
 
-function handleTouchStart(event) {
-  if (attackAnimationPlayed) { attackAnimationPlayed = false; }
+        function handleTouchStart(event) {
+          if (attackAnimationPlayed) { attackAnimationPlayed = false; }
 
-  if (getisPaused()) {
-    setisPaused(false);
-    return;
-  }
+          if (getisPaused()) {
+            setisPaused(false);
+            return;
+          }
 
-  function handleMouseLeave(event) {
-    console.log('Mouse has left the screen');
-    handleTouchEnd(event);
-    // Perform any additional actions you want here
-  }
+          function handleMouseLeave(event) {
+            console.log('Mouse has left the screen');
+            handleTouchEnd(event);
+            // Perform any additional actions you want here
+          }
 
-  function handleTouchHold() {
+          function handleTouchHold() {
 
-    if (getisPaused()) {
-      return;
-    }
-
-    if (!isAttackingChar) {
-      if (!getisDead()) {
-
-        isAttackingChar = true;
-        critter.textures = frogAttackTextures;
-        critter.loop = false;
-        critter.onComplete = function () {
-          if (critter.textures === frogWalkTextures) { }
-          if (!isHoldReleased && isAttackingChar) {
-            attackAnimationPlayed = true;
-
-            attackSound.src = "./attacksound.wav";
-            attackSound.play();
-
-            if (critter.position.x > castle.position.x - castle.width / 1.1) {
-              console.log("takingDamage");
-              castleTakeDamage(10); // Damage calculation
+            if (getisPaused()) {
+              return;
             }
 
-            resetCharacter();
+            if (!isAttackingChar) {
+              if (!getisDead()) {
+
+                isAttackingChar = true;
+                critter.textures = frogAttackTextures;
+                critter.loop = false;
+                critter.onComplete = function () {
+                
+                  if (!isAttackingChar) {
+                    return; // Return early if attack was interrupted (paused)
+                  }
+                  if (isAttackingChar) {
+                    attackAnimationPlayed = true;
+
+                    attackSound.src = "./attacksound.wav";
+                    attackSound.play();
+
+                    if (critter.position.x > castle.position.x - castle.width / 1.1) {
+                      console.log("takingDamage");
+                      castleTakeDamage(10); // Damage calculation
+                    }
+                    isAttackingChar = false;
+                    resetCharacter();
+                  }
+                  isAttackingChar = false;
+                  isHoldReleased = false;
+              
+                };
+
+                critter.play();
+              }
+         
+            }
+            
           }
-          isHoldReleased = false;
-        };
 
-        critter.play();
-      }
-    }
-  }
+          isPointerDown = true;
+          pointerHoldInterval = setInterval(handleTouchHold, 10);
 
-  isPointerDown = true;
-  pointerHoldInterval = setInterval(handleTouchHold, 1);
+          // Add an event listener to check if the mouse leaves the document
+          document.addEventListener("mouseout", handleMouseLeave);
 
-  // Add an event listener to check if the mouse leaves the document
-  document.addEventListener("mouseout", handleMouseLeave);
+          // Remove the event listener when touch ends
+          document.addEventListener("touchend", function () {
+            clearInterval(pointerHoldInterval);
+            document.removeEventListener("mouseout", handleMouseLeave);
+            isHoldReleased = true;
+          });
+        }
 
-  // Remove the event listener when touch ends
-  document.addEventListener("touchend", function () {
-    clearInterval(pointerHoldInterval);
-    document.removeEventListener("mouseout", handleMouseLeave);
-    isHoldReleased = true;
-  });
-}
+        // Function to handle pointerup event
+        function handleTouchEnd(event) {
 
-// Function to handle pointerup event
-function handleTouchEnd(event) {
+          console.log("ping");
+          clearInterval(pointerHoldInterval);
+          isPointerDown = false;
+          
+         
 
-  console.log("ping");
-  clearInterval(pointerHoldInterval);
-  isPointerDown = false;
-  console.log("isatt:", isAttackingChar);
+          if (!attackAnimationPlayed) {
+            return;
+          } else {
+            attackAnimationPlayed = true;
 
-  if (!attackAnimationPlayed) {
-    return;
-  } else {
-    attackAnimationPlayed = true;
-  
-      return;
-   
-    // Reset the textures and start the animation again
-    critter.textures = frogAttackTextures;
-    critter.loop = false;
-    critter.play();
-  }
+            return;
 
-  xDir = 1;
-}
+            // Reset the textures and start the animation again
+            critter.textures = frogAttackTextures;
+            critter.loop = false;
+            critter.play();
+          }
 
-function resetCharacter() {
-  isAttackingChar = false;
-  isMoving = false;
+          xDir = 1;
+        }
 
-  if (!isCombat) {
-    critter.textures = frogWalkTextures;
-    critter.loop = true;
-    critter.play();
-  }
-}
+        function resetCharacter() {
+          isAttackingChar = false;
+          isMoving = false;
+
+          if (!isCombat) {
+            critter.textures = frogWalkTextures;
+            critter.loop = true;
+            critter.play();
+          }
+        }
 
 
 
@@ -724,7 +733,7 @@ function resetCharacter() {
             unPauser = 0;
             return;
           }
-
+          console.log("isatt:", isAttackingChar);
 
           if (!isAttackingChar) {
             if (!getisDead()) {
@@ -866,6 +875,7 @@ function resetCharacter() {
           // Game is paused, skip logic
           return;
         }
+     
         if (app.stage.children.includes(enemy)) {
           if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > critter.width / 2) || getisDead()) {
             if (app.stage.children.includes(enemy.hpBarBackground)) {
@@ -904,7 +914,7 @@ function resetCharacter() {
             } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
               hasAttacked = true;
               critterAttack(critter, enemy, enemiesInRange, enemyDeath);
-              isPlayerAttacking = false; // Reset player attack flag after calling critterAttack
+             
             }
           }
         } else {
@@ -1033,17 +1043,15 @@ function resetCharacter() {
               // Additional logic for enemy attacks
             }
 
-            if (critter.textures === frogAttackTextures) {
+            if (critter.textures != frogWalkTextures) {
               if (!hasAttackedCritter) {
-                critterAttack(critter, enemy, enemiesInRange, enemyDeath);
+                critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures);
                 hasAttackedCritter = true;
               }
-            } else if (critter.textures === snailAttackTextures) {
-              if (!hasAttackedCritter) {
-                critterAttack(critter, enemy, enemiesInRange, enemyDeath);
-                hasAttackedCritter = true;
-              }
-            }
+             
+            } 
+            else{hasAttackedCritter = false;
+              return; }
           }
         } else {
           hasAttackedCritter = false;
@@ -1120,30 +1128,34 @@ function resetCharacter() {
     }
 
 
-    function critterAttack(critter, enemy, enemiesInRange, enemyDeath) {
-
-      // Reduce enemy's HP
-      if (enemy.currentHP - 20 <= 0) {
-
-        // Callback function to remove enemy after death animation
-        if (app.stage.children.includes(enemy)) {
-          setEnemiesInRange(getEnemiesInRange() - 1);
-          isCombat = false;
-          app.stage.removeChild(enemy);
-          getEnemies().splice(getEnemies().indexOf(enemy), 1);
-          playDeathAnimation(enemy, enemyDeath);
-
-        }
-      } else {
-        if (enemy.isAlive === true) {
-          if (getisDead() === false) {
-            enemy.currentHP -= 20;
-            drawEnemyHPBar(enemy);
-          }
-
-        }
-        //console.log(enemy.currentHP);
+    function critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures) {
+    if(isAttackingChar){
+  // Reduce enemy's HP
+  if (enemy.currentHP - 20 <= 0) {
+    // Callback function to remove enemy after death animation
+    if (app.stage.children.includes(enemy)) {
+      setEnemiesInRange(getEnemiesInRange() - 1);
+      isCombat = false;
+      app.stage.removeChild(enemy);
+      getEnemies().splice(getEnemies().indexOf(enemy), 1);
+      playDeathAnimation(enemy, enemyDeath);
+    }
+  } else {
+    if (enemy.isAlive === true) {
+      if (getisDead() === false) {
+        enemy.currentHP -= 20;
+        drawEnemyHPBar(enemy);
       }
+    }
+  }
+
+  // Reset the flags after the attack is performed
+  const attackAnimationFrames = critterAttackTextures.length; // Assuming `critterAttackTextures` is the array of attack textures
+  const attackAnimationDuration = attackAnimationFrames * critter.animationSpeed * 1000; // Calculate the attack animation duration
+  setTimeout(() => {
+   
+  }, attackAnimationDuration);
+}
     }
 
 
