@@ -1045,8 +1045,9 @@
 
             if (critter.textures != frogWalkTextures) {
               if (!hasAttackedCritter) {
-                critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures);
                 hasAttackedCritter = true;
+                critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures);
+            
               }
              
             } 
