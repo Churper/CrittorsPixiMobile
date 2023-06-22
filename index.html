@@ -787,8 +787,8 @@
         app.stage.removeChild(loadingSprite);
         document.getElementById("ui-overlay").style.visibility = "visible";
         document.getElementById("pause-button").style.visibility = "visible";
-        critter.scale.set(0.75);
-        critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2 - critter.height * .175);
+        critter.scale.set(0.4);
+        critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
         updateEXP(0);
         updatePlayerHealthBar(100);
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
