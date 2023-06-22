@@ -1093,7 +1093,7 @@
 
         app.stage.removeChild(frogGhostPlayer);
         background.position.set(0, 0); // Adjust the position as needed
-        critter.position.set(app.screen.width / 20, app.screen.height - 250);
+        critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
         playerHP = 100;
         updatePlayerHealthBar(100);
         // Reset castle health
