@@ -211,7 +211,7 @@
 
 
 
-
+let stored = 0;
     let enemies = [];
 
     function getEnemies() {
@@ -377,7 +377,7 @@
         const frogGhostPlayer = new PIXI.Sprite(frogGhostTextures);
 
         frogGhostPlayer.anchor.set(0, 0);
-        frogGhostPlayer.scale.set(0.35);
+        frogGhostPlayer.scale.set(0.28);
 
 
         const containerHeight = document.getElementById('game-container').clientHeight;
@@ -788,6 +788,9 @@
         document.getElementById("ui-overlay").style.visibility = "visible";
         document.getElementById("pause-button").style.visibility = "visible";
         critter.scale.set(0.4);
+    
+        stored = app.screen.height - foreground.height / 2.2 - critter.height * .22;
+        console.log("STORED",stored);
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
         updateEXP(0);
         updatePlayerHealthBar(100);
@@ -1094,7 +1097,8 @@
 
         app.stage.removeChild(frogGhostPlayer);
         background.position.set(0, 0); // Adjust the position as needed
-        critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
+        console.log("STORED",stored);
+        critter.position.set(app.screen.width / 20, stored);
         playerHP = 100;
         updatePlayerHealthBar(100);
         // Reset castle health
