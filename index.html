@@ -1262,16 +1262,7 @@
           }
 
           setIsCharAttacking(false);
-
-
-          // Start the scale animation
-          requestAnimationFrame(scaleUpdate);
-
-          // Remove the enemy from the stage after the animation duration
-          setTimeout(() => {
-            app.stage.removeChild(enemy);
-          }, scaleDuration);
-
+          app.stage.removeChild(enemy);
           getEnemies().splice(getEnemies().indexOf(enemy), 1);
           playDeathAnimation(enemy, enemyDeath);
         }
