@@ -68,6 +68,16 @@
       filter: sepia(0%);
 
     }
+    #character-level {
+  position: absolute;
+  bottom: 0px;
+  left: 2px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: "Marker Felt", cursive,bold;
+  font-size: 18px;
+  
+}
 
     #enemy-portrait {
       width: 46px;
@@ -140,7 +150,7 @@
     <div id="pause-button"></div>
     <div id="ui-overlay">
 
-      <div id="character-portrait"></div>
+      <div id="character-portrait"> <div id="character-level">1</div></div>
       <div id="enemy-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
@@ -181,6 +191,15 @@
 
     function setIsCharAttacking(value) {
       isCharAttacking = value;
+    }
+
+    let areResetting = false;
+    function getAreResetting() {
+      return areResetting;
+    }
+
+    function setAreResetting(value) {
+      areResetting = value;
     }
 
     let isCharAttackAnimating = false;
@@ -248,7 +267,7 @@
 
     let stored = 0;
     let enemies = [];
-
+  
     function getEnemies() {
       return enemies;
     }
@@ -267,10 +286,14 @@
     let playerMaxHP = 100;
     let playerHP = playerMaxHP;
     let playerEXP = 0;
+    let expToLevel = 100;
+    let frogLevel = 1;
     const flashDuration = 100; // Adjust as needed (in milliseconds)
     const flashColor = 0xff5555; // Bright red color
     const attackSound = new Audio();
     attackSound.src = "./attacksound.wav";
+    const levelSound = new Audio();
+    levelSound.src = "./levelup.wav";
     const hitSound = new Audio();
     hitSound.src = "./hurt.wav";
     let isCombat = false;
@@ -816,10 +839,12 @@
           if (clouds.x + clouds.width / 2 < 0) {
             clouds.x = app.screen.width + clouds.width / 2;
           }
-
+          if(!getAreResetting()){
           // Adjust app stage position
           app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + critter.width / 3 + app.screen.width / 2));
           app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
+          }
+          else{     }
         });
         app.stage.removeChild(loadingSprite);
         document.getElementById("ui-overlay").style.visibility = "visible";
@@ -829,7 +854,7 @@
         stored = app.screen.height - foreground.height / 2.2 - critter.height * .22;
         console.log("STORED", stored);
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
-        updateEXP(0);
+        updateEXP(0,expToLevel);
         updatePlayerHealthBar(100);
         app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
         spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
@@ -1011,8 +1036,7 @@
         });
       }
 
-      app.stage.removeChild(critter);
-      app.stage.addChild(critter);
+      
     }
 
     let isPlayerAttacking = false;
@@ -1065,7 +1089,7 @@
             if (!getisDead()) {
               if (!hasDied) {
                 critter.tint = flashColor;
-                playerHP -= 2;
+                playerHP -= 3;
               }
               updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
               if (playerHP <= 0) {
@@ -1153,7 +1177,9 @@
 
       if (!isReset) {
         setEnemiesInRange(0);
-
+        setCharAttackAnimating(false);
+        setIsCharAttacking(false);
+      
         app.stage.removeChild(frogGhostPlayer);
         background.position.set(0, 0); // Adjust the position as needed
         //console.log("STORED", stored);
@@ -1285,7 +1311,7 @@
       // Add the death animation sprite to the stage
       enemyDeath.position.set(enemy.position.x, enemy.position.y);
       app.stage.addChild(enemyDeath);
-      const expDrop = new PIXI.Text("+5 EXP", {
+      const expDrop = new PIXI.Text("+15 EXP", {
         fontSize: 18,
         fill: "orange",
         fontWeight: "bold",
@@ -1324,8 +1350,8 @@
 
       // Remove the death animation after it completes
       enemyDeath.onComplete = () => {
-        playerEXP += 10;
-        updateEXP(playerEXP);
+        playerEXP += 15;
+        updateEXP(playerEXP,expToLevel);
 
         // Create the EXP drop text
 
@@ -1429,10 +1455,17 @@
       document.getElementById('enemy-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
     }
 
-    function updateEXP(exp, expToLevel) {
+    function updateEXP(exp, expToLevel1) {
+      if (exp >= expToLevel){
+        exp = 0;
+        playerEXP=0;
+        expToLevel = expToLevel1;
+        expToLevel= expToLevel1 + expToLevel1 * .1;
+        levelUp();
+      }
       const playerEXPBarFill = document.getElementById('exp-bar-fill');
-      playerEXPBarFill.style.width = exp + '%';
-      updateExpText('exp-text', 'exp', exp, 100);
+      playerEXPBarFill.style.width = exp/expToLevel1  * 100 + '%';
+      updateExpText('exp-text', 'exp', exp, expToLevel);
     }
 
 
@@ -1442,6 +1475,21 @@
       barText.innerText = `${labelText}: ${value}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${expToLevel}`;
     }
 
+    function levelUp(){ 
+
+    
+       levelSound.play();
+       const characterLevelElement = document.getElementById("character-level");
+
+// Function to update the character's level
+function updateCharacterLevel(level) {
+  characterLevelElement.textContent = level;
+}
+
+// Example usage: update character level to 2
+updateCharacterLevel(++frogLevel);
+
+    }
 
 
     frogPortrait.on('pointertap', handleFrogClick);
