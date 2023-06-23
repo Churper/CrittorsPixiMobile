@@ -69,6 +69,21 @@
 
     }
 
+    #enemy-portrait {
+      width: 46px;
+      height: 46px;
+      background-image: url("https://i.imgur.com/1EFx7kH.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: absolute;
+      left: 200px;
+      top: 0px;
+      filter: grayscale(0%);
+      display: none;
+      /* Hide the element by default */
+    }
+
     #health-bar {
       width: 200px;
       height: 20px;
@@ -126,6 +141,7 @@
     <div id="ui-overlay">
 
       <div id="character-portrait"></div>
+      <div id="enemy-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
         <div class="bar-text" id="hp-text">hp </div>
@@ -133,6 +149,7 @@
       <div id="exp-bar">
         <div id="exp-bar-fill"></div>
         <div class="bar-text" id="exp-text">exp</div>
+
       </div>
     </div>
   </div>
@@ -155,6 +172,24 @@
 
     function setIsDead(value) {
       isDead = value;
+    }
+
+    let isCharAttacking = false;
+    function getIsCharAttacking() {
+      return isCharAttacking;
+    }
+
+    function setIsCharAttacking(value) {
+      isCharAttacking = value;
+    }
+
+    let isCharAttackAnimating = false;
+    function getIsCharAttackAnimating() {
+      return isCharAttackAnimating;
+    }
+
+    function setCharAttackAnimating(value) {
+      isCharAttackAnimating = value;
     }
 
     let enemiesInRange = 0;
@@ -211,7 +246,7 @@
 
 
 
-let stored = 0;
+    let stored = 0;
     let enemies = [];
 
     function getEnemies() {
@@ -367,7 +402,7 @@ let stored = 0;
 
         app.stage.addChild(background);
         app.stage.addChild(anotherBackground);
-   
+
 
         const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
         const characterPortrait = new PIXI.Sprite(characterPortraitTexture);
@@ -488,7 +523,7 @@ let stored = 0;
         let xDir = 0;
         let yDir = 0;
         let isMoving = false;
-        
+
 
         function createAnimationTextures(resourceName, frameCount, frameHeight) {
           const textures = [];
@@ -566,9 +601,10 @@ let stored = 0;
 
                 isAttackingChar = true;
                 critter.textures = frogAttackTextures;
+                setCharAttackAnimating(true);
                 critter.loop = false;
                 critter.onComplete = function () {
-                
+
                   if (!isAttackingChar) {
                     return; // Return early if attack was interrupted (paused)
                   }
@@ -587,14 +623,14 @@ let stored = 0;
                   }
                   isAttackingChar = false;
                   isHoldReleased = false;
-              
+                  critter.play();
                 };
-
                 critter.play();
+
               }
-         
+
             }
-            
+
           }
 
           isPointerDown = true;
@@ -614,11 +650,11 @@ let stored = 0;
         // Function to handle pointerup event
         function handleTouchEnd(event) {
 
-          console.log("ping");
+          // console.log("ping");
           clearInterval(pointerHoldInterval);
           isPointerDown = false;
-          
-         
+
+
 
           if (!attackAnimationPlayed) {
             return;
@@ -640,7 +676,8 @@ let stored = 0;
           isAttackingChar = false;
           isMoving = false;
 
-          if (!isCombat) {
+          if (!isCombat && getEnemiesInRange() == 0) {
+            setCharAttackAnimating(false);
             critter.textures = frogWalkTextures;
             critter.loop = true;
             critter.play();
@@ -665,7 +702,7 @@ let stored = 0;
 
         function updateVelocity() {
 
-
+          setIsCharAttacking(false);
           velocity.x = xDir * speed;
           velocity.y = yDir * speed;
           // console.log(isMoving);
@@ -733,7 +770,7 @@ let stored = 0;
             unPauser = 0;
             return;
           }
-          console.log("isatt:", isAttackingChar);
+          //console.log("isatt:", isAttackingChar);
 
           if (!isAttackingChar) {
             if (!getisDead()) {
@@ -788,9 +825,9 @@ let stored = 0;
         document.getElementById("ui-overlay").style.visibility = "visible";
         document.getElementById("pause-button").style.visibility = "visible";
         critter.scale.set(0.4);
-    
+
         stored = app.screen.height - foreground.height / 2.2 - critter.height * .22;
-        console.log("STORED",stored);
+        console.log("STORED", stored);
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
         updateEXP(0);
         updatePlayerHealthBar(100);
@@ -853,7 +890,6 @@ let stored = 0;
       enemy.scale.x *= -1; // Flip the enemy horizontally
       enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
       let isAttacking = false; // Flag to track if enemy is attacking
-      let hasAttacked = false; // Flag to track if the enemy has attacked
 
       // Add enemy to the enemies array
       addEnemies(enemy);
@@ -878,46 +914,75 @@ let stored = 0;
           // Game is paused, skip logic
           return;
         }
-     
+
         if (app.stage.children.includes(enemy)) {
-          if (enemy.isAlive && (enemy.position && enemy.position.x - critter.position.x > critter.width / 2) || getisDead()) {
+
+
+
+
+          if (enemy.isAlive && (enemy.position.x - critter.position.x > critter.width / 2) || getisDead()) {
             if (app.stage.children.includes(enemy.hpBarBackground)) {
               app.stage.removeChild(enemy.hpBarBackground);
             }
             if (app.stage.children.includes(enemy.hpBar)) {
               app.stage.removeChild(enemy.hpBar);
             }
-            if (enemy.visible) {
-              if (enemy.textures !== critterWalkTextures) {
-                enemy.textures = critterWalkTextures;
-                enemy.play();
-              }
+            if (enemy.visible && enemy.textures !== critterWalkTextures) {
+              enemy.textures = critterWalkTextures;
+              enemy.play();
             }
             enemy.position.x += enemy.vx;
           } else {
+            if (critter.textures !== frogWalkTextures) {
+              if (critter.currentFrame === critter.totalFrames - 2) {
+                if (!getIsCharAttacking()) {
+                  setIsCharAttacking(true);
+                  critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures);
+                }
+              } else if (critter.currentFrame === critter.totalFrames - 1) {
+                setIsCharAttacking(false);
+              }
+            }
             if (!enemyAdded) {
               setEnemiesInRange(getEnemiesInRange() + 1);
+              console.log("animating?", getIsCharAttackAnimating());
 
-              if (!getisPointerdown() && !getisDead()) {
+              if (!getisPointerdown() && !getisDead() && !getIsCharAttackAnimating()) {
                 critter.textures = frogIdleTextures;
+                critter.play();
               }
               enemyAdded = true;
             }
 
             if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
+              if (!isCombat) {
+                const enemyPortrait = document.getElementById('enemy-portrait');
+                updateEnemyGrayscale(100);
+                enemyPortrait.style.display = 'block'; // Make the element visible
+              }
+
               isAttacking = true;
               isCombat = true;
-              handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
+
+              handleEnemyAttacking(
+                enemy,
+                critterAttackTextures,
+                critter,
+                frogAttackTextures,
+                enemyDeath,
+                snailAttackTextures,
+                frogIdleTextures,
+                snailIdleTextures,
+                frogGhostTextures,
+                critterWalkTextures,
+                frogGhostPlayer,
+                frogWalkTextures,
+                background
+              );
               if (enemy.isAlive && !getisDead()) {
                 //console.log("here");
                 drawEnemyHPBar(enemy);
               }
-
-
-            } else if (!getisDead() && isAttacking && !hasAttacked && enemy.currentFrame === 0 && isPlayerAttacking && enemy.isAlive) {
-              hasAttacked = true;
-              critterAttack(critter, enemy, enemiesInRange, enemyDeath);
-             
             }
           }
         } else {
@@ -935,6 +1000,7 @@ let stored = 0;
           return;
         }
       });
+
       if (app.stage.children.includes(enemy)) {
         enemies.sort((a, b) => a.position.y - b.position.y);
         enemies.forEach((enemy) => {
@@ -944,6 +1010,9 @@ let stored = 0;
           }
         });
       }
+
+      app.stage.removeChild(critter);
+      app.stage.addChild(critter);
     }
 
     let isPlayerAttacking = false;
@@ -996,7 +1065,7 @@ let stored = 0;
             if (!getisDead()) {
               if (!hasDied) {
                 critter.tint = flashColor;
-                playerHP -= 5;
+                playerHP -= 2;
               }
               updatePlayerHealthBar((playerHP / playerMaxHP) * 100);
               if (playerHP <= 0) {
@@ -1034,31 +1103,21 @@ let stored = 0;
       enemy.onFrameChange = onFrameChange;
 
       let hasAttackedCritter = false;
-
+      let isAttackTriggered = false;
       const tickerHandler = () => {
+
 
         if (enemy.currentFrame === 0) {
           hasPlayedSound = false;
           if (enemy.position.x - critter.position.x < 150) {
             if (getEnemies().length === 0) {
+              const enemyPortrait = document.getElementById('enemy-portrait');
+              enemyPortrait.style.display = 'none'; // Make the element visible
               isCombat = false;
             } else {
               // Additional logic for enemy attacks
             }
-
-            if (critter.textures != frogWalkTextures) {
-              if (!hasAttackedCritter) {
-                hasAttackedCritter = true;
-                critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures);
-            
-              }
-             
-            } 
-            else{hasAttackedCritter = false;
-              return; }
           }
-        } else {
-          hasAttackedCritter = false;
         }
       };
 
@@ -1097,7 +1156,7 @@ let stored = 0;
 
         app.stage.removeChild(frogGhostPlayer);
         background.position.set(0, 0); // Adjust the position as needed
-        console.log("STORED",stored);
+        //console.log("STORED", stored);
         critter.position.set(app.screen.width / 20, stored);
         playerHP = 100;
         updatePlayerHealthBar(100);
@@ -1107,6 +1166,8 @@ let stored = 0;
         // Remove any existing enemy death sprites
         // Set isCombat and playAgain to false
         isCombat = false;
+        const enemyPortrait = document.getElementById('enemy-portrait');
+        enemyPortrait.style.display = 'none'; // Make the element visible
         playAgain = false;
         setIsDead(false);
         critter.loop = true;
@@ -1133,29 +1194,99 @@ let stored = 0;
     }
 
 
-    function critterAttack(critter, enemy, enemiesInRange, enemyDeath,critterAttackTextures) {
-    if(isAttackingChar){
-  // Reduce enemy's HP
-  if (enemy.currentHP - 20 <= 0) {
-    // Callback function to remove enemy after death animation
-    if (app.stage.children.includes(enemy)) {
-      setEnemiesInRange(getEnemiesInRange() - 1);
-      isCombat = false;
-      app.stage.removeChild(enemy);
-      getEnemies().splice(getEnemies().indexOf(enemy), 1);
-      playDeathAnimation(enemy, enemyDeath);
-    }
-  } else {
-    if (enemy.isAlive === true) {
-      if (getisDead() === false) {
-        enemy.currentHP -= 20;
-        drawEnemyHPBar(enemy);
-      }
-    }
-  }
+    function drawHitSplat(enemy) {
 
- 
+      // Flash hit color for a brief second
+      const originalTint = enemy.tint;
+      enemy.tint = 0xFF0000; // Set the hit color
+      setTimeout(() => {
+        enemy.tint = originalTint; // Reset to original color
+      }, 100);
+
+      enemy.currentHP -= 10;
+      drawEnemyHPBar(enemy);
+      updateEnemyGrayscale(enemy.currentHP);
+
+
+      const damageText = new PIXI.Text('-10', {
+        fontFamily: 'Marker Felt Cursive',
+        fontSize: 24,
+        fill: 'red',
+        dropShadow: true,
+        dropShadowColor: 'black',
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 4,
+        dropShadowDistance: 2,
+      });
+
+      damageText.anchor.set(0.5);
+      damageText.position.set(enemy.position.x + 40, enemy.position.y - enemy.height / 1.3);
+      app.stage.addChild(damageText);
+
+      // Animate the hitsplat
+      const startY = damageText.position.y; // Adjust the starting Y position as needed
+      const duration = 100; // Animation duration in milliseconds
+      let elapsed = 0; // Elapsed time
+      const update = (delta) => {
+        elapsed += delta;
+
+        if (elapsed >= duration) {
+          app.ticker.remove(update); // Stop the ticker update
+          app.stage.removeChild(damageText); // Remove hitsplat after animation
+        } else {
+          const progress = elapsed / duration;
+          damageText.position.y = startY - (progress * 30); // Update the Y position based on progress
+          damageText.alpha = 1 - progress; // Update the alpha (opacity) based on progress
+        }
+      };
+
+      app.ticker.add(update); // Start the ticker update for hitsplat animation
     }
+
+
+
+    let isCritterAttackTriggered = false;
+    function critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures) {
+      // Reduce enemy's HP
+      if (enemy.currentHP - 20 <= 0) {
+        // Callback function to remove enemy after death animation
+        if (app.stage.children.includes(enemy)) {
+          drawHitSplat(enemy);
+          enemy.tint = 0xFF0000; // Set the hit color
+
+          setEnemiesInRange(getEnemiesInRange() - 1);
+          isCombat = false;
+          if (getEnemiesInRange() === 0) {
+            const enemyPortrait = document.getElementById('enemy-portrait');
+            enemyPortrait.style.display = 'none'; // Make the element visible
+          }
+
+          setIsCharAttacking(false);
+
+
+          // Start the scale animation
+          requestAnimationFrame(scaleUpdate);
+
+          // Remove the enemy from the stage after the animation duration
+          setTimeout(() => {
+            app.stage.removeChild(enemy);
+          }, scaleDuration);
+
+          getEnemies().splice(getEnemies().indexOf(enemy), 1);
+          playDeathAnimation(enemy, enemyDeath);
+        }
+      } else {
+        if (enemy.isAlive === true) {
+          if (getisDead() === false) {
+            drawHitSplat(enemy);
+
+          }
+        }
+
+
+      }
+
+
     }
 
 
@@ -1300,6 +1431,11 @@ let stored = 0;
     function updateGrayscale(hpPercentage) {
       const grayscalePercentage = 100 - hpPercentage;
       document.getElementById('character-portrait').style.filter = `sepia(${grayscalePercentage}%)`;
+    }
+
+    function updateEnemyGrayscale(hpPercentage) {
+      const grayscalePercentage = 100 - hpPercentage;
+      document.getElementById('enemy-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
     }
 
     function updateEXP(exp, expToLevel) {
