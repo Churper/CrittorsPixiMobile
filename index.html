@@ -195,6 +195,7 @@
   top: -50px;
   left: calc(45% - 70px);
   animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
+  user-select: none;
 }
 
 .upgrade-box.hp-upgrade {
@@ -202,6 +203,7 @@
   top: -50px;
   left: calc(45% - 10px); /* Reduced spacing */
   animation: appear 0.5s ease-in-out forwards, bounce 2s infinite reverse;
+  user-select: none;
 }
 
 .upgrade-box.attack-upgrade {
@@ -209,6 +211,7 @@
   top: -50px;
   left: calc(45% + 50px); /* Reduced spacing */
   animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
+  user-select: none;
 }
 
 .upgrade-box:hover {
@@ -237,6 +240,7 @@
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 2px; /* Adjust the margin as needed */
+  user-select: none;
 
   color: rgb(255, 255, 255);
       font-family: "Fredoka One", Arial, sans-serif;
@@ -1302,8 +1306,8 @@
               
             }
             updatePlayerHealthBar((getPlayerHealth() / getFrogHealth()) * 100);
-            if (playerHP <= 0) {
-              playerHP = 0;
+            if (getPlayerHealth() <= 0) {
+             setPlayerHealth(0);
 
               if (enemy.textures != critterWalkTextures) {
                 enemy.textures = critterWalkTextures;
