@@ -232,7 +232,7 @@
       user-select: none;
     }
     #infoboxes {
-  visibility: visible;
+  visibility: hidden;
   position: fixed;
  left: -68px;
   bottom: 1px;
@@ -250,7 +250,7 @@
       user-select: none;
 }
 .infobox {
-  visibility: visible;
+
   display: flex;
   align-items: center;
   margin-bottom: -2px; /* Adjust the margin as needed */
@@ -544,7 +544,7 @@
 
 
 
-    const loadingTexture = PIXI.Texture.from('https://i.imgur.com/ztUFh3a.png');
+    const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
     const loadingSprite = new PIXI.Sprite(loadingTexture);
     loadingSprite.anchor.set(0.5);
     loadingSprite.width = app.screen.width;
@@ -578,7 +578,6 @@
     const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
     let keysPressed = 0;
     const hpBarColor = 0xff0000;
-
 
 
 
@@ -1055,6 +1054,10 @@
         else { }
       });
       app.stage.removeChild(loadingSprite);
+
+
+     // document.getElementById("infoboxs").style.visibility = "visible";
+     document.getElementById("infoboxes").style.visibility = "visible";
       document.getElementById("ui-overlay").style.visibility = "visible";
       document.getElementById("pause-button").style.visibility = "visible";
       critter.scale.set(0.4);
@@ -1756,6 +1759,7 @@ function handleUpgrade(upgradeType) {
       // Update the display
       divElement.textContent = currentHPLevel.toString();
       setFrogHealth(getFrogHealth()+20);
+      setPlayerHealth(getPlayerHealth()+20);
       //updateBarText('hp-text', 'hp', getFrogHealth());
      updatePlayerHealthBar(getPlayerHealth() / getFrogHealth() * 100); 
      // (playerHP / getFrogHealth) * 100
