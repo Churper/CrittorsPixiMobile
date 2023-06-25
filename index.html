@@ -1399,6 +1399,7 @@
       background.position.set(0, 0); // Adjust the position as needed
       //console.log("STORED", stored);
       critter.position.set(app.screen.width / 20, stored);
+      setPlayerHealth(getFrogHealth());
       playerHP = getFrogHealth();
       updatePlayerHealthBar(getFrogHealth());
       // Reset castle health
@@ -1648,7 +1649,7 @@ const damageText = new PIXI.Text(`${damage}`, {
 
   function updatePlayerHealthBar(health) {
     const playerHealthBarFill = document.getElementById('health-bar-fill');
-    playerHealthBarFill.style.width = getPlayerHealth() + '%';
+    playerHealthBarFill.style.width = health + '%';
     updateGrayscale(health);
     updateBarText('hp-text', 'hp', health);
   }
@@ -1671,8 +1672,10 @@ const damageText = new PIXI.Text(`${damage}`, {
   }
 
   function updateEXP(exp, expToLevel1) {
+    let leftover = 0;
     if (exp >= expToLevel) {
-      exp = 0;
+      leftover = exp - expToLevel;
+      exp = leftover;
       playerEXP = 0;
       expToLevel = expToLevel1;
       expToLevel = expToLevel1 + expToLevel1 * .1;
@@ -1754,7 +1757,7 @@ function handleUpgrade(upgradeType) {
       divElement.textContent = currentHPLevel.toString();
       setFrogHealth(getFrogHealth()+20);
       //updateBarText('hp-text', 'hp', getFrogHealth());
-     updatePlayerHealthBar(playerHP); 
+     updatePlayerHealthBar(getPlayerHealth() / getFrogHealth() * 100); 
      // (playerHP / getFrogHealth) * 100
      // critter.scale(critter.scale + .1);
       break;
@@ -1776,7 +1779,7 @@ function handleUpgrade(upgradeType) {
   function levelUp() {
     animateUpgradeBoxes();
 
-    updatePlayerHealthBar(getFrogHealth()); 
+    
     levelSound.play();
     const characterLevelElement = document.getElementById("character-level");
 
