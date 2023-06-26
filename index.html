@@ -342,9 +342,72 @@
 
   document.body.appendChild(app.view);
 
+  let frogTint = 0;
+
+function getFrogTint() {
+  return frogTint;
+}
+
+function setFrogTint(value) {
+  frogTint = value;
+}
 
 
-  let frogDamage = 20;
+
+  let frogSize = .2;
+
+  function getFrogSize() {
+    return frogSize;
+  }
+
+  function setFrogSize(value) {
+    frogSize = value;
+  }
+
+  let speed = .25;
+
+  function getFrogSpeed() {
+    return speed;
+  }
+
+  function setFrogSpeed(value) {
+    speed = value;
+  }
+
+  let speedChanged = false;
+
+function getSpeedChanged() {
+  return speedChanged;
+}
+
+function setSpeedChanged(value) {
+  speedChanged = value;
+}
+
+let frogTintColor = 0xffffff;
+
+function getFrogTintColor() {
+  return frogTintColor;
+}
+
+function setFrogTintColor(value) {
+  frogTintColor = value;
+}
+
+
+
+
+
+  function getSpeed() {
+    return speed;
+  }
+
+  function setSpeed(value) {
+    speed = value;
+  }
+
+
+  let frogDamage = 10;
   function getFrogDamage() {
     return frogDamage;
   }
@@ -578,7 +641,7 @@
     const UP_ARROW_KEYCODE = 38;
     const SPACEBAR_KEYCODE = 32;
     const DOWN_ARROW_KEYCODE = 40;
-    const speed = 2;
+    
     const mountainVelocityX = 0;
     const mountainVelocityY = 0.2;
     const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
@@ -744,7 +807,7 @@
 
       const velocity = new PIXI.Point();
       const parallaxRatio = 0.5;
-      const speed = 1.25;
+  
       const pressedKeys = new Set();
       let xDir = 0;
       let yDir = 0;
@@ -920,8 +983,8 @@
       function updateVelocity() {
 
         setIsCharAttacking(false);
-        velocity.x = xDir * speed;
-        velocity.y = yDir * speed;
+        velocity.x = xDir * getFrogSpeed();
+        velocity.y = yDir * getFrogSpeed();
         // console.log(isMoving);
         if (isMoving) {
           mountainVelocity1.x = mountainVelocityX;
@@ -988,6 +1051,9 @@
           return;
         }
         //console.log("isatt:", isAttackingChar);
+
+if(getSpeedChanged()){   updateVelocity(); setSpeedChanged(false);}
+
 
         if (!isAttackingChar) {
           if (!getisDead()) {
@@ -1067,7 +1133,7 @@
      document.getElementById("infoboxes").style.visibility = "visible";
       document.getElementById("ui-overlay").style.visibility = "visible";
       document.getElementById("pause-button").style.visibility = "visible";
-      critter.scale.set(0.4);
+      critter.scale.set(getFrogSize());
 
       stored = app.screen.height - foreground.height / 2.2 - critter.height * .22;
       console.log("STORED", stored);
@@ -1335,7 +1401,7 @@
               return;
             }
             setTimeout(() => {
-              critter.tint = 0xffffff;
+              critter.tint = getFrogTintColor();
             }, flashDuration);
             if (enemy.isAlive) {
 
@@ -1411,7 +1477,7 @@
       critter.position.set(app.screen.width / 20, stored);
       setPlayerHealth(getFrogHealth());
       playerHP = getFrogHealth();
-      updatePlayerHealthBar(getFrogHealth());
+      updatePlayerHealthBar(getFrogHealth()/getFrogHealth()* 100);
       // Reset castle health
       castleHealth = 100;
 
@@ -1516,7 +1582,7 @@ const damageText = new PIXI.Text(`${damage}`, {
         setIsCharAttacking(false);
         app.stage.removeChild(enemy);
         getEnemies().splice(getEnemies().indexOf(enemy), 1);
-        playDeathAnimation(enemy, enemyDeath);
+        playDeathAnimation(enemy, enemyDeath,critter);
       }
     } else {
       if (enemy.isAlive === true) {
@@ -1533,7 +1599,7 @@ const damageText = new PIXI.Text(`${damage}`, {
   }
 
 
-  function playDeathAnimation(enemy, enemyDeath) {
+  function playDeathAnimation(enemy, enemyDeath,critter) {
     // Add the death animation sprite to the stage
     enemyDeath.position.set(enemy.position.x, enemy.position.y);
     app.stage.addChild(enemyDeath);
@@ -1577,7 +1643,7 @@ const damageText = new PIXI.Text(`${damage}`, {
     // Remove the death animation after it completes
     enemyDeath.onComplete = () => {
       setPlayerEXP(getPlayerEXP()+100);
-      updateEXP(getPlayerEXP(), expToLevel);
+      updateEXP(getPlayerEXP(), expToLevel,critter);
 
       // Create the EXP drop text
 
@@ -1681,14 +1747,14 @@ const damageText = new PIXI.Text(`${damage}`, {
     document.getElementById('enemy-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
   }
 
-  function updateEXP(exp, expToLevel1) {
+  function updateEXP(exp, expToLevel1,critter) {
     let leftover = 0;
     if (exp >= expToLevel) {
       leftover = exp - expToLevel;
       setPlayerEXP(leftover);
       expToLevel = expToLevel1;
       expToLevel = expToLevel1 + expToLevel1 * .1;
-      levelUp();
+      levelUp(critter);
 
     }
     const playerEXPBarFill = document.getElementById('exp-bar-fill');
@@ -1702,12 +1768,12 @@ const damageText = new PIXI.Text(`${damage}`, {
     const barText = document.getElementById(elementId);
     const roundedEXPValue = Math.round(getPlayerEXP().toFixed());
     const roundedEnder = Math.round(expToLevel);
-    barText.innerText = `${labelText}: ${roundedEXPValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${roundedEnder}`;
+    barText.innerText = `${labelText}: ${roundedEXPValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${roundedEnder}`;
   }
 
   let isUpgradeBoxesAnimated = false;
 
-  function animateUpgradeBoxes() {
+  function animateUpgradeBoxes(critter) {
   if (isUpgradeBoxesAnimated) {
     return; // If already animated, exit the function
   }
@@ -1721,18 +1787,18 @@ const damageText = new PIXI.Text(`${damage}`, {
     // Define the click event handler separately
     box.clickHandler = () => {
       const upgradeType = box.classList[1];
-      handleUpgrade(upgradeType);
+      handleUpgrade(upgradeType,critter);
     };
 
     box.addEventListener('click', box.clickHandler); // Add the updated event listener
   });
 }
 
-
+let critterTint = 0;
 let currentLevel =1;
 let currentAtkLevel = 1;
 let currentHpLevel = 1;
-function handleUpgrade(upgradeType) {
+function handleUpgrade(upgradeType,critter) {
   const upgradeBoxes = document.getElementsByClassName('upgrade-box');
 
   // Handle different upgrade types
@@ -1745,6 +1811,9 @@ function handleUpgrade(upgradeType) {
       currentLevel++;
       // Update the display
       divElement.textContent = currentLevel.toString();
+      setFrogSpeed(getFrogSpeed()+.5);
+      console.log(getFrogSpeed());
+      setSpeedChanged(true);
       break;
 
     case 'attack-upgrade':
@@ -1757,6 +1826,9 @@ function handleUpgrade(upgradeType) {
       setFrogDamage(getFrogDamage()+5);
       // Update the display with the new attack level
       divElement.textContent = currentAtkLevel.toString();
+      console.log("TINT", getFrogTint()+10);
+      updateTint(critter, getFrogTint()+10);
+      setFrogTint(getFrogTint()+10);
       break;
 
     case 'hp-upgrade':
@@ -1773,6 +1845,8 @@ function handleUpgrade(upgradeType) {
      updatePlayerHealthBar(getPlayerHealth() / getFrogHealth() * 100); 
      // (playerHP / getFrogHealth) * 100
      // critter.scale(critter.scale + .1);
+     setFrogSize(getFrogSize()+.1);
+     critter.scale.set(getFrogSize());
       break;
 
     default:
@@ -1789,8 +1863,8 @@ function handleUpgrade(upgradeType) {
 
 
 
-  function levelUp() {
-    animateUpgradeBoxes();
+  function levelUp(critter) {
+    animateUpgradeBoxes(critter);
 
     
     levelSound.play();
@@ -1805,6 +1879,10 @@ function handleUpgrade(upgradeType) {
     updateCharacterLevel(++frogLevel);
 
   }
+
+  function updateTint(critter, percentage) {
+
+}
 
 
 
