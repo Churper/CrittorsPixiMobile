@@ -1701,7 +1701,7 @@ const damageText = new PIXI.Text(`${damage}`, {
   function updateExpText(elementId, labelText, value, expToLevel) {
     const barText = document.getElementById(elementId);
     const roundedEXPValue = Math.round(getPlayerEXP().toFixed());
-    const roundedEnder = expToLevel;
+    const roundedEnder = Math.round(expToLevel);
     barText.innerText = `${labelText}: ${roundedEXPValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${roundedEnder}`;
   }
 
