@@ -1667,7 +1667,7 @@ const damageText = new PIXI.Text(`${damage}`, {
 
   function updateBarText(elementId, labelText, value) {
     const barText = document.getElementById(elementId);
-    const roundedValue = getPlayerHealth().toFixed(0);
+    const roundedValue = getPlayerHealth().toFixed();
     barText.innerText = `${labelText}:\u00A0 ${roundedValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${getFrogHealth()}`;
   }
 
@@ -1700,7 +1700,7 @@ const damageText = new PIXI.Text(`${damage}`, {
 
   function updateExpText(elementId, labelText, value, expToLevel) {
     const barText = document.getElementById(elementId);
-    const roundedEXPValue = getPlayerEXP().toFixed();
+    const roundedEXPValue = Math.round(getPlayerEXP().toFixed());
     const roundedEnder = expToLevel;
     barText.innerText = `${labelText}: ${roundedEXPValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${roundedEnder}`;
   }
@@ -1778,7 +1778,7 @@ function handleUpgrade(upgradeType) {
     default:
       console.log('Invalid upgrade type', upgradeType);
   }
-
+ chooseSound.play();
   for (let i = 0; i < upgradeBoxes.length; i++) {
     upgradeBoxes[i].style.visibility = 'hidden';
   }
