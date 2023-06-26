@@ -373,6 +373,13 @@
     playerHealth = value;
   }
 
+  let playerEXP = 0;
+  function getPlayerEXP() {
+    return playerEXP;
+  }
+  function setPlayerEXP(value) {
+    playerEXP = value;
+  }
 
 
   let isDead = false;
@@ -489,7 +496,7 @@
   let isGameStarted = false;
   let playerMaxHP = getFrogHealth();
   let playerHP = getFrogHealth();
-  let playerEXP = 0;
+
   let expToLevel = 100;
   let frogLevel = 1;
   const flashDuration = 100; // Adjust as needed (in milliseconds)
@@ -1569,8 +1576,8 @@ const damageText = new PIXI.Text(`${damage}`, {
 
     // Remove the death animation after it completes
     enemyDeath.onComplete = () => {
-      playerEXP += 100;
-      updateEXP(playerEXP, expToLevel);
+      setPlayerEXP(getPlayerEXP()+100);
+      updateEXP(getPlayerEXP(), expToLevel);
 
       // Create the EXP drop text
 
@@ -1678,22 +1685,24 @@ const damageText = new PIXI.Text(`${damage}`, {
     let leftover = 0;
     if (exp >= expToLevel) {
       leftover = exp - expToLevel;
-      exp = leftover;
-      playerEXP = 0;
+      setPlayerEXP(leftover);
       expToLevel = expToLevel1;
       expToLevel = expToLevel1 + expToLevel1 * .1;
       levelUp();
+
     }
     const playerEXPBarFill = document.getElementById('exp-bar-fill');
-    playerEXPBarFill.style.width = exp / expToLevel1 * 100 + '%';
-    updateExpText('exp-text', 'exp', exp, expToLevel);
+    playerEXPBarFill.style.width = getPlayerEXP() / expToLevel * 100 + '%';
+    updateExpText('exp-text', 'exp', getPlayerEXP(), expToLevel);
   }
 
 
 
   function updateExpText(elementId, labelText, value, expToLevel) {
     const barText = document.getElementById(elementId);
-    barText.innerText = `${labelText}: ${value}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${expToLevel}`;
+    const roundedEXPValue = getPlayerEXP().toFixed();
+    const roundedEnder = expToLevel;
+    barText.innerText = `${labelText}: ${roundedEXPValue}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\/${roundedEnder}`;
   }
 
   let isUpgradeBoxesAnimated = false;
