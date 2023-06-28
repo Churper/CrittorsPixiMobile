@@ -1509,7 +1509,7 @@ frogWalkTextures =  pufferWalkTextures;
         }
         if (!getAreResetting()) {
           // Adjust app stage position
-          app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x + critter.width / 3 + app.screen.width / 2));
+          app.stage.x = Math.min(0, Math.max(-foreground.width + app.screen.width, -critter.position.x  + app.screen.width / 2));
           app.stage.y = Math.min(0, Math.max(-foreground.height + app.screen.height, -critter.position.y + app.screen.height / 2));
         }
         else { }
