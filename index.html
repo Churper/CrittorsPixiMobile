@@ -2271,7 +2271,7 @@ function setSelectLevel(value) {
     }
     chooseSound.play();
     setSelectLevel(getSelectLevel() - 1);
-    if(getSelectLevel() == 0){
+    if(getSelectLevel() <= 0){
       for (let i = 0; i < upgradeBoxes.length; i++) {
       upgradeBoxes[i].style.visibility = 'hidden';
     }
