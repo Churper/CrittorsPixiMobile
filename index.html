@@ -1431,10 +1431,12 @@ function setSelectLevel(value) {
                 else {
 
                   // console.log("enemies in range");
-                  if (!getisPointerdown()) {
-                    //critter.textures = frogIdleTextures;
-                    // return;
+                  if(critter.textures !=frogIdleTexture)
+                  {
+                  critter.textures = frogIdleTextures;
+                  critter.stop();
                   }
+                 
                 }
               }
               // Update background position for parallax effect
@@ -1442,15 +1444,15 @@ function setSelectLevel(value) {
               // background.position.y = -critter.position.y * 0.2;
 
             }
-            else
-              if ((critter.textures != frogAttackTextures) ) {
-               
-                critter.textures = frogIdleTextures;
-                critter.stop();
-                critter.loop = false;
-                
-              
-              }
+            else{
+           
+              if(critter.textures !=frogIdleTexture)
+                  {
+                  critter.textures = frogIdleTextures;
+                  critter.stop();
+                  }
+               critter.loop = false;
+            }
           }
 
 
