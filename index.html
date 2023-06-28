@@ -1430,7 +1430,8 @@ frogWalkTextures =  pufferWalkTextures;
 
           }
          
-         
+          critter.position.x -= 20;
+          
           setCharSwap(false);
         }
        
@@ -1601,7 +1602,7 @@ frogWalkTextures =  pufferWalkTextures;
 
 
 
-        if (enemy.isAlive && (enemy.position.x - critter.position.x > critter.width / 2) || getisDead()) {
+        if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
           if (app.stage.children.includes(enemy.hpBarBackground)) {
             app.stage.removeChild(enemy.hpBarBackground);
           }
