@@ -964,6 +964,10 @@ function setSelectLevel(value) {
 
 
     PIXI.Loader.shared.add([
+    { name: 'bee_walk', url: 'https://i.imgur.com/Jxke4OH.png' },
+      { name: 'bee_attack', url: 'https://i.imgur.com/toZiN31.png' },
+     { name: 'puffer_walk', url: 'https://i.imgur.com/bPKkQzn.png' },
+      { name: 'puffer_attack', url: 'https://i.imgur.com/j54CxV4.png' },
       { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
       { name: 'snail_portrait', url: 'https://i.imgur.com/Chu3ZkP.png' },
       { name: 'frog_portrait', url: 'https://i.imgur.com/XaXTV73.png' },
@@ -1101,11 +1105,14 @@ function setSelectLevel(value) {
       const snailIdleTextures = createAnimationTextures2('snail_idle', 20, 562, 3560, 2248);
       const snailWalkTextures = createAnimationTextures2('snail_walk', 20, 562, 3560, 2248);
       const snailAttackTextures = createAnimationTextures2('snail_attack', 20, 562, 2848, 3372);
+      const pufferWalkTextures = createAnimationTextures2('puffer_walk', 15, 413, 3705,1239 );
+      const pufferAttackTextures = createAnimationTextures2('puffer_attack', 21, 413, 2223, 2891);
+      const beeWalkTextures = createAnimationTextures2('bee_walk', 9, 256, 2753,256 );
+      const beeAttackTextures = createAnimationTextures2('bee_attack', 18, 256, 1950, 1024);
       const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
       const enemyDeathTextures = createAnimationTextures('enemy_death', 8, 317);
- 
 
       const enemyDeath = createAnimatedSprite(enemyDeathTextures);
 
@@ -1316,7 +1323,6 @@ function setSelectLevel(value) {
 
 
 
-
       function updateVelocity() {
 
         setIsCharAttacking(false);
@@ -1390,20 +1396,40 @@ function setSelectLevel(value) {
         //console.log("isatt:", isAttackingChar);
 
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
-        console.log("getcurrentchat", getCurrentCharacter());
+   
         if (getCharSwap()) {
-          console.log("NOTFROG");
-          if(frogWalkTextures != snailWalkTextures){
+       
+          console.log("getcurrentchat", getCurrentCharacter());
+          if(getCurrentCharacter() === "character-puffer")
+          {
+console.log("SWAP TO PUFF");
+frogWalkTextures =  pufferWalkTextures;
+          frogIdleTextures = pufferWalkTextures;
+          frogAttackTextures =  pufferAttackTextures;
+          }
+          else if ( getCurrentCharacter() === "character-frog"   )
+          
+          {
+            console.log("SWAP TO SNELL");
+          frogWalkTextures =  frogWalkTextures1;
+          frogIdleTextures = frogIdleTextures1;
+          frogAttackTextures =  frogAttackTextures1;
+          }
+          else if ( getCurrentCharacter() === "character-snail"   )
+         {
             frogWalkTextures = snailWalkTextures;
           frogIdleTextures = snailIdleTextures;
           frogAttackTextures = snailAttackTextures;
 
           }
-          else{
-            frogWalkTextures =  frogWalkTextures1;
-          frogIdleTextures = frogIdleTextures1;
-          frogAttackTextures =  frogAttackTextures1;
+          else if ( getCurrentCharacter() === "character-bee"   )
+         {
+            frogWalkTextures = beeWalkTextures;
+          frogIdleTextures = beeWalkTextures;
+          frogAttackTextures = beeAttackTextures;
+
           }
+         
          
           setCharSwap(false);
         }
