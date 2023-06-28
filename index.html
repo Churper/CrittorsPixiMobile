@@ -482,7 +482,15 @@
   document.body.appendChild(app.view);
 
 
+  let charSwap = false;
 
+function getCharSwap() {
+  return charSwap;
+}
+
+function setCharSwap(value) {
+  charSwap = value;
+}
 
   let currentCharacter = "character-frog";
 
@@ -685,7 +693,7 @@ function setSelectLevel(value) {
 
 
   let isCharacterMenuOpen = false; // Flag to track if the character menu is open
-    let selectedCharacter = "character-frog"; // Track the currently selected character
+    let selectedCharacter = getCurrentCharacter(); // Track the currently selected character
     let previousCharacter = ""; // Track the previously selected character
     let characterPositions = {
       "character-snail": {
@@ -742,8 +750,10 @@ function setSelectLevel(value) {
         box.style.visibility = 'hidden';
       });
       isCharacterMenuOpen = false;
-      console.log("uchoose",selectedCharacter)
-      setCurrentCharacter(selectedCharacter);
+      setCharSwap(true);
+      //console.log("uchoose",characterType)
+      setCurrentCharacter(characterType);
+      console.log("uchoose",getCurrentCharacter());
       // Swap positions of the current character box and the previously selected character box
       if (selectedCharacter !== characterType) {
         const currentCharacterBox = document.querySelector('.upgrade-box.' + selectedCharacter);
@@ -761,6 +771,7 @@ function setSelectLevel(value) {
         previousCharacter = ""; // Set previousCharacter to an empty string if the same character is selected again
       }
     }
+
 
     // Add click event listeners to character boxes
     const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
@@ -1076,10 +1087,14 @@ function setSelectLevel(value) {
 
 
 
-      const frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
-      const frogIdleTextures = [frogIdleTexture];
-      const frogWalkTextures = createAnimationTextures('frog_walk', 10, 351);
-      const frogAttackTextures = createAnimationTextures('frog_attack', 12, 351);
+      let frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
+      let frogIdleTextures = [frogIdleTexture];
+       const frogIdleTexture1 = PIXI.Loader.shared.resources['frog'].texture;
+      const frogIdleTextures1 = [frogIdleTexture];
+      let frogWalkTextures = createAnimationTextures('frog_walk', 10, 351);
+      let frogAttackTextures = createAnimationTextures('frog_attack', 12, 351);
+      const frogWalkTextures1 = createAnimationTextures('frog_walk', 10, 351);
+      const frogAttackTextures1 = createAnimationTextures('frog_attack', 12, 351);
       const critterAttackTextures = createAnimationTextures('critter_attack', 13, 266);
       const critterIdleTexture = PIXI.Loader.shared.resources['critter'].texture;
       const critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
@@ -1090,6 +1105,7 @@ function setSelectLevel(value) {
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
       const enemyDeathTextures = createAnimationTextures('enemy_death', 8, 317);
+ 
 
       const enemyDeath = createAnimatedSprite(enemyDeathTextures);
 
@@ -1374,8 +1390,25 @@ function setSelectLevel(value) {
         //console.log("isatt:", isAttackingChar);
 
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
+        console.log("getcurrentchat", getCurrentCharacter());
+        if (getCharSwap()) {
+          console.log("NOTFROG");
+          if(frogWalkTextures != snailWalkTextures){
+            frogWalkTextures = snailWalkTextures;
+          frogIdleTextures = snailIdleTextures;
+          frogAttackTextures = snailAttackTextures;
 
-
+          }
+          else{
+            frogWalkTextures =  frogWalkTextures1;
+          frogIdleTextures = frogIdleTextures1;
+          frogAttackTextures =  frogAttackTextures1;
+          }
+         
+          setCharSwap(false);
+        }
+       
+     
         if (!isAttackingChar) {
           if (!getisDead()) {
             if (!isCombat) {
