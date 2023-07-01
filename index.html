@@ -1818,13 +1818,31 @@ castle.filters = [greyscaleFilter];
 
       }
 
+      function getCharacterSpeed(currentCharacter) {
+    switch (currentCharacter) {
+      case 'character-snail':
+        return getSnailSpeed();
+        break;
+      case 'character-puffer':
+        return getPufferSpeed();
+        break;
+      case 'character-frog':
+        return getFrogSpeed();
+        break;
+      case 'character-bee':
+        return getBeeSpeed();
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
+  }
 
 
       function updateVelocity() {
 
         setIsCharAttacking(false);
-        velocity.x = xDir * getFrogSpeed();
-        velocity.y = yDir * getFrogSpeed();
+        velocity.x = xDir * getCharacterSpeed(getCurrentCharacter());
+        velocity.y = yDir *getCharacterSpeed(getCurrentCharacter());
         // console.log(isMoving);
         if (isMoving) {
           mountainVelocity1.x = mountainVelocityX;
@@ -1942,6 +1960,7 @@ if (app.stage.x === targetX && app.stage.y === targetY) {
       critter.loop = true;
       critter.textures = frogWalkTextures;
       critter.play();
+      setRoundOver(false);
       app.stage.addChild(critter);
 
       // Loop through the enemies array and remove each enemy
@@ -1957,7 +1976,7 @@ if (app.stage.x === targetX && app.stage.y === targetY) {
 
       // Clear the enemies array
       enemies.length = 0;
-     setRoundOver(false);
+    
   return;
 }
 return;
@@ -2485,6 +2504,7 @@ if(getRoundOver() || getisPaused()){return;}
         console.log('Invalid character', currentCharacter);
     }
   }
+
 
 
   function drawHitSplat(enemy) {
@@ -3042,8 +3062,8 @@ critterSpawn.gotoAndPlay(0);
         // Update the display
         stats.speed += 0.5; // Update the speed stat for the current character
         setCharacterSpeed(currentCharacter, stats.speed);
-        //console.log(getCharacterSpeed(currentCharacter));
         setSpeedChanged(true);
+        //console.log(getCharacterSpeed(currentCharacter));
         divElement.textContent = stats.speed.toString();
 
         setSelectLevel(getSelectLevel() - 1);
