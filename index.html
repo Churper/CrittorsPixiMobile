@@ -45,6 +45,18 @@
       font-size: 74px;
       user-select: none;
     }
+    #round-text {
+      visibility: hidden;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: "Marker Felt", cursive;
+      color: black;
+      text-shadow: 0px 0px 12px white;
+      font-size: 74px;
+      user-select: none;
+    }
 
     #pause-button {
       visibility: hidden;
@@ -456,6 +468,7 @@
 <body>
   <div id="game-container">
     <div id="pause-text">paused</div>
+    <div id="round-text">Round 1</div>
     <div id="pause-button" id="coffee-coins"></div>
     <div id="coffee-button"><span id="coffee-amount">x 0</span>
     </div>
@@ -556,7 +569,8 @@
   });
 
   document.body.appendChild(app.view);
-let roundOver = false;
+  let currentRound = 1;
+  let roundOver = false;
   let playerHealth = 100;
   let frogTint = 0;
   let coffee = 0;
@@ -597,6 +611,7 @@ let roundOver = false;
   let isAttackingChar = false;
   let isGameStarted = false;
 
+const attackTint = 0xc62828; // Darker, slightly greyish red tint
   let expToLevel = 100;
   let cooldownActive = false; // Track the cooldown status
   const cooldownDuration = 3000; // Cooldown duration in milliseconds
@@ -640,6 +655,12 @@ let roundOver = false;
     }
   };
 
+function getCurrentRound() {
+    return currentRound;
+  }
+  function setCurrentRound(round) {
+    currentRound = round;
+  }
 
   function getRoundOver() {
     return roundOver;
@@ -1367,7 +1388,7 @@ let roundOver = false;
   playButton.anchor.set(.5, .5);
   playButton.interactive = true;
   playButton.buttonMode = true;
-  playButton.position.set(app.screen.width / 8, app.screen.height / 5);
+  playButton.position.set(app.screen.width / 4.2, app.screen.height / 4.2);
   const hoverScale = 1.2;
 const hoverAlpha = 0.8;
   app.stage.addChild(playButton);
@@ -1399,11 +1420,11 @@ const hoverAlpha = 0.8;
 
     const sound = new Audio();
     sound.src = "./theme.ogg";
-    sound.volume = .02;
+    sound.volume = .22;
     sound.play();
 
     // Game elements and logic 
-    const castleMaxHealth = 100;
+    let castleMaxHealth = 100;
     let castleHealth = castleMaxHealth;
     const LEFT_ARROW_KEYCODE = 37;
     const RIGHT_ARROW_KEYCODE = 39;
@@ -1502,8 +1523,8 @@ const hoverAlpha = 0.8;
       const castleTexture = PIXI.Texture.from('castle');
       const castle = new PIXI.Sprite(castleTexture);
       castle.anchor.set(1, 1);
-      castle.position.set(foreground.width - castle.width * 0.05, app.screen.height - castle.height * 0.15);
-
+      castle.position.set(foreground.width , app.screen.height - castle.height * 0.25);
+      const originalTint = castle.tint;
       const hpBarWidth = 180;
       const hpBarHeight = 16;
 
@@ -1688,7 +1709,7 @@ playerSpawn.tint = desiredColor;
 
           // Perform any additional actions you want here
         }
-
+       
         function handleTouchHold() {
 
           if (getisPaused()) {
@@ -1709,13 +1730,24 @@ playerSpawn.tint = desiredColor;
                 }
                 if (isAttackingChar) {
                   attackAnimationPlayed = true;
-                  attackSound.volume = .1;
+                  attackSound.volume = .25;
                   attackSound.src = "./attacksound.wav";
                   attackSound.play();
 
                   if (critter.position.x > castle.position.x - castle.width / 1.1) {
                     console.log("takingDamage");
-                    castleTakeDamage(10); // Damage calculation
+  // Apply the attack tint
+ // Apply the attack tint
+ const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
+const maxHealth = 100;
+const remainingHealthPercentage = castleHealth / castleMaxHealth;
+const greyscaleFactor = 1 - remainingHealthPercentage;
+
+greyscaleFilter.desaturate(greyscaleFactor);
+
+castle.filters = [greyscaleFilter];
+
+                    castleTakeDamage(getCharacterDamage(getCurrentCharacter())); // Damage calculation
                   }
                   isAttackingChar = false;
                   isMoving = false;
@@ -1819,10 +1851,11 @@ playerSpawn.tint = desiredColor;
       // Damage function
       function castleTakeDamage(damage) {
         castleHealth -= damage;
-        if (castleHealth < 0) {
-          castleHealth = 0;
+        if (castleHealth <= 0) {
           castleExplode();
+          
         }
+       
         updateHPBar(castleHealth, castleMaxHealth);
       }
 
@@ -1883,7 +1916,9 @@ app.stage.y += movementY;
 
 // Return if the camera has reached the target position
 if (app.stage.x === targetX && app.stage.y === targetY) {
-
+  setCurrentRound(getCurrentRound() + 1);
+      playRoundText(getCurrentRound());
+      castle.tint = originalTint;
 
       setEnemiesInRange(0);
       setCharAttackAnimating(false);
@@ -1893,7 +1928,10 @@ if (app.stage.x === targetX && app.stage.y === targetY) {
       setPlayerCurrentHealth(getPlayerHealth());
       updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
       // Reset castle health
-      castleHealth = 100;
+      castleHealth = castleMaxHealth+20;
+      castleMaxHealth = castleHealth;
+      updateHPBar(castleHealth, castleMaxHealth);
+      
       // Remove any existing enemy death sprites
       // Set isCombat and playAgain to false
       isCombat = false;
@@ -2062,7 +2100,7 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
         else { }
       });
       app.stage.removeChild(loadingSprite);
-
+      playRoundText(1);
 
       // document.getElementById("infoboxs").style.visibility = "visible";
       document.getElementById("coffee-button").style.visibility = "visible";
@@ -2325,7 +2363,7 @@ if(getRoundOver() || getisPaused()){return;}
               critter.tint = getFrogTintColor();
             }, flashDuration);
             if (enemy.isAlive) {
-              hitSound.volume = .1;
+              hitSound.volume = .25;
               hitSound.play();
             }
             hasPlayedSound = true;
@@ -2411,7 +2449,7 @@ if(getRoundOver() || getisPaused()){return;}
       critter.textures = frogWalkTextures;
       critter.play();
       app.stage.addChild(critter);
-
+      playRoundText(getCurrentRound());
       // Loop through the enemies array and remove each enemy
       for (let i = 0; i < getEnemies().length; i++) {
         let enemy = getEnemies()[i];
@@ -2708,45 +2746,44 @@ critterSpawn.gotoAndPlay(0);
 
 
   function drawEnemyHPBar(enemy) {
-    const hpBarWidth = enemy.width / 2;
-    const hpBarHeight = 8;
-    const hpBarX = (enemy.x - hpBarWidth / 2) + 25;
-    const hpBarY = enemy.y - enemy.height / 2 - 10;
+  const hpBarWidth = enemy.width / 2;
+  const hpBarHeight = 8;
+  const hpBarX = (enemy.x - hpBarWidth / 2) + 25;
+  const hpBarY = enemy.y - enemy.height / 2 - 10;
 
-    // Remove previous HP bar graphics if they exist
-    if (enemy.hpBarBackground && enemy.hpBar) {
-      app.stage.removeChild(enemy.hpBarBackground);
-      app.stage.removeChild(enemy.hpBar);
-      enemy.hpBarBackground = null;
-      enemy.hpBar = null;
-    }
-
-    if (!getisDead()) {
-      // Create new HP bar graphics
-      enemy.hpBarBackground = new PIXI.Graphics();
-      enemy.hpBarBackground.beginFill(0x000000);
-      enemy.hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-      enemy.hpBarBackground.endFill();
-      app.stage.addChild(enemy.hpBarBackground);
-
-      enemy.hpBar = new PIXI.Graphics();
-      enemy.hpBar.beginFill(0xff0000);
-      enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
-      enemy.hpBar.endFill();
-      app.stage.addChild(enemy.hpBar);
-
-      // Update the HP bar based on the enemy's health
-      const maxHealth = 100; // Replace with actual max health of enemy
-      const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
-      const hpBarRatio = enemy.currentHP / maxHealth;
-      const hpBarWidthActual = hpBarWidth * hpBarRatio;
-      enemy.hpBar.clear();
-      enemy.hpBar.beginFill(0xff0000);
-      enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidthActual, hpBarHeight);
-      enemy.hpBar.endFill();
-    }
+  // Remove previous HP bar graphics if they exist
+  if (enemy.hpBarBackground && enemy.hpBar) {
+    app.stage.removeChild(enemy.hpBarBackground);
+    app.stage.removeChild(enemy.hpBar);
+    enemy.hpBarBackground = null;
+    enemy.hpBar = null;
   }
 
+  if (!getisDead()) {
+    // Create new HP bar graphics
+    enemy.hpBarBackground = new PIXI.Graphics();
+    enemy.hpBarBackground.beginFill(0x000000, 0.5); // Adjust the transparency here (0.0 - fully transparent, 1.0 - fully opaque)
+    enemy.hpBarBackground.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+    enemy.hpBarBackground.endFill();
+    app.stage.addChild(enemy.hpBarBackground);
+
+    enemy.hpBar = new PIXI.Graphics();
+    enemy.hpBar.beginFill(0xff0000, 0.75); // Adjust the transparency here (0.0 - fully transparent, 1.0 - fully opaque)
+    enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
+    enemy.hpBar.endFill();
+    app.stage.addChild(enemy.hpBar);
+
+    // Update the HP bar based on the enemy's health
+    const maxHealth = 100; // Replace with actual max health of enemy
+    const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
+    const hpBarRatio = enemy.currentHP / maxHealth;
+    const hpBarWidthActual = hpBarWidth * hpBarRatio;
+    enemy.hpBar.clear();
+    enemy.hpBar.beginFill(0xff0000, 0.75); // Adjust the transparency here (0.0 - fully transparent, 1.0 - fully opaque)
+    enemy.hpBar.drawRect(hpBarX, hpBarY, hpBarWidthActual, hpBarHeight);
+    enemy.hpBar.endFill();
+  }
+}
 
   function handlePlayClick() {
 
@@ -3045,6 +3082,7 @@ critterSpawn.gotoAndPlay(0);
       default:
         console.log('Invalid upgrade type', upgradeType);
     }
+    chooseSound.volume = .22;
     chooseSound.play();
 
     if (getSelectLevel() <= 0) {
@@ -3110,7 +3148,7 @@ critterSpawn.gotoAndPlay(0);
 
     setSelectLevel(getSelectLevel() + 1);
     animateUpgradeBoxes(critter);
-
+    levelSound.volume = .2;
     levelSound.play();
   }
 
@@ -3133,12 +3171,41 @@ playButton.on('mouseout', () => {
   function handleVisibilityChange() {
   if (document.hidden || document.webkitHidden) {
     // Document is hidden, perform actions here (e.g., pause the game)
-    setIsPaused(true);
+    setisPaused(true);
   } else {
     // Document is visible again, perform actions here (e.g., resume the game)
-    setIsPaused(false);
+    setisPaused(false);
   }
 }
+
+function playRoundText(round) {
+  // Get the element with id "Round-text"
+  var roundText = document.getElementById("round-text");
+
+  // Set the round text
+  roundText.innerHTML = round;
+
+  // Reset opacity and display properties
+  roundText.style.opacity = 1;
+  roundText.style.display = "block";
+
+  // Set the visibility to "visible"
+  roundText.style.visibility = "visible";
+
+  // Fade out the element gradually over 1 second
+  var opacity = 1;
+  var fadeOutInterval = setInterval(function() {
+    if (opacity > 0) {
+      opacity -= 0.01; // Adjust the fade out speed by changing this value
+      roundText.style.opacity = opacity;
+    } else {
+      // When the element is completely faded out, hide it and stop the interval
+      roundText.style.display = "none";
+      clearInterval(fadeOutInterval);
+    }
+  }, 10); // Adjust the interval duration by changing this value
+}
+
 
 // Add event listeners for visibility change
 document.addEventListener("visibilitychange", handleVisibilityChange);
