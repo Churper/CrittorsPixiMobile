@@ -16,11 +16,13 @@
       min-height: 512px;
       height: 100vh;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #game-container {
       position: relative;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #ui-overlay {
@@ -31,6 +33,7 @@
       left: 55%;
       transform: translateX(-50%);
       user-select: none;
+      touch-action: manipulation;
     }
 
     #pause-text {
@@ -44,6 +47,7 @@
       text-shadow: 0px 0px 12px white;
       font-size: 74px;
       user-select: none;
+      touch-action: manipulation;
     }
     #round-text {
       visibility: hidden;
@@ -56,6 +60,7 @@
       text-shadow: 0px 0px 12px white;
       font-size: 74px;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #pause-button {
@@ -72,6 +77,7 @@
       height: 60px;
       cursor: pointer;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #coffee-button {
@@ -96,6 +102,7 @@
       /* Include padding and border in the width */
       padding-right: 5px;
       /* Add padding to align with the right edge */
+      touch-action: manipulation;
     }
 
     #coffee-amount {
@@ -112,6 +119,7 @@
       -webkit-text-stroke-width: 0.4px;
       -webkit-text-stroke-color: #fff;
       -webkit-text-fill-color: #3a2206;
+      touch-action: manipulation;
     }
 
 
@@ -127,6 +135,7 @@
       top: 0px;
       user-select: none;
       filter: sepia(0%);
+      touch-action: manipulation;
 
     }
     .cooldown-overlay {
@@ -141,6 +150,7 @@
   pointer-events: none;
   animation: cooldown 3s linear;
   animation-fill-mode: forwards;
+  touch-action: manipulation;
 }
 
 @keyframes cooldown {
@@ -164,6 +174,7 @@
       text-shadow: 1px 1px .1px rgb(0, 0, 0), 0 0 .1em rgb(0, 0, 255), 0 0 0.1em rgb(255, 0, 0);
       font-size: 12px;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #enemy-portrait {
@@ -179,6 +190,7 @@
       filter: grayscale(0%);
       display: none;
       user-select: none;
+      touch-action: manipulation;
       /* Hide the element by default */
     }
 
@@ -189,12 +201,14 @@
       border: 2px solid #000;
       position: relative;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #health-bar-fill {
       height: 100%;
       background-color: rgba(221, 24, 24, 0.849);
       user-select: none;
+      touch-action: manipulation;
     }
 
     #exp-bar {
@@ -205,6 +219,7 @@
       position: relative;
       margin-top: -2px;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #exp-bar-fill {
@@ -213,6 +228,7 @@
       width: 3%;
       /* Set the initial width to 1% */
       user-select: none;
+      touch-action: manipulation;
     }
 
 
@@ -222,6 +238,7 @@
 
 
     #character-portrait {
+      outline: none;
       width: 46px;
       height: 46px;
       background-image: url("https://i.imgur.com/yzzwAH6.png");
@@ -234,14 +251,17 @@
       user-select: none;
       filter: sepia(0%);
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     #character-portrait.active {
       filter: sepia(100%);
+      touch-action: manipulation;
     }
 
     #character-info.active {
       visibility: visible;
+      touch-action: manipulation;
     }
 
     .bar-text {
@@ -262,9 +282,11 @@
       padding-right: 5px;
       /* Add padding to align with the right edge */
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box {
+      outline: none;
       width: 46px;
       height: 46px;
       position: absolute;
@@ -283,6 +305,7 @@
       cursor: pointer;
       transition: transform 0.2s ease-in-out;
       visibility: hidden;
+      touch-action: manipulation;
 
 
     }
@@ -300,64 +323,78 @@
     }
 
     .upgrade-box.spd-upgrade {
+      outline: none;
       background-color: rgba(214, 214, 37, 0.719);
       top: -50px;
       left: calc(45% - 70px);
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box.hp-upgrade {
+      outline: none;
       background-color: rgba(187, 34, 34, 0.74);
       top: -50px;
       left: calc(45% - 10px);
       /* Reduced spacing */
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite reverse;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box.attack-upgrade {
+      outline: none;
       background-color: rgba(20, 110, 39, 0.74);
       top: -50px;
       left: calc(45% + 50px);
       /* Reduced spacing */
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
       user-select: none;
+      touch-action: manipulation;
     }
 
 
     .upgrade-box.character-snail {
+      outline: none;
       background-color: rgba(151, 22, 112, 0.753);
       top: -50px;
       left: calc(45% - 70px);
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box.character-frog {
+      outline: none;
       background-color: rgba(18, 139, 39, 0.753);
       top: -50px;
       left: calc(45% - 70px);
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box.character-puffer {
+      outline: none;
       background-color: rgba(49, 47, 202, 0.801);
       top: -50px;
       left: calc(45% - 10px);
       /* Reduced spacing */
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite reverse;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .upgrade-box.character-bee {
+      outline: none;
       background-color: rgba(225, 247, 36, 0.74);
       top: -50px;
       left: calc(45% + 50px);
       /* Reduced spacing */
       animation: appear 0.5s ease-in-out forwards, bounce 2s infinite;
       user-select: none;
+      touch-action: manipulation;
     }
     .hp-indicator {
   visibility: inherit;
@@ -366,6 +403,7 @@
   left: 0;
   width: 10%;
   height: 100%;
+  touch-action: manipulation;
   
   background-color: rgba(182, 10, 10, 0.9);
   /* Change the background color to red with opacity 0.5 */
@@ -375,24 +413,28 @@
   --current-health: var(--current-health-snail);
   --max-health: var(--max-health-snail);
   height: calc(100% - var(--hp-indicator-height));
+  touch-action: manipulation;
 }
 
 .upgrade-box.character-puffer .hp-indicator {
   --current-health: var(--current-health-puffer);
   --max-health: var(--max-health-puffer);
   height: calc(100% - var(--hp-indicator-height));
+  touch-action: manipulation;
 }
 
 .upgrade-box.character-bee .hp-indicator {
   --current-health: var(--current-health-bee);
   --max-health: var(--max-health-bee);
   height: calc(100% - var(--hp-indicator-height));
+  touch-action: manipulation;
 }
 
 .upgrade-box.character-frog .hp-indicator {
   --current-health: var(--current-health-frog);
   --max-health: var(--max-health-frog);
   height: calc(100% - var(--hp-indicator-height));
+  touch-action: manipulation;
 }
 
 
@@ -414,6 +456,7 @@
       fill: white;
       /* Fill the text color */
       user-select: none;
+      touch-action: manipulation;
     }
 
     #infoboxes {
@@ -434,6 +477,7 @@
       text-shadow: 1px 1px .1px rgb(0, 0, 0), 0 0 .1em rgb(0, 0, 255), 0 0 0.1em rgb(255, 0, 0);
       font-size: 12px;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .infobox {
