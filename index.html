@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
   <meta charset="utf-8">
   <title>Crittors</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.1.3/browser/pixi.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi-particles/4.0.2/pixi-particles.min.js"></script>
-
-
 
   <style>
     html,
@@ -65,6 +63,7 @@
     }
 
     #coffee-button {
+        visibility: hidden;
       font-family: "Marker Felt", cursive;
       font-weight: bold;
       /* Initially hidden */
@@ -450,16 +449,18 @@
       }
     }
   </style>
+
+
 </head>
 
 <body>
   <div id="game-container">
     <div id="pause-text">paused</div>
-    <div id="pause-button" id="coffee-coins">x 0</div>
+    <div id="pause-button" id="coffee-coins"></div>
     <div id="coffee-button"><span id="coffee-amount">x 0</span>
     </div>
     <div id="ui-overlay">
-      
+
       <div id="infoboxes">
         <div class="infobox">
           <div class="infobox-icon">
@@ -493,7 +494,9 @@
 
       </div>
 
-      <div id="character-portrait"><div id="cooldown-overlay" class="cooldown-overlay"></div>    </div>
+      <div id="character-portrait">
+        <div id="cooldown-overlay" class="cooldown-overlay"></div>
+      </div>
       <div id="enemy-portrait"></div>
       <div id="health-bar">
         <div id="health-bar-fill"></div>
@@ -515,29 +518,29 @@
       <div class="upgrade-box character-snail">
         <div class="hp-indicator"></div>
         <div class="character-icon">🐌</div>
-     
+
       </div>
-      
+
       <div class="upgrade-box character-puffer">
         <div class="hp-indicator"></div>
         <div class="character-icon">🐡</div>
-       
+
       </div>
-      
+
       <div class="upgrade-box character-bee">
         <div class="hp-indicator"></div>
         <div class="character-icon">🐝</div>
-        
+
       </div>
-      
+
       <div class="upgrade-box character-frog">
         <div class="hp-indicator"></div>
         <div class="character-icon">🐸</div>
-        
+
       </div>
-      
-      </div>
+
     </div>
+  </div>
   </div>
 </body>
 
@@ -553,572 +556,71 @@
   });
 
   document.body.appendChild(app.view);
-
- // speed: getSnailSpeed()
-   // attack: getSnailDamage(),
-   // health: getSnailHealth(),
-
-
-  //  speed: getPufferSpeed(),
-   // attack: getPufferDamage(),
-   // health: getPufferHealth(),
-
-
-   // speed: getBeeSpeed(),
-   // attack: getBeeDamage(),
-   // health: getBeeHealth(),
-
-let snailSpeed = 1;
-let snailDamage = 20;
-let snailHealth = 100;
-let snailLevel = 1;
-let beeLevel = 1;
-let pufferLevel = 1;
-let pufferSpeed = 1;
-let pufferDamage = 15;
-let pufferHealth = 100;
-let beeSpeed = 1;
-let beeDamage = 25;
-let beeHealth = 100;
-let frogSpeed = 1;
-let frogDamage = 20;
-let frogHealth = 100;
-let frogLevel = 1;
-let currentFrogHealth = 100;
-let currentSnailHealth = 100;
-let currentBeeHealth = 100;
-let currentPufferHealth = 100;
-
-function getCurrentFrogHealth() {
-  return currentFrogHealth;
-} 
-function setCurrentFrogHealth(health) {
-  currentFrogHealth = health;
-  const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
-  frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentFrogHealth() / getFrogHealth())) * 100}%`);
-}
-
-function setCurrentBeeHealth(health) {
-  currentBeeHealth = health;
-  const beeHpIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
-  beeHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentBeeHealth() / getBeeHealth())) * 100}%`);
-}
-
-function setCurrentSnailHealth(health) {
-  currentSnailHealth = health;
-  const snailHpIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
-  snailHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentSnailHealth() / getSnailHealth())) * 100}%`);
-}
-
-function setCurrentPufferHealth(health) {
-  currentPufferHealth = health;
-  const pufferHpIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
-  pufferHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentPufferHealth() / getPufferHealth())) * 100}%`);
-}
-
-function getCurrentBeeHealth() {
-  return currentBeeHealth;
-}
-
-function getCurrentSnailHealth() {
-  return currentSnailHealth;
-}
-
-function getCurrentPufferHealth() {
-  return currentPufferHealth;
-}
-
-
-// Snail Level Setter and Getter
-function setSnailLevel(level) {
-  snailLevel = level;
-}
-
-function getSnailLevel() {
-  return snailLevel;
-}
-
-// Bee Level Setter and Getter
-function setBeeLevel(level) {
-  beeLevel = level;
-}
-
-function getBeeLevel() {
-  return beeLevel;
-}
-
-// Puffer Level Setter and Getter
-function setPufferLevel(level) {
-  pufferLevel = level;
-}
-
-function getPufferLevel() {
-  return pufferLevel;
-}
-
-
-
-function getSnailSpeed() {
-  return snailSpeed;
-}
-
-function setSnailSpeed(speed) {
-  snailSpeed = speed;
-}
-
-function getSnailDamage() {
-  return snailDamage;
-}
-
-function setSnailDamage(damage) {
-  snailDamage = damage;
-}
-
-
-function getFrogLevel() {
-  return frogLevel;
-}
-
-function setFrogLevel(level) {
-  frogLevel = level;
-}
-
-function getSnailHealth() {
-  return snailHealth;
-}
-
-function setSnailHealth(health) {
-  snailHealth = health;
-}
-
-
-function getPufferSpeed() {
-  return pufferSpeed;
-}
-
-function setPufferSpeed(speed) {
-  pufferSpeed = speed;
-}
-
-function getPufferDamage() {
-  return pufferDamage;
-}
-
-function setPufferDamage(damage) {
-  pufferDamage = damage;
-}
-
-function getPufferHealth() {
-  return pufferHealth;
-}
-
-function setPufferHealth(health) {
-  pufferHealth = health;
-}
-
-
-
-function getBeeSpeed() {
-  return beeSpeed;
-}
-
-function setBeeSpeed(speed) {
-  beeSpeed = speed;
-}
-
-function getBeeDamage() {
-  return beeDamage;
-}
-
-function setBeeDamage(damage) {
-  beeDamage = damage;
-}
-
-function getBeeHealth() {
-  return beeHealth;
-}
-
-function setBeeHealth(health) {
-  beeHealth = health;
-}
-
-
-
-
-function getFrogSpeed() {
-  return frogSpeed;
-}
-
-function setFrogSpeed(speed) {
-  frogSpeed = speed;
-}
-
-function getFrogDamage() {
-  return frogDamage;
-}
-
-function setFrogDamage(damage) {
-  frogDamage = damage;
-}
-
-function getFrogHealth() {
-  return frogHealth;
-}
-
-
-
-function setFrogHealth(health) {
-  frogHealth = health;
-}
-
-
-
-
-
-
-var snailHPIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
-var pufferHPIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
-var beeHPIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
-var frogHPIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
-
-// Calculate the height percentage for each character
-var snailHeightPercentage = (1 - getCurrentSnailHealth() / getSnailHealth()) * 100;
-var pufferHeightPercentage = (1 - getCurrentPufferHealth() / getPufferHealth()) * 100;
-var beeHeightPercentage = (1 - getCurrentBeeHealth() / getBeeHealth()) * 100;
-var frogHeightPercentage = (1 - getCurrentFrogHealth() / getFrogHealth()) * 100;
-
-// Update the custom properties and height for each character
-snailHPIndicator.style.setProperty('--current-health-snail', getCurrentSnailHealth());
-snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
-snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
-
-pufferHPIndicator.style.setProperty('--current-health-puffer', getCurrentPufferHealth());
-pufferHPIndicator.style.setProperty('--max-health-puffer', getPufferHealth());
-pufferHPIndicator.style.setProperty('--hp-indicator-height', pufferHeightPercentage + '%');
-
-beeHPIndicator.style.setProperty('--current-health-bee', getCurrentBeeHealth());
-beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
-beeHPIndicator.style.setProperty('--hp-indicator-height', beeHeightPercentage + '%');
-
-frogHPIndicator.style.setProperty('--current-health-frog', getCurrentFrogHealth());
-frogHPIndicator.style.setProperty('--max-health-frog', getFrogHealth());
-frogHPIndicator.style.setProperty('--hp-indicator-height', frogHeightPercentage + '%');
-
-
-
-
-
-
-
-
-
-
-
-  let charSwap = false;
-
-  function getCharSwap() {
-    return charSwap;
-  }
-
-  function setCharSwap(value) {
-    charSwap = value;
-  }
-
-  let currentCharacter = "character-frog";
-
-  function getCurrentCharacter() {
-    return currentCharacter;
-  }
-
-  function setCurrentCharacter(value) {
-    currentCharacter = value;
-  }
-
-  let frogTint = 0;
-
-  function getFrogTint() {
-    return frogTint;
-  }
-
-  function setFrogTint(value) {
-    frogTint = value;
-  }
-
-  let coffee = 0;
-
-  function getCoffee() {
-    return coffee;
-  }
-
-  function setCoffee(value) {
-    coffee = value;
-  }
-
-
-
-  let frogSize = .35;
-
-  function getFrogSize() {
-    return frogSize;
-  }
-
-  function setFrogSize(value) {
-    frogSize = value;
-  }
-
-  let speed = 1.5;
-
-  function getFrogSpeed() {
-    return speed;
-  }
-
-  function setFrogSpeed(value) {
-    speed = value;
-  }
-
-  let speedChanged = false;
-
-  function getSpeedChanged() {
-    return speedChanged;
-  }
-
-  function setSpeedChanged(value) {
-    speedChanged = value;
-  }
-
-  let selectLevel = 0;
-
-  function getSelectLevel() {
-    return selectLevel;
-  }
-
-  function setSelectLevel(value) {
-    selectLevel = value;
-  }
-
-
-  let frogTintColor = 0xffffff;
-
-  function getFrogTintColor() {
-    return frogTintColor;
-  }
-
-  function setFrogTintColor(value) {
-    frogTintColor = value;
-  }
-
-
-
-
-
-  function getSpeed() {
-    return speed;
-  }
-
-  function setSpeed(value) {
-    speed = value;
-  }
-
-
-
-
-
-
-
+let roundOver = false;
   let playerHealth = 100;
-  function getPlayerHealth() {
-
-
-    switch (getCurrentCharacter()) {
-  case 'character-snail':
-    return getSnailHealth();
-    break;
-  case 'character-puffer':
-return getPufferHealth();
-    break;
-  case 'character-frog':
-return getFrogHealth();
-    break;
-  case 'character-bee':
-return getBeeHealth();
-    break;
-  default:
-    console.log('Invalid character type');
-}
-
-
-    return playerHealth;
-  }
-
-
-
-  
-  function getPlayerCurrentHealth() {
-
-
-switch (getCurrentCharacter()) {
-case 'character-snail':
-return getCurrentSnailHealth();
-break;
-case 'character-puffer':
-return getCurrentPufferHealth();
-break;
-case 'character-frog':
-return getCurrentFrogHealth();
-break;
-case 'character-bee':
-return getCurrentBeeHealth();
-break;
-default:
-console.log('Invalid character type');
-}
-
-
-return playerHealth;
-}
-
-
-  function setPlayerHealth(value) {
-    switch (getCurrentCharacter()) {
-  case 'character-snail':
-      setSnailHealth(value);
-    break;
-  case 'character-puffer':
-setPufferHealth(value);
-    break;
-  case 'character-frog':
-setFrogHealth(value);
-    break;
-  case 'character-bee':
-setBeeHealth(value);
-    break;
-  default:
-    console.log('Invalid character type');
-}
-  }
-
-  function setPlayerCurrentHealth(value) {
-    switch (getCurrentCharacter()) {
-  case 'character-snail':
-      setCurrentSnailHealth(value);
-    break;
-  case 'character-puffer':
-setCurrentPufferHealth(value);
-    break;
-  case 'character-frog':
-setCurrentFrogHealth(value);
-    break;
-  case 'character-bee':
-setCurrentBeeHealth(value);
-    break;
-  default:
-    console.log('Invalid character type');
-}
-  }
-
-  let playerEXP = 0;
-  function getPlayerEXP() {
-    return playerEXP;
-  }
-  function setPlayerEXP(value) {
-    playerEXP = value;
-  }
-
-
-  let isDead = false;
-  function getisDead() {
-    return isDead;
-  }
-
-  function setIsDead(value) {
-    isDead = value;
-  }
-
+  let frogTint = 0;
+  let coffee = 0;
+  let frogSize = .35;
+  let speed = 1.5;
+  let speedChanged = false;
+  let selectLevel = 0;
+  let frogTintColor = 0xffffff;
+  let snailSpeed = 1;
+  let snailDamage = 20;
+  let snailHealth = 100;
+  let snailLevel = 1;
+  let beeLevel = 1;
+  let pufferLevel = 1;
+  let pufferSpeed = 1;
+  let pufferDamage = 15;
+  let pufferHealth = 100;
+  let beeSpeed = 1;
+  let beeDamage = 25;
+  let beeHealth = 100;
+  let frogSpeed = 1;
+  let frogDamage = 20;
+  let frogHealth = 100;
+  let frogLevel = 1;
+  let currentFrogHealth = 100;
+  let currentSnailHealth = 100;
+  let currentBeeHealth = 100;
+  let currentPufferHealth = 100;
+  let charSwap = false;
+  let currentCharacter = "character-frog";
   let isCharAttacking = false;
-  function getIsCharAttacking() {
-    return isCharAttacking;
-  }
-
-  function setIsCharAttacking(value) {
-    isCharAttacking = value;
-  }
-
-  let areResetting = false;
-  function getAreResetting() {
-    return areResetting;
-  }
-
-  function setAreResetting(value) {
-    areResetting = value;
-  }
-
-  let isCharAttackAnimating = false;
-  function getIsCharAttackAnimating() {
-    return isCharAttackAnimating;
-  }
-
-  function setCharAttackAnimating(value) {
-    isCharAttackAnimating = value;
-  }
-
+  let playerEXP = 0;
+  let isDead = false;
   let enemiesInRange = 0;
-  function getEnemiesInRange() {
-    return enemiesInRange;
-  }
-
-  function setEnemiesInRange(value) {
-    enemiesInRange = value;
-  }
-
-
+  let isCharAttackAnimating = false;
+  let areResetting = false;
   let isPaused = false;
-  function getisPaused() {
-    return isPaused;
-  }
+  let isAttackingChar = false;
+  let isGameStarted = false;
 
-  function setisPaused(value) {
-    isPaused = value;
-
-    // Get the pause text element
-    var pauseText = document.getElementById("pause-text");
-
-    // Swap the visibility based on the isPaused value
-    if (isPaused) {
-      pauseText.style.visibility = "visible";
-    } else {
-      pauseText.style.visibility = "hidden";
-    }
-
-  }
-
+  let expToLevel = 100;
   let cooldownActive = false; // Track the cooldown status
-const cooldownDuration = 3000; // Cooldown duration in milliseconds
-
-function isCooldownActive() {
-  return cooldownActive;
-}
-
-function startCooldown() {
-  cooldownActive = true;
-
-  // Show the cooldown overlay
-  const overlayElement = document.getElementById("cooldown-overlay");
-  overlayElement.style.display = "block";
-
-  setTimeout(() => {
-    cooldownActive = false;
-
-    // Hide the cooldown overlay
-    overlayElement.style.display = "none";
-  }, cooldownDuration);
-}
-
-
-
-
+  const cooldownDuration = 3000; // Cooldown duration in milliseconds
+  let stored = 0;
+  let enemies = [];
   let isCharacterMenuOpen = false; // Flag to track if the character menu is open
   let selectedCharacter = getCurrentCharacter(); // Track the currently selected character
   let previousCharacter = ""; // Track the previously selected character
+  const flashDuration = 100; // Adjust as needed (in milliseconds)
+  const flashColor = 0xff5555; // Bright red color
+  const attackSound = new Audio();
+  attackSound.src = "./attacksound.wav";
+  const chooseSound = new Audio();
+  chooseSound.src = "./upgradeavailable.wav";
+  const levelSound = new Audio();
+  levelSound.src = "./levelup.wav";
+  levelSound.volume = .2;
+  const hitSound = new Audio();
+  hitSound.src = "./hurt.wav";
+  let isCombat = false;
+  let playAgain = false;
+  let isPointerDown = false;
+  const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
+  const menuSprite = new PIXI.Sprite(menuTexture);
   let characterPositions = {
     "character-snail": {
       top: "-50px",
@@ -1138,186 +640,664 @@ function startCooldown() {
     }
   };
 
-  document.getElementById("character-portrait").addEventListener("click", function() {
-  if (getSelectLevel() >= 1) {
-    return;
+
+  function getRoundOver() {
+    return roundOver;
+  }
+  function setRoundOver(bool) {
+    roundOver = bool;
+  }
+  function getCurrentFrogHealth() {
+    return currentFrogHealth;
+  }
+  function setCurrentFrogHealth(health) {
+    currentFrogHealth = health;
+    const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
+    frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentFrogHealth() / getFrogHealth())) * 100}%`);
   }
 
-  // Check if there is a cooldown
-  if (isCooldownActive()) {
-    return;
+  function setCurrentBeeHealth(health) {
+    currentBeeHealth = health;
+    const beeHpIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
+    beeHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentBeeHealth() / getBeeHealth())) * 100}%`);
   }
 
-  // Toggle the visibility of the character info boxes
-  const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
+  function setCurrentSnailHealth(health) {
+    currentSnailHealth = health;
+    const snailHpIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
+    snailHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentSnailHealth() / getSnailHealth())) * 100}%`);
+  }
 
-  if (isCharacterMenuOpen) {
+  function setCurrentPufferHealth(health) {
+    currentPufferHealth = health;
+    const pufferHpIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
+    pufferHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentPufferHealth() / getPufferHealth())) * 100}%`);
+  }
+
+  function getCurrentBeeHealth() {
+    return currentBeeHealth;
+  }
+
+  function getCurrentSnailHealth() {
+    return currentSnailHealth;
+  }
+
+  function getCurrentPufferHealth() {
+    return currentPufferHealth;
+  }
+
+  function setSnailLevel(level) {
+    snailLevel = level;
+  }
+
+  function getSnailLevel() {
+    return snailLevel;
+  }
+
+  function setBeeLevel(level) {
+    beeLevel = level;
+  }
+
+  function getBeeLevel() {
+    return beeLevel;
+  }
+
+  function setPufferLevel(level) {
+    pufferLevel = level;
+  }
+
+  function getPufferLevel() {
+    return pufferLevel;
+  }
+
+
+  function getSnailSpeed() {
+    return snailSpeed;
+  }
+
+  function setSnailSpeed(speed) {
+    snailSpeed = speed;
+  }
+
+  function getSnailDamage() {
+    return snailDamage;
+  }
+
+  function setSnailDamage(damage) {
+    snailDamage = damage;
+  }
+
+
+  function getFrogLevel() {
+    return frogLevel;
+  }
+
+  function setFrogLevel(level) {
+    frogLevel = level;
+  }
+
+  function getSnailHealth() {
+    return snailHealth;
+  }
+
+  function setSnailHealth(health) {
+    snailHealth = health;
+  }
+
+
+  function getPufferSpeed() {
+    return pufferSpeed;
+  }
+
+  function setPufferSpeed(speed) {
+    pufferSpeed = speed;
+  }
+
+  function getPufferDamage() {
+    return pufferDamage;
+  }
+
+  function setPufferDamage(damage) {
+    pufferDamage = damage;
+  }
+
+  function getPufferHealth() {
+    return pufferHealth;
+  }
+
+  function setPufferHealth(health) {
+    pufferHealth = health;
+  }
+
+
+
+  function getBeeSpeed() {
+    return beeSpeed;
+  }
+
+  function setBeeSpeed(speed) {
+    beeSpeed = speed;
+  }
+
+  function getBeeDamage() {
+    return beeDamage;
+  }
+
+  function setBeeDamage(damage) {
+    beeDamage = damage;
+  }
+
+  function getBeeHealth() {
+    return beeHealth;
+  }
+
+  function setBeeHealth(health) {
+    beeHealth = health;
+  }
+
+  function getFrogSpeed() {
+    return frogSpeed;
+  }
+
+  function setFrogSpeed(speed) {
+    frogSpeed = speed;
+  }
+
+  function getFrogDamage() {
+    return frogDamage;
+  }
+
+  function setFrogDamage(damage) {
+    frogDamage = damage;
+  }
+
+  function getFrogHealth() {
+    return frogHealth;
+  }
+
+
+
+  function getEnemies() {
+    return enemies;
+  }
+
+  function addEnemies(enemy) {
+    console.log("added an eneymy");
+    return enemies.push(enemy);
+  }
+
+  function clearEnemies(value) {
+    enemies = [];
+  }
+
+
+  function setFrogHealth(health) {
+    frogHealth = health;
+  }
+
+
+  var snailHPIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
+  var pufferHPIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
+  var beeHPIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
+  var frogHPIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
+
+  // Calculate the height percentage for each character
+  var snailHeightPercentage = (1 - getCurrentSnailHealth() / getSnailHealth()) * 100;
+  var pufferHeightPercentage = (1 - getCurrentPufferHealth() / getPufferHealth()) * 100;
+  var beeHeightPercentage = (1 - getCurrentBeeHealth() / getBeeHealth()) * 100;
+  var frogHeightPercentage = (1 - getCurrentFrogHealth() / getFrogHealth()) * 100;
+
+  // Update the custom properties and height for each character
+  snailHPIndicator.style.setProperty('--current-health-snail', getCurrentSnailHealth());
+  snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
+  snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
+
+  pufferHPIndicator.style.setProperty('--current-health-puffer', getCurrentPufferHealth());
+  pufferHPIndicator.style.setProperty('--max-health-puffer', getPufferHealth());
+  pufferHPIndicator.style.setProperty('--hp-indicator-height', pufferHeightPercentage + '%');
+
+  beeHPIndicator.style.setProperty('--current-health-bee', getCurrentBeeHealth());
+  beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
+  beeHPIndicator.style.setProperty('--hp-indicator-height', beeHeightPercentage + '%');
+
+  frogHPIndicator.style.setProperty('--current-health-frog', getCurrentFrogHealth());
+  frogHPIndicator.style.setProperty('--max-health-frog', getFrogHealth());
+  frogHPIndicator.style.setProperty('--hp-indicator-height', frogHeightPercentage + '%');
+
+  function getCharSwap() {
+    return charSwap;
+  }
+
+  function setCharSwap(value) {
+    charSwap = value;
+  }
+
+  function getCurrentCharacter() {
+    return currentCharacter;
+  }
+
+  function setCurrentCharacter(value) {
+    currentCharacter = value;
+  }
+
+  function getFrogTint() {
+    return frogTint;
+  }
+
+  function setFrogTint(value) {
+    frogTint = value;
+  }
+
+
+  function getCoffee() {
+    return coffee;
+  }
+
+  function setCoffee(value) {
+    coffee = value;
+  }
+
+
+
+  function getFrogSize() {
+    return frogSize;
+  }
+
+  function setFrogSize(value) {
+    frogSize = value;
+  }
+
+
+
+  function getFrogSpeed() {
+    return speed;
+  }
+
+  function setFrogSpeed(value) {
+    speed = value;
+  }
+
+
+
+  function getSpeedChanged() {
+    return speedChanged;
+  }
+
+  function setSpeedChanged(value) {
+    speedChanged = value;
+  }
+
+
+
+  function getSelectLevel() {
+    return selectLevel;
+  }
+
+  function setSelectLevel(value) {
+    selectLevel = value;
+  }
+
+
+
+
+  function getFrogTintColor() {
+    return frogTintColor;
+  }
+
+  function setFrogTintColor(value) {
+    frogTintColor = value;
+  }
+
+
+  function getSpeed() {
+    return speed;
+  }
+
+  function setSpeed(value) {
+    speed = value;
+  }
+
+
+
+  function getPlayerHealth() {
+
+
+    switch (getCurrentCharacter()) {
+      case 'character-snail':
+        return getSnailHealth();
+        break;
+      case 'character-puffer':
+        return getPufferHealth();
+        break;
+      case 'character-frog':
+        return getFrogHealth();
+        break;
+      case 'character-bee':
+        return getBeeHealth();
+        break;
+      default:
+        console.log('Invalid character type');
+    }
+
+
+    return playerHealth;
+  }
+
+
+
+
+  function getPlayerCurrentHealth() {
+
+
+    switch (getCurrentCharacter()) {
+      case 'character-snail':
+        return getCurrentSnailHealth();
+        break;
+      case 'character-puffer':
+        return getCurrentPufferHealth();
+        break;
+      case 'character-frog':
+        return getCurrentFrogHealth();
+        break;
+      case 'character-bee':
+        return getCurrentBeeHealth();
+        break;
+      default:
+        console.log('Invalid character type');
+    }
+
+
+    return playerHealth;
+  }
+
+
+  function setPlayerHealth(value) {
+    switch (getCurrentCharacter()) {
+      case 'character-snail':
+        setSnailHealth(value);
+        break;
+      case 'character-puffer':
+        setPufferHealth(value);
+        break;
+      case 'character-frog':
+        setFrogHealth(value);
+        break;
+      case 'character-bee':
+        setBeeHealth(value);
+        break;
+      default:
+        console.log('Invalid character type');
+    }
+  }
+
+  function setPlayerCurrentHealth(value) {
+    switch (getCurrentCharacter()) {
+      case 'character-snail':
+        setCurrentSnailHealth(value);
+        break;
+      case 'character-puffer':
+        setCurrentPufferHealth(value);
+        break;
+      case 'character-frog':
+        setCurrentFrogHealth(value);
+        break;
+      case 'character-bee':
+        setCurrentBeeHealth(value);
+        break;
+      default:
+        console.log('Invalid character type');
+    }
+  }
+
+
+  function getPlayerEXP() {
+    return playerEXP;
+  }
+  function setPlayerEXP(value) {
+    playerEXP = value;
+  }
+
+  function getisDead() {
+    return isDead;
+  }
+
+  function setIsDead(value) {
+    isDead = value;
+  }
+
+
+  function getIsCharAttacking() {
+    return isCharAttacking;
+  }
+
+  function setIsCharAttacking(value) {
+    isCharAttacking = value;
+  }
+
+  function getAreResetting() {
+    return areResetting;
+  }
+
+  function setAreResetting(value) {
+    areResetting = value;
+  }
+
+
+  function getIsCharAttackAnimating() {
+    return isCharAttackAnimating;
+  }
+
+  function setCharAttackAnimating(value) {
+    isCharAttackAnimating = value;
+  }
+
+
+  function getEnemiesInRange() {
+    return enemiesInRange;
+  }
+
+  function setEnemiesInRange(value) {
+    enemiesInRange = value;
+  }
+
+
+
+  function getisPaused() {
+    return isPaused;
+  }
+
+  function setisPaused(value) {
+    isPaused = value;
+
+    // Get the pause text element
+    var pauseText = document.getElementById("pause-text");
+
+    // Swap the visibility based on the isPaused value
+    if (isPaused) {
+      pauseText.style.visibility = "visible";
+    } else {
+      pauseText.style.visibility = "hidden";
+    }
+
+  }
+
+
+  function isCooldownActive() {
+    return cooldownActive;
+  }
+
+  function startCooldown() {
+    cooldownActive = true;
+
+    // Show the cooldown overlay
+    const overlayElement = document.getElementById("cooldown-overlay");
+    overlayElement.style.display = "block";
+
+    setTimeout(() => {
+      cooldownActive = false;
+
+      // Hide the cooldown overlay
+      overlayElement.style.display = "none";
+    }, cooldownDuration);
+  }
+
+
+
+
+  document.getElementById("character-portrait").addEventListener("click", function () {
+    if (getSelectLevel() >= 1) {
+      return;
+    }
+
+    // Check if there is a cooldown
+    if (isCooldownActive()) {
+      return;
+    }
+
+    // Toggle the visibility of the character info boxes
+    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
+
+    if (isCharacterMenuOpen) {
+      characterBoxes.forEach((box) => {
+        box.style.visibility = 'hidden';
+      });
+      isCharacterMenuOpen = false;
+    } else {
+      characterBoxes.forEach((box) => {
+        if (selectedCharacter !== "" && box.classList.contains(selectedCharacter)) {
+          box.style.visibility = 'hidden';
+        } else {
+          box.style.visibility = 'visible';
+        }
+      });
+      isCharacterMenuOpen = true;
+    }
+
+    // Start the cooldown
+
+  });
+
+  function handleCharacterClick(characterType) {
+    // Swap character portraits
+    const characterPortrait = document.getElementById("character-portrait");
+    characterPortrait.style.backgroundImage = `url('${getCharacterPortraitUrl(characterType)}')`;
+    characterPortrait.classList.remove("character-snail", "character-puffer", "character-bee", "character-frog");
+    characterPortrait.classList.add(characterType);
+
+
+    // Close the character menu
+    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
     characterBoxes.forEach((box) => {
       box.style.visibility = 'hidden';
     });
     isCharacterMenuOpen = false;
-  } else {
-    characterBoxes.forEach((box) => {
-      if (selectedCharacter !== "" && box.classList.contains(selectedCharacter)) {
-        box.style.visibility = 'hidden';
-      } else {
-        box.style.visibility = 'visible';
+    setCharSwap(true);
+
+    setCurrentCharacter(characterType);
+
+    // Swap positions of the current character box and the previously selected character box
+    if (selectedCharacter !== characterType) {
+      const characterLevelElement = document.getElementById("character-level");
+      var updateLightning = document.getElementById("lightning-level");
+      var updateHP = document.getElementById("heart-level");
+      var updateDamage = document.getElementById("swords-level");
+
+
+      let level;
+
+      switch (characterType) {
+        case 'character-snail':
+          level = getSnailLevel();
+
+          updateLightning.textContent = getSnailSpeed().toString();
+          updateHP.textContent = getSnailHealth().toString();
+          updateDamage.textContent = getSnailDamage().toString();
+          break;
+        case 'character-puffer':
+          level = getPufferLevel();
+          updateLightning.textContent = getPufferSpeed().toString();
+          updateHP.textContent = getPufferHealth().toString();
+          updateDamage.textContent = getPufferDamage().toString();
+
+          break;
+        case 'character-frog':
+          level = getFrogLevel();
+          updateLightning.textContent = getFrogSpeed().toString();
+          updateHP.textContent = getFrogHealth().toString();
+          updateDamage.textContent = getFrogDamage().toString();
+          break;
+        case 'character-bee':
+          level = getBeeLevel();
+          updateLightning.textContent = getBeeSpeed().toString();
+          updateHP.textContent = getBeeHealth().toString();
+          updateDamage.textContent = getBeeDamage().toString();
+          break;
+        default:
+          console.log('Invalid character', characterType);
+          return;
       }
-    });
-    isCharacterMenuOpen = true;
+      startCooldown();
+      updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
+      characterLevelElement.textContent = 'Lvl. ' + level;
+
+      const currentCharacterBox = document.querySelector('.upgrade-box.' + selectedCharacter);
+      const prevCharacterBox = document.querySelector('.upgrade-box.' + characterType);
+      const tempPosition = { ...characterPositions[selectedCharacter] };
+
+      currentCharacterBox.style.top = characterPositions[characterType].top;
+      currentCharacterBox.style.left = characterPositions[characterType].left;
+      characterPositions[selectedCharacter] = characterPositions[characterType];
+      characterPositions[characterType] = tempPosition;
+
+      previousCharacter = selectedCharacter;
+      selectedCharacter = characterType;
+    } else {
+      previousCharacter = ""; // Set previousCharacter to an empty string if the same character is selected again
+    }
+
+    updateCharacterStats(); // Update the stats for the new character
   }
 
-  // Start the cooldown
-  
-});
-
-  function handleCharacterClick(characterType) {
-  // Swap character portraits
-  const characterPortrait = document.getElementById("character-portrait");
-  characterPortrait.style.backgroundImage = `url('${getCharacterPortraitUrl(characterType)}')`;
-  characterPortrait.classList.remove("character-snail", "character-puffer", "character-bee", "character-frog");
-  characterPortrait.classList.add(characterType);
 
 
 
-
-  
-  // Close the character menu
-  const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
-  characterBoxes.forEach((box) => {
-    box.style.visibility = 'hidden';
-  });
-  isCharacterMenuOpen = false;
-  setCharSwap(true);
-
-  setCurrentCharacter(characterType);
-
-  // Swap positions of the current character box and the previously selected character box
-  if (selectedCharacter !== characterType) {
-    const characterLevelElement = document.getElementById("character-level");
-    var updateLightning = document.getElementById("lightning-level");
-    var updateHP = document.getElementById("heart-level");
-    var updateDamage = document.getElementById("swords-level");
-
-
-    let level;
-
-    switch (characterType) {
+  function updateCharacterStats() {
+    switch (selectedCharacter) {
       case 'character-snail':
-        level = getSnailLevel();
-        
-updateLightning.textContent = getSnailSpeed().toString();
-updateHP.textContent = getSnailHealth().toString();
-updateDamage.textContent = getSnailDamage().toString();
+        // Update stats for character-snail
+        setSnailSpeed(getSnailSpeed());
+        setSnailDamage(getSnailDamage());
+        setSnailHealth(getSnailHealth());
+        // Additional logic or actions specific to character-snail
         break;
       case 'character-puffer':
-        level = getPufferLevel();
-        updateLightning.textContent = getPufferSpeed().toString();
-        updateHP.textContent = getPufferHealth().toString();
-        updateDamage.textContent = getPufferDamage().toString();
-
+        // Update stats for character-puffer
+        setPufferSpeed(getPufferSpeed());
+        setPufferDamage(getPufferDamage());
+        setPufferHealth(getPufferHealth());
+        // Additional logic or actions specific to character-puffer
         break;
       case 'character-frog':
-        level = getFrogLevel();
-        updateLightning.textContent = getFrogSpeed().toString();
-        updateHP.textContent = getFrogHealth().toString();
-        updateDamage.textContent = getFrogDamage().toString();
+        // Update stats for character-frog
+        setFrogSpeed(getFrogSpeed());
+        setFrogDamage(getFrogDamage());
+        setFrogHealth(getFrogHealth());
+        // Additional logic or actions specific to character-frog
         break;
       case 'character-bee':
-        level = getBeeLevel();
-        updateLightning.textContent = getBeeSpeed().toString();
-        updateHP.textContent = getBeeHealth().toString();
-        updateDamage.textContent = getBeeDamage().toString();
+        // Update stats for character-bee
+        setBeeSpeed(getBeeSpeed());
+        setBeeDamage(getBeeDamage());
+        setBeeHealth(getBeeHealth());
+        // Additional logic or actions specific to character-bee
         break;
       default:
-        console.log('Invalid character', characterType);
-        return;
+        console.log('Invalid character type', selectedCharacter);
     }
-    startCooldown();
-    updatePlayerHealthBar((getPlayerCurrentHealth()/ getPlayerHealth() * 100));
-    characterLevelElement.textContent = 'Lvl. ' + level;
 
-    const currentCharacterBox = document.querySelector('.upgrade-box.' + selectedCharacter);
-    const prevCharacterBox = document.querySelector('.upgrade-box.' + characterType);
-    const tempPosition = { ...characterPositions[selectedCharacter] };
-
-    currentCharacterBox.style.top = characterPositions[characterType].top;
-    currentCharacterBox.style.left = characterPositions[characterType].left;
-    characterPositions[selectedCharacter] = characterPositions[characterType];
-    characterPositions[characterType] = tempPosition;
-
-    previousCharacter = selectedCharacter;
-    selectedCharacter = characterType;
-  } else {
-    previousCharacter = ""; // Set previousCharacter to an empty string if the same character is selected again
+    // Update the display or perform any other actions based on the updated stats
+    // ...
   }
-
-  updateCharacterStats(); // Update the stats for the new character
-}
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function updateCharacterStats() {
-  switch (selectedCharacter) {
-    case 'character-snail':
-      // Update stats for character-snail
-      setSnailSpeed(getSnailSpeed());
-      setSnailDamage(getSnailDamage());
-      setSnailHealth(getSnailHealth());
-      // Additional logic or actions specific to character-snail
-      break;
-    case 'character-puffer':
-      // Update stats for character-puffer
-      setPufferSpeed(getPufferSpeed());
-      setPufferDamage(getPufferDamage());
-      setPufferHealth(getPufferHealth());
-      // Additional logic or actions specific to character-puffer
-      break;
-    case 'character-frog':
-      // Update stats for character-frog
-      setFrogSpeed(getFrogSpeed());
-      setFrogDamage(getFrogDamage());
-      setFrogHealth(getFrogHealth());
-      // Additional logic or actions specific to character-frog
-      break;
-    case 'character-bee':
-      // Update stats for character-bee
-      setBeeSpeed(getBeeSpeed());
-      setBeeDamage(getBeeDamage());
-      setBeeHealth(getBeeHealth());
-      // Additional logic or actions specific to character-bee
-      break;
-    default:
-      console.log('Invalid character type', selectedCharacter);
-  }
-
-  // Update the display or perform any other actions based on the updated stats
-  // ...
-}
 
 
 
@@ -1327,10 +1307,8 @@ function updateCharacterStats() {
   characterBoxes.forEach((box) => {
     box.addEventListener('click', function () {
       const characterType = box.classList[1];
-      console.log("GETSELECT",getSelectLevel());
+      handleCharacterClick(characterType);
 
-        handleCharacterClick(characterType);
-      
     });
   });
 
@@ -1349,26 +1327,6 @@ function updateCharacterStats() {
         return '';
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -1398,81 +1356,32 @@ function updateCharacterStats() {
     });
   });
 
-
-
-  let stored = 0;
-  let enemies = [];
-
-  function getEnemies() {
-    return enemies;
-  }
-
-  function addEnemies(enemy) {
-    console.log("added an eneymy");
-    return enemies.push(enemy);
-  }
-
-  function clearEnemies(value) {
-    enemies = [];
-  }
-
-  let isAttackingChar = false;
-  let isGameStarted = false;
-  let playerMaxHP = getFrogHealth();
-  let playerHP = getFrogHealth();
-
-  let expToLevel = 100;
-  const flashDuration = 100; // Adjust as needed (in milliseconds)
-  const flashColor = 0xff5555; // Bright red color
-  const attackSound = new Audio();
-  attackSound.src = "./attacksound.wav";
-  const chooseSound = new Audio();
-  chooseSound.src = "./upgradeavailable.wav";
-  const levelSound = new Audio();
-  levelSound.src = "./levelup.wav";
-  const hitSound = new Audio();
-  hitSound.src = "./hurt.wav";
-  let isCombat = false;
-  let playAgain = false;
-  const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
-  const menuSprite = new PIXI.Sprite(menuTexture);
   menuSprite.anchor.set(0.5);
   menuSprite.width = app.screen.width;
   menuSprite.height = app.screen.height - 26;
   menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
   app.stage.addChild(menuSprite);
   document.body.appendChild(app.view);
+  const playButtonTexture = PIXI.Texture.from('https://i.imgur.com/5zdfKQG.png');
+  const playButton = new PIXI.Sprite(playButtonTexture);
+  playButton.anchor.set(.5, .5);
+  playButton.interactive = true;
+  playButton.buttonMode = true;
+  playButton.position.set(app.screen.width / 8, app.screen.height / 5);
+  const hoverScale = 1.2;
+const hoverAlpha = 0.8;
+  app.stage.addChild(playButton);
 
-  const frogPortraitTexture = PIXI.Texture.from('https://i.imgur.com/5zdfKQG.png');
-  const frogPortrait = new PIXI.Sprite(frogPortraitTexture);
-  frogPortrait.anchor.set(0, 0);
-  frogPortrait.interactive = true;
-  frogPortrait.buttonMode = true;
-  frogPortrait.position.set(app.screen.width / 8, app.screen.height / 4);
-  app.stage.addChild(frogPortrait);
-  let isFrog = false;
-
-
-  let isPointerDown = false;
   function getisPointerdown() {
     return isPointerDown;
   }
 
   function startGame() {
 
-
-
-
     window.addEventListener('blur', () => {
 
       setisPaused(true);
-
-      // Add code to pause the game logic here
     });
-
-
-
-
 
     const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
     const loadingSprite = new PIXI.Sprite(loadingTexture);
@@ -1485,7 +1394,7 @@ function updateCharacterStats() {
     loadingSprite.alpha = 1; // Start fully opaque
 
     app.stage.removeChild(menuSprite);
-    app.stage.removeChild(frogPortrait);
+    app.stage.removeChild(playButton);
     app.stage.addChild(loadingSprite);
 
     const sound = new Audio();
@@ -1515,10 +1424,9 @@ function updateCharacterStats() {
 
 
     PIXI.Loader.shared.add([
-    { name: 'frog_snail', url: 'https://i.imgur.com/ekpSpFg.png' },
-    { name: 'frog_bee', url: 'https://i.imgur.com/bUw6K0K.png' },
-    { name: 'frog_puffer', url: 'https://i.imgur.com/fBWKqfA.png' },
-
+      { name: 'frog_snail', url: 'https://i.imgur.com/ekpSpFg.png' },
+      { name: 'frog_bee', url: 'https://i.imgur.com/bUw6K0K.png' },
+      { name: 'frog_puffer', url: 'https://i.imgur.com/fBWKqfA.png' },
       { name: 'bee_walk', url: 'https://i.imgur.com/Jxke4OH.png' },
       { name: 'bee_attack', url: 'https://i.imgur.com/toZiN31.png' },
       { name: 'puffer_walk', url: 'https://i.imgur.com/bPKkQzn.png' },
@@ -1548,12 +1456,7 @@ function updateCharacterStats() {
     ]).load(setup);
 
 
-
-
-
-
     function setup() {
-
 
       const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
       const background = new PIXI.Sprite(backgroundTexture);
@@ -1668,9 +1571,8 @@ function updateCharacterStats() {
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
       const enemyDeathTextures = createAnimationTextures('enemy_death', 8, 317);
-
       const enemyDeath = createAnimatedSprite(enemyDeathTextures);
-
+      const playerSpawn = createAnimatedSprite(enemyDeathTextures);
 
       let characterTextures;
       // const frogWalkTextures = 
@@ -1683,7 +1585,15 @@ function updateCharacterStats() {
       critter.textures = frogWalkTextures;
       critter.loop = true;
       critter.play();
+// Define the desired color in hexadecimal format
+const desiredColor = 0x00ff00; // Green color
 
+// Apply the color filter to the sprite
+playerSpawn.tint = desiredColor;
+      playerSpawn.animationSpeed = 0.175;
+      playerSpawn.loop = false;
+      playerSpawn.anchor.set(.65, 0.2);
+      playerSpawn.scale.set(0.35);
 
       enemyDeath.animationSpeed = 0.175;
       enemyDeath.loop = false;
@@ -1917,7 +1827,7 @@ function updateCharacterStats() {
       }
 
       function castleExplode() {
-
+setRoundOver(true);
       }
 
       let unPauser = 0;
@@ -1951,39 +1861,111 @@ function updateCharacterStats() {
           return;
         }
         //console.log("isatt:", isAttackingChar);
+if(getRoundOver()){
+// Calculate the amount to move the camera per frame
+const cameraSpeed = 3;
 
+// Calculate the target position (start position)
+const targetX = 0;
+const targetY = 0;
+
+// Calculate the distance between the current position and the target position
+const distanceX = targetX - app.stage.x;
+const distanceY = targetY - app.stage.y;
+
+// Calculate the movement for this frame
+const movementX = Math.sign(distanceX) * Math.min(Math.abs(distanceX), cameraSpeed);
+const movementY = Math.sign(distanceY) * Math.min(Math.abs(distanceY), cameraSpeed);
+
+// Update the camera position
+app.stage.x += movementX;
+app.stage.y += movementY;
+
+// Return if the camera has reached the target position
+if (app.stage.x === targetX && app.stage.y === targetY) {
+
+
+      setEnemiesInRange(0);
+      setCharAttackAnimating(false);
+      setIsCharAttacking(false);
+      app.stage.removeChild(frogGhostPlayer);
+      critter.position.set(app.screen.width / 20, stored);
+      setPlayerCurrentHealth(getPlayerHealth());
+      updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
+      // Reset castle health
+      castleHealth = 100;
+      // Remove any existing enemy death sprites
+      // Set isCombat and playAgain to false
+      isCombat = false;
+      const enemyPortrait = document.getElementById('enemy-portrait');
+      enemyPortrait.style.display = 'none'; // Make the element visible
+      playAgain = false;
+      setIsDead(false);
+      critter.loop = true;
+      critter.textures = frogWalkTextures;
+      critter.play();
+      app.stage.addChild(critter);
+
+      // Loop through the enemies array and remove each enemy
+      for (let i = 0; i < getEnemies().length; i++) {
+        let enemy = getEnemies()[i];
+        // console.log(i);
+        app.stage.removeChild(enemy);
+        app.stage.removeChild(enemy.hpBar);
+        app.stage.removeChild(enemy.hpBarBackground);
+        // Destroy the enemy object to free up memory
+
+      }
+
+      // Clear the enemies array
+      enemies.length = 0;
+     setRoundOver(false);
+  return;
+}
+return;
+}
 
 
         if (getCharSwap()) {
-
           console.log("getcurrentchat", getCurrentCharacter());
           if (getCurrentCharacter() === "character-puffer") {
-            console.log("SWAP TO PUFF");
+            playerSpawn.tint = 0x0000ff; // Blue
+            playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
+            playSpawnAnimation(critter,playerSpawn);
             frogWalkTextures = pufferWalkTextures;
             frogIdleTextures = pufferWalkTextures;
             frogAttackTextures = pufferAttackTextures;
           }
           else if (getCurrentCharacter() === "character-frog") {
             console.log("SWAP TO SNELL");
+            playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
+            playerSpawn.tint = 0x00ff80; // Light green
+
+            playSpawnAnimation(critter,playerSpawn);
             frogWalkTextures = frogWalkTextures1;
             frogIdleTextures = frogIdleTextures1;
             frogAttackTextures = frogAttackTextures1;
           }
           else if (getCurrentCharacter() === "character-snail") {
+            playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
+            playerSpawn.tint = 0x800080; // Dark purple
+            playSpawnAnimation(critter,playerSpawn);
             frogWalkTextures = snailWalkTextures;
             frogIdleTextures = snailWalkTextures;
             frogAttackTextures = snailAttackTextures;
 
           }
           else if (getCurrentCharacter() === "character-bee") {
+            playerSpawn.tint = 0xffff00; // Yellow
+ 
+playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
+            playSpawnAnimation(critter,playerSpawn);
             frogWalkTextures = beeWalkTextures;
             frogIdleTextures = beeWalkTextures;
             frogAttackTextures = beeAttackTextures;
 
           }
-
           critter.position.x -= 20;
-
           setCharSwap(false);
           return;
         }
@@ -2000,14 +1982,11 @@ function updateCharacterStats() {
                 if (getEnemiesInRange() === 0) {
 
 
-                  if(getCurrentCharacter() != "character-snail")
-                  {
+                  if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
                   }
-                  else
-                  {
-                    if (critter.currentFrame > critter.totalFrames  /  2) 
-                    {
+                  else {
+                    if (critter.currentFrame > critter.totalFrames / 2) {
                       critter.position.x += velocity.x + 1;
                     }
                   }
@@ -2072,7 +2051,7 @@ function updateCharacterStats() {
         clouds.position.x -= cloudSpeed;
 
         // Check if cloud has gone offscreen and move it to the right side
-        if (clouds.x + clouds.width / 2 < 0) {
+        if (clouds.x + clouds.width / 2 < -700) {
           clouds.x = app.screen.width + clouds.width / 2;
         }
         if (!getAreResetting()) {
@@ -2086,6 +2065,7 @@ function updateCharacterStats() {
 
 
       // document.getElementById("infoboxs").style.visibility = "visible";
+      document.getElementById("coffee-button").style.visibility = "visible";
       document.getElementById("infoboxes").style.visibility = "visible";
       document.getElementById("ui-overlay").style.visibility = "visible";
       document.getElementById("pause-button").style.visibility = "visible";
@@ -2158,24 +2138,16 @@ function updateCharacterStats() {
     let runOnce = 0;
 
     app.ticker.add(() => {
-      if (getisPaused()) {
+      if (getisPaused() || getRoundOver()) {
         // Game is paused, skip logic
         return;
       }
+      
 
       if (app.stage.children.includes(enemy)) {
 
-
-
-
-
         if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
-          if (app.stage.children.includes(enemy.hpBarBackground)) {
-            app.stage.removeChild(enemy.hpBarBackground);
-          }
-          if (app.stage.children.includes(enemy.hpBar)) {
-            app.stage.removeChild(enemy.hpBar);
-          }
+
           if (enemy.visible && enemy.textures !== critterWalkTextures) {
             // enemy.textures = critterWalkTextures;
             enemy.play();
@@ -2194,46 +2166,17 @@ function updateCharacterStats() {
           }
           if (!enemyAdded) {
             setEnemiesInRange(getEnemiesInRange() + 1);
-            // console.log("animating?", getIsCharAttackAnimating());
-
-            if (!getisPointerdown() && !getisDead() && !getIsCharAttackAnimating()) {
-
-
-
-              critter.textures = frogIdleTextures;
-              critter.play();
-
-
-
-            }
             enemyAdded = true;
           }
-
           if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
             if (!isCombat) {
               const enemyPortrait = document.getElementById('enemy-portrait');
               updateEnemyGrayscale(100);
               enemyPortrait.style.display = 'block'; // Make the element visible
             }
-
             isAttacking = true;
             isCombat = true;
-
-            handleEnemyAttacking(
-              enemy,
-              critterAttackTextures,
-              critter,
-              frogAttackTextures,
-              enemyDeath,
-              snailAttackTextures,
-              frogIdleTextures,
-              snailIdleTextures,
-              frogGhostTextures,
-              critterWalkTextures,
-              frogGhostPlayer,
-              frogWalkTextures,
-              background
-            );
+            handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
             if (enemy.isAlive && !getisDead()) {
               //console.log("here");
               drawEnemyHPBar(enemy);
@@ -2283,20 +2226,20 @@ function updateCharacterStats() {
     var currentCharacter = getCurrentCharacter();
 
     switch (currentCharacter) {
-        case "character-snail":
-            frogGhostPlayer.texture = PIXI.Texture.from("frog_snail");
-            break;
-        case "character-bee":
-            frogGhostPlayer.texture = PIXI.Texture.from("frog_bee");
-            break;
-        case "character-puffer":
-            frogGhostPlayer.texture = PIXI.Texture.from("frog_puffer");
-            break;
+      case "character-snail":
+        frogGhostPlayer.texture = PIXI.Texture.from("frog_snail");
+        break;
+      case "character-bee":
+        frogGhostPlayer.texture = PIXI.Texture.from("frog_bee");
+        break;
+      case "character-puffer":
+        frogGhostPlayer.texture = PIXI.Texture.from("frog_puffer");
+        break;
 
-        default:
-            // Use a default texture if the character is not recognized
-            frogGhostPlayer.texture = PIXI.Texture.EMPTY;
-            break;
+      default:
+        // Use a default texture if the character is not recognized
+        frogGhostPlayer.texture = PIXI.Texture.from("frog_ghost");
+        break;
     }
 
     app.stage.addChild(frogGhostPlayer);
@@ -2309,65 +2252,23 @@ function updateCharacterStats() {
     let wobbleDamping = 0.99; // damping factor of the wobble
 
     let moveInterval = setInterval(() => {
-        frogGhostPlayer.y -= speed;
-        let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
-        frogGhostPlayer.x += wobbleOffset;
-        wobbleAmplitude *= wobbleDamping;
-        if (frogGhostPlayer.y <= targetY) {
-            frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
-            resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures, background);
-            clearInterval(moveInterval);
-        }
+      frogGhostPlayer.y -= speed;
+      let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
+      frogGhostPlayer.x += wobbleOffset;
+      wobbleAmplitude *= wobbleDamping;
+      if (frogGhostPlayer.y <= targetY) {
+        frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
+        resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures, background);
+        clearInterval(moveInterval);
+      }
     }, 16); // (16ms = 60fps)
-}
+  }
 
 
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   const spawnCircleRadius = Math.sqrt(screenWidth * screenWidth + screenHeight * screenHeight);
   let shrinkSpeed = 0.02;
-
-
-
-
-
-
-
-
-
-
-  function setPlayerHealth(value) {
-
-
-switch (getCurrentCharacter()) {
-case 'character-snail':
-setSnailHealth(value);
-break;
-case 'character-puffer':
-setSnailHealth(value);
-break;
-case 'character-frog':
-setFrogHealth(value);
-break;
-case 'character-bee':
-setBeeHealth(value);
-break;
-default:
-console.log('Invalid character type');
-}
-
-
-
-
-
-}
-
-
-
-
-
-
-
 
 
   function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background) {
@@ -2378,23 +2279,17 @@ console.log('Invalid character type');
     let hasPlayedSound = false;
 
     function onFrameChange(currentFrame) {
-
+if(getRoundOver() || getisPaused()){return;}
       if (currentFrame === enemy.totalFrames - 5) {
 
         if (enemy.isAlive) {
           if (!getisDead()) {
             if (!hasDied) {
-
-
               critter.tint = flashColor;
-              console.log("platerhp", getPlayerHealth());
               setPlayerCurrentHealth(getPlayerCurrentHealth() - 5);
-              console.log("platerhp", getPlayerHealth());
-
               updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth()) * 100);
-
             }
-            updatePlayerHealthBar((getPlayerCurrentHealth()/ getPlayerHealth() * 100));
+            updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
             if (getPlayerCurrentHealth() <= 0) {
               setPlayerCurrentHealth(0);
 
@@ -2409,7 +2304,20 @@ console.log('Invalid character type');
                 frogGhostPlayer.position.set(critter.position.x, critter.position.y);
                 critter.tint = 0xffffff;
                 app.stage.removeChild(critter);
+                for (let i = 0; i < enemies.length; i++) {
+                  const enemy = enemies[i];
+
+                  if (app.stage.children.includes(enemy.hpBarBackground)) {
+                    app.stage.removeChild(enemy.hpBarBackground);
+                  }
+
+                  if (app.stage.children.includes(enemy.hpBar)) {
+                    app.stage.removeChild(enemy.hpBar);
+                  }
+                }
                 playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures, background);
+                enemy.textures = critterWalkTextures;
+                enemy.play();
               }
               return;
             }
@@ -2422,6 +2330,8 @@ console.log('Invalid character type');
             }
             hasPlayedSound = true;
           }
+          else{if(enemy.textures != critterWalkTextures){enemy.textures = critterWalkTextures;enemy.play();} }
+
         }
         else { console.log("enemy is dead"); }
 
@@ -2433,8 +2343,6 @@ console.log('Invalid character type');
     let hasAttackedCritter = false;
     let isAttackTriggered = false;
     const tickerHandler = () => {
-
-
       if (enemy.currentFrame === 0) {
         hasPlayedSound = false;
         if (enemy.position.x - critter.position.x < 150) {
@@ -2483,14 +2391,12 @@ console.log('Invalid character type');
       setEnemiesInRange(0);
       setCharAttackAnimating(false);
       setIsCharAttacking(false);
-
       app.stage.removeChild(frogGhostPlayer);
       background.position.set(0, 0); // Adjust the position as needed
       //console.log("STORED", stored);
       critter.position.set(app.screen.width / 20, stored);
-      setPlayerHealth(getFrogHealth());
-      playerHP = getFrogHealth();
-      updatePlayerHealthBar(getFrogHealth() / getFrogHealth() * 100);
+      setPlayerCurrentHealth(getPlayerHealth());
+      updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
       // Reset castle health
       castleHealth = 100;
 
@@ -2515,8 +2421,6 @@ console.log('Invalid character type');
         app.stage.removeChild(enemy.hpBarBackground);
         // Destroy the enemy object to free up memory
 
-
-
       }
 
       // Clear the enemies array
@@ -2526,23 +2430,23 @@ console.log('Invalid character type');
 
 
   function getCharacterDamage(currentCharacter) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      return getSnailDamage();
-      break;
-    case 'character-puffer':
-    return getPufferDamage();
-      break;
-    case 'character-frog':
-    return getFrogDamage();
-      break;
-    case 'character-bee':
-    return getBeeDamage();
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
+    switch (currentCharacter) {
+      case 'character-snail':
+        return getSnailDamage();
+        break;
+      case 'character-puffer':
+        return getPufferDamage();
+        break;
+      case 'character-frog':
+        return getFrogDamage();
+        break;
+      case 'character-bee':
+        return getBeeDamage();
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
   }
-}
 
 
   function drawHitSplat(enemy) {
@@ -2553,34 +2457,34 @@ console.log('Invalid character type');
     setTimeout(() => {
       enemy.tint = originalTint; // Reset to original color
     }, 100);
-   let damage = null; 
-    
- 
+    let damage = null;
+
+
     switch (getCurrentCharacter()) {
-  case 'character-snail':
-    console.log('Snail damage: ', getSnailDamage());
-    enemy.currentHP -= getSnailDamage();
-    damage = -getSnailDamage(); // Assuming getFrogDamage() returns a positive value
-    break;
-  case 'character-puffer':
-    enemy.currentHP -= getPufferDamage();
-    damage = -getPufferDamage(); // Assuming getFrogDamage() returns a positive value
-    break;
-  case 'character-frog':
-    enemy.currentHP -= getFrogDamage();
-    damage = -getFrogDamage(); // Assuming getFrogDamage() returns a positive value
-    break;
-  case 'character-bee':
-    enemy.currentHP -= getBeeDamage();
-    damage = -getBeeDamage(); // Assuming getFrogDamage() returns a positive value
-    break;
-  default:
-    console.log('Invalid character type');
-}
+      case 'character-snail':
+        console.log('Snail damage: ', getSnailDamage());
+        enemy.currentHP -= getSnailDamage();
+        damage = -getSnailDamage(); // Assuming getFrogDamage() returns a positive value
+        break;
+      case 'character-puffer':
+        enemy.currentHP -= getPufferDamage();
+        damage = -getPufferDamage(); // Assuming getFrogDamage() returns a positive value
+        break;
+      case 'character-frog':
+        enemy.currentHP -= getFrogDamage();
+        damage = -getFrogDamage(); // Assuming getFrogDamage() returns a positive value
+        break;
+      case 'character-bee':
+        enemy.currentHP -= getBeeDamage();
+        damage = -getBeeDamage(); // Assuming getFrogDamage() returns a positive value
+        break;
+      default:
+        console.log('Invalid character type');
+    }
     drawEnemyHPBar(enemy);
     updateEnemyGrayscale(enemy.currentHP);
 
-    
+
     const damageText = new PIXI.Text(`${damage}`, {
       fontFamily: 'Marker Felt Cursive',
       fontSize: 24,
@@ -2622,7 +2526,7 @@ console.log('Invalid character type');
   function critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures) {
     // Reduce enemy's HP
     console.log('ENEMY HP', enemy.currentHP);
-    console.log("dmgD",getCharacterDamage(getCurrentCharacter()));
+    console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
     if (enemy.currentHP - getCharacterDamage(getCurrentCharacter()) <= 0) {
       // Callback function to remove enemy after death animation
       if (app.stage.children.includes(enemy)) {
@@ -2727,18 +2631,26 @@ console.log('Invalid character type');
     coffeeAmountElement.textContent = `x ${coffeeAmount}`;
   }
 
+function playSpawnAnimation(critter,critterSpawn)
+{
+critterSpawn.position.set(critter.position.x,critter.position.y);
+app.stage.addChild(critterSpawn);
 
 
-  // Call the function to create burst particles
+critterSpawn.gotoAndPlay(0);
+
+    // Remove the death animation after it completes
+      critterSpawn.onComplete = () => {
+      app.stage.removeChild(critterSpawn);
+    };
 
 
 
-
-
-
+}
 
 
   function playDeathAnimation(enemy, enemyDeath, critter) {
+
     // Add the death animation sprite to the stage
     enemyDeath.position.set(enemy.position.x, enemy.position.y);
     app.stage.addChild(enemyDeath);
@@ -2836,10 +2748,8 @@ console.log('Invalid character type');
   }
 
 
-  function handleFrogClick() {
-    isFrog = true;
+  function handlePlayClick() {
 
-    // critter.textures = frog;
     if (!isGameStarted) {
       isGameStarted = true;
 
@@ -2848,7 +2758,7 @@ console.log('Invalid character type');
   }
 
   function handleSnailClick() {
-    isFrog = false;
+
 
     if (!isGameStarted) {
       isGameStarted = true;
@@ -2947,272 +2857,292 @@ console.log('Invalid character type');
 
 
   let critterTint = 0;
-let currentLevel = 1;
-let currentAtkLevel = 1;
-let currentHpLevel = 1;
+  let currentLevel = 1;
+  let currentAtkLevel = 1;
+  let currentHpLevel = 1;
 
 
-// Define stats for each character
-let characterStats = {
-  'character-frog': {
-    speed: getFrogSpeed(),
-    attack: getFrogDamage(),
-    health: getFrogHealth(),
-  },
-  'character-snail': {
-    speed: getSnailSpeed(),
-    attack: getSnailDamage(),
-    health: getSnailHealth(),
-  },
-  'character-puffer': {
-    speed: getPufferSpeed(),
-    attack: getPufferDamage(),
-    health: getPufferHealth(),
-  },
-  'character-bee': {
-    speed: getBeeSpeed(),
-    attack: getBeeDamage(),
-    health: getBeeHealth(),
-  },
-  // Add stats for other characters here
-};
+  // Define stats for each character
+  let characterStats = {
+    'character-frog': {
+      speed: getFrogSpeed(),
+      attack: getFrogDamage(),
+      health: getFrogHealth(),
+    },
+    'character-snail': {
+      speed: getSnailSpeed(),
+      attack: getSnailDamage(),
+      health: getSnailHealth(),
+    },
+    'character-puffer': {
+      speed: getPufferSpeed(),
+      attack: getPufferDamage(),
+      health: getPufferHealth(),
+    },
+    'character-bee': {
+      speed: getBeeSpeed(),
+      attack: getBeeDamage(),
+      health: getBeeHealth(),
+    },
+    // Add stats for other characters here
+  };
 
 
-function setCharacterSpeed(currentCharacter, speed) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      setSnailSpeed(speed);
-      break;
-    case 'character-puffer':
-      setPufferSpeed(speed);
-      break;
-    case 'character-frog':
-      setFrogSpeed(speed);
-      break;
-    case 'character-bee':
-      setBeeSpeed(speed);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
-
-function setCharacterHealth(currentCharacter, health) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      setSnailHealth(health);
-      break;
-    case 'character-puffer':
-      setPufferHealth(health);
-      break;
-    case 'character-frog':
-      setFrogHealth(health);
-      break;
-    case 'character-bee':
-      setBeeHealth(health);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
-
-function setCharacterDamage(currentCharacter, attack) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      setSnailDamage(attack);
-      break;
-    case 'character-puffer':
-      setPufferDamage(attack);
-      break;
-    case 'character-frog':
-      setFrogDamage(attack);
-      break;
-    case 'character-bee':
-      setBeeDamage(attack);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
-
-function setCharacterHealth(currentCharacter, hp) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      setSnailHealth(hp);
-      break;
-    case 'character-puffer':
-      setPufferHealth(hp);
-      break;
-    case 'character-frog':
-      setFrogHealth(hp);
-      break;
-    case 'character-bee':
-      setBeeHealth(hp);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
-
-function getCharacterHealth(currentCharacter, hp) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      getSnailHealth();
-      break;
-    case 'character-puffer':
-      getPufferHealth();
-      break;
-    case 'character-frog':
-      getFrogHealth();
-      break;
-    case 'character-bee':
-      getBeeHealth(hp);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
-
-
-
-function handleUpgrade(upgradeType, critter) {
-  const upgradeBoxes = document.getElementsByClassName('upgrade-box');
-
-  // Get the current character
-  const currentCharacter = getCurrentCharacter();
-
-  // Get the stats for the current character
-  const stats = characterStats[currentCharacter];
-
-  // Handle different upgrade types
-  switch (upgradeType) {
-    case 'spd-upgrade':
-      // Logic for speed upgrade
-      console.log('Speed upgrade');
-      var divElement = document.getElementById("lightning-level");
-
-      stats.level++;
-      // Update the display
-      stats.speed += 0.5; // Update the speed stat for the current character
-      setCharacterSpeed(currentCharacter, stats.speed);
-      //console.log(getCharacterSpeed(currentCharacter));
-      setSpeedChanged(true);
-      divElement.textContent = stats.speed.toString();
-
-      setSelectLevel(getSelectLevel() - 1);
-      
-      break;
-
-    case 'attack-upgrade':
-      // Logic for attack upgrade
-      console.log('Attack upgrade');
-      var divElement = document.getElementById("swords-level");
-      stats.attack++;
-      stats.attack += 5; // Update the attack stat for the current character
-      setCharacterDamage(currentCharacter, stats.attack);
-      setSnailDamage(getSnailDamage() + 5);
-      // Update the display with the new attack level
-      divElement.textContent = stats.attack.toString();
-      setSelectLevel(getSelectLevel() - 1);
-      break;
-
-    case 'hp-upgrade':
-      // Logic for health upgrade
-      console.log('Health upgrade');
-      var divElement = document.getElementById("heart-level");
-      stats.hp++;
-      stats.health += 20; // Update the health stat for the current character
-      setCharacterHealth(currentCharacter, stats.health);
-      setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
-      updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth* 100);
-  
-      divElement.textContent = stats.health.toString();
-
-      setSelectLevel(getSelectLevel() - 1);
-
-      break;
-
-    default:
-      console.log('Invalid upgrade type', upgradeType);
-  }
-  chooseSound.play();
-
-  if (getSelectLevel() <= 0) {
-    for (let i = 0; i < upgradeBoxes.length; i++) {
-      upgradeBoxes[i].style.visibility = 'hidden';
-    }
-  }
-
-  isUpgradeBoxesAnimated = false;
-}
-
-
-
-
-
-function levelUp(critter) {
-  const characterLevelElement = document.getElementById("character-level");
-
-  // Function to update the character's level
-  function updateCharacterLevel(level) {
-    switch (getCurrentCharacter()) {
+  function setCharacterSpeed(currentCharacter, speed) {
+    switch (currentCharacter) {
       case 'character-snail':
-      level = snailLevel;
+        setSnailSpeed(speed);
         break;
       case 'character-puffer':
-       level = pufferLevel;
+        setPufferSpeed(speed);
         break;
       case 'character-frog':
-        level = frogLevel;
+        setFrogSpeed(speed);
         break;
       case 'character-bee':
-      level = beeLevel ;
+        setBeeSpeed(speed);
         break;
       default:
-        console.log('Invalid character', getCurrentCharacter());
+        console.log('Invalid character', currentCharacter);
+    }
+  }
+
+  function setCharacterHealth(currentCharacter, health) {
+    switch (currentCharacter) {
+      case 'character-snail':
+        setSnailHealth(health);
+        break;
+      case 'character-puffer':
+        setPufferHealth(health);
+        break;
+      case 'character-frog':
+        setFrogHealth(health);
+        break;
+      case 'character-bee':
+        setBeeHealth(health);
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
+  }
+
+  function setCharacterDamage(currentCharacter, attack) {
+    switch (currentCharacter) {
+      case 'character-snail':
+        setSnailDamage(attack);
+        break;
+      case 'character-puffer':
+        setPufferDamage(attack);
+        break;
+      case 'character-frog':
+        setFrogDamage(attack);
+        break;
+      case 'character-bee':
+        setBeeDamage(attack);
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
+  }
+
+  function setCharacterHealth(currentCharacter, hp) {
+    switch (currentCharacter) {
+      case 'character-snail':
+        setSnailHealth(hp);
+        break;
+      case 'character-puffer':
+        setPufferHealth(hp);
+        break;
+      case 'character-frog':
+        setFrogHealth(hp);
+        break;
+      case 'character-bee':
+        setBeeHealth(hp);
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
+  }
+
+  function getCharacterHealth(currentCharacter, hp) {
+    switch (currentCharacter) {
+      case 'character-snail':
+        getSnailHealth();
+        break;
+      case 'character-puffer':
+        getPufferHealth();
+        break;
+      case 'character-frog':
+        getFrogHealth();
+        break;
+      case 'character-bee':
+        getBeeHealth(hp);
+        break;
+      default:
+        console.log('Invalid character', currentCharacter);
+    }
+  }
+
+
+
+  function handleUpgrade(upgradeType, critter) {
+    const upgradeBoxes = document.getElementsByClassName('upgrade-box');
+
+    // Get the current character
+    const currentCharacter = getCurrentCharacter();
+
+    // Get the stats for the current character
+    const stats = characterStats[currentCharacter];
+
+    // Handle different upgrade types
+    switch (upgradeType) {
+      case 'spd-upgrade':
+        // Logic for speed upgrade
+        console.log('Speed upgrade');
+        var divElement = document.getElementById("lightning-level");
+
+        stats.level++;
+        // Update the display
+        stats.speed += 0.5; // Update the speed stat for the current character
+        setCharacterSpeed(currentCharacter, stats.speed);
+        //console.log(getCharacterSpeed(currentCharacter));
+        setSpeedChanged(true);
+        divElement.textContent = stats.speed.toString();
+
+        setSelectLevel(getSelectLevel() - 1);
+
+        break;
+
+      case 'attack-upgrade':
+        // Logic for attack upgrade
+        console.log('Attack upgrade');
+        var divElement = document.getElementById("swords-level");
+        stats.attack++;
+        stats.attack += 5; // Update the attack stat for the current character
+        setCharacterDamage(currentCharacter, stats.attack);
+        setSnailDamage(getSnailDamage() + 5);
+        // Update the display with the new attack level
+        divElement.textContent = stats.attack.toString();
+        setSelectLevel(getSelectLevel() - 1);
+        break;
+
+      case 'hp-upgrade':
+        // Logic for health upgrade
+        console.log('Health upgrade');
+        var divElement = document.getElementById("heart-level");
+        stats.hp++;
+        stats.health += 20; // Update the health stat for the current character
+        setCharacterHealth(currentCharacter, stats.health);
+        setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
+        updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth * 100);
+
+        divElement.textContent = stats.health.toString();
+
+        setSelectLevel(getSelectLevel() - 1);
+
+        break;
+
+      default:
+        console.log('Invalid upgrade type', upgradeType);
+    }
+    chooseSound.play();
+
+    if (getSelectLevel() <= 0) {
+      for (let i = 0; i < upgradeBoxes.length; i++) {
+        upgradeBoxes[i].style.visibility = 'hidden';
+      }
+    }
+
+    isUpgradeBoxesAnimated = false;
+  }
+
+
+
+
+
+  function levelUp(critter) {
+    const characterLevelElement = document.getElementById("character-level");
+
+    // Function to update the character's level
+    function updateCharacterLevel(level) {
+      switch (getCurrentCharacter()) {
+        case 'character-snail':
+          level = snailLevel;
+          break;
+        case 'character-puffer':
+          level = pufferLevel;
+          break;
+        case 'character-frog':
+          level = frogLevel;
+          break;
+        case 'character-bee':
+          level = beeLevel;
+          break;
+        default:
+          console.log('Invalid character', getCurrentCharacter());
+          return;
+      }
+      characterLevelElement.textContent = 'Lvl. ' + level;
+    }
+
+    // Determine which character is being leveled up
+    switch (getCurrentCharacter()) {
+      case 'character-snail':
+        // Update level for character-snail
+        updateCharacterLevel(snailLevel++);
+        break;
+      case 'character-puffer':
+        // Update level for character-puffer
+        updateCharacterLevel(pufferLevel++);
+        break;
+      case 'character-frog':
+        // Update level for character-frog
+        updateCharacterLevel(frogLevel++);
+        break;
+      case 'character-bee':
+        // Update level for character-bee
+        updateCharacterLevel(beeLevel++);
+        break;
+      default:
+        console.log('Invalid character', critter);
         return;
     }
-    characterLevelElement.textContent = 'Lvl. ' + level;
+
+    setSelectLevel(getSelectLevel() + 1);
+    animateUpgradeBoxes(critter);
+
+    levelSound.play();
   }
-
-  // Determine which character is being leveled up
-  switch (getCurrentCharacter()) {
-    case 'character-snail':
-      // Update level for character-snail
-      updateCharacterLevel(snailLevel++);
-      break;
-    case 'character-puffer':
-      // Update level for character-puffer
-      updateCharacterLevel(pufferLevel++);
-      break;
-    case 'character-frog':
-      // Update level for character-frog
-      updateCharacterLevel(frogLevel++);
-      break;
-    case 'character-bee':
-      // Update level for character-bee
-      updateCharacterLevel(beeLevel++);
-      break;
-    default:
-      console.log('Invalid character', critter);
-      return;
-  }
-
-  setSelectLevel(getSelectLevel() + 1);
-  animateUpgradeBoxes(critter);
-
-  levelSound.play();
-}
 
 
   function updateTint(critter, percentage) {
 
   }
 
+  playButton.on('mouseover', () => {
+  playButton.scale.set(hoverScale);
+  playButton.alpha = hoverAlpha;
+});
 
+playButton.on('mouseout', () => {
+  playButton.scale.set(1);
+  playButton.alpha = 1;
+});
+  playButton.on('pointertap', handlePlayClick);
 
+  function handleVisibilityChange() {
+  if (document.hidden || document.webkitHidden) {
+    // Document is hidden, perform actions here (e.g., pause the game)
+    setIsPaused(true);
+  } else {
+    // Document is visible again, perform actions here (e.g., resume the game)
+    setIsPaused(false);
+  }
+}
 
-  frogPortrait.on('pointertap', handleFrogClick);
+// Add event listeners for visibility change
+document.addEventListener("visibilitychange", handleVisibilityChange);
+document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
 
 </script>
 </body>
