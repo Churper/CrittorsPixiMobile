@@ -2144,6 +2144,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
 
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
+                  
                   }
                   else {
                     if (critter.currentFrame > critter.totalFrames / 2) {
@@ -2155,6 +2156,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
                     critter.textures = frogWalkTextures;
                     critter.play();
                     critter.loop = true;
+                    
                   }
                   mountain1.position.x -= velocity.x * mountain1Speed;
                   mountain2.position.x -= velocity.x * mountain2Speed;
@@ -2163,8 +2165,10 @@ console.log("enemiesinrange:", getEnemiesInRange());
 
                   // console.log("enemies in range");
                   if (critter.textures != frogIdleTexture) {
+                    if(getCurrentCharacter() != "character-bird"){
                     critter.textures = frogIdleTextures;
                     critter.stop();
+                    }
                   }
 
                 }
@@ -2177,7 +2181,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
             else {
 
               if (critter.textures != frogIdleTexture) {
-                if(getCurrentCharacter() === "character-snail"){
+                if(getCurrentCharacter() === "character-bird"){
                
           
               }
