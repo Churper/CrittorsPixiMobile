@@ -2033,6 +2033,7 @@ app.stage.y += movementY;
 
 // Return if the camera has reached the target position
 if (app.stage.x === targetX && app.stage.y === targetY) {
+  currentRound++;
   setCurrentRound(getCurrentRound() + 1);
       playRoundText(getCurrentRound());
       castle.tint = originalTint;
@@ -2144,7 +2145,6 @@ console.log("enemiesinrange:", getEnemiesInRange());
 
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
-                  
                   }
                   else {
                     if (critter.currentFrame > critter.totalFrames / 2) {
@@ -2156,7 +2156,6 @@ console.log("enemiesinrange:", getEnemiesInRange());
                     critter.textures = frogWalkTextures;
                     critter.play();
                     critter.loop = true;
-                    
                   }
                   mountain1.position.x -= velocity.x * mountain1Speed;
                   mountain2.position.x -= velocity.x * mountain2Speed;
@@ -2165,10 +2164,8 @@ console.log("enemiesinrange:", getEnemiesInRange());
 
                   // console.log("enemies in range");
                   if (critter.textures != frogIdleTexture) {
-                    if(getCurrentCharacter() != "character-bird"){
                     critter.textures = frogIdleTextures;
                     critter.stop();
-                    }
                   }
 
                 }
@@ -2181,7 +2178,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
             else {
 
               if (critter.textures != frogIdleTexture) {
-                if(getCurrentCharacter() === "character-bird"){
+                if(getCurrentCharacter() === "character-snail"){
                
           
               }
@@ -2359,7 +2356,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
             enemy.play();
           }
           enemy.position.x += enemy.vx;
-          
+          drawEnemyHPBar(enemy);
         } else {
           if ((critter.textures !== frogWalkTextures) && (critter.textures !== snailWalkTextures)) {
             if (critter.currentFrame === critter.totalFrames - 2) {
@@ -2450,7 +2447,9 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
         createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
         app.stage.removeChild(enemy);
         getEnemies().splice(getEnemies().indexOf(enemy), 1);
-
+        setEnemiesInRange(getEnemiesInRange() - 1);
+        isCombat = false;
+        setIsCharAttacking(false); 
         playDeathAnimation(enemy, enemyDeath, critter);
       }
     } else {
