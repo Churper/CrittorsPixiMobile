@@ -2129,13 +2129,17 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
 
 
-
+console.log("isatt:", isAttackingChar);
+console.log("isdead:", getisDead());
+console.log("iscombat:", isCombat);
+console.log("ispointerdown:", isPointerDown);
+console.log("enemiesinrange:", getEnemiesInRange());
 
         if (!isAttackingChar) {
           if (!getisDead()) {
             if (!isCombat) {
               if (!isPointerDown) {
-                if (getEnemiesInRange() === 0) {
+                if (getEnemiesInRange() <= 0) {
 
 
                   if (getCurrentCharacter() != "character-snail") {
@@ -2173,13 +2177,19 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
             else {
 
               if (critter.textures != frogIdleTexture) {
-                critter.textures = frogIdleTextures;
-                critter.stop();
+                if(getCurrentCharacter() === "character-snail"){
+               
+          
               }
+              else{
+              critter.textures = frogIdleTextures;
+                critter.stop();
+              
               critter.loop = false;
-            }
+              }
+              }
           }
-
+        }
 
 
 
@@ -2345,6 +2355,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
             enemy.play();
           }
           enemy.position.x += enemy.vx;
+          drawEnemyHPBar(enemy);
         } else {
           if ((critter.textures !== frogWalkTextures) && (critter.textures !== snailWalkTextures)) {
             if (critter.currentFrame === critter.totalFrames - 2) {
