@@ -1478,7 +1478,7 @@ const hoverAlpha = 0.8;
 
     const sound = new Audio();
     sound.src = "./theme.ogg";
-    sound.volume = .22;
+    sound.volume = .12;
     sound.play();
 
     // Game elements and logic 
@@ -1513,8 +1513,8 @@ const hoverAlpha = 0.8;
       { name: 'frog_puffer', url: 'https://i.imgur.com/fBWKqfA.png' },
       { name: 'bee_walk', url: 'https://i.imgur.com/Jxke4OH.png' },
       { name: 'bee_attack', url: 'https://i.imgur.com/toZiN31.png' },
-      { name: 'puffer_walk', url: 'https://i.imgur.com/bPKkQzn.png' },
-      { name: 'puffer_attack', url: 'https://i.imgur.com/j54CxV4.png' },
+      { name: 'puffer_walk', url: 'https://i.imgur.com/MfcmtYs.png' },
+      { name: 'puffer_attack', url: 'https://i.imgur.com/DsVddKP.png' },
       { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
       { name: 'snail_portrait', url: 'https://i.imgur.com/Chu3ZkP.png' },
       { name: 'frog_portrait', url: 'https://i.imgur.com/XaXTV73.png' },
@@ -1661,8 +1661,7 @@ const hoverAlpha = 0.8;
       const playerSpawn = createAnimatedSprite(enemyDeathTextures);
 
       let characterTextures;
-      // const frogWalkTextures = 
-      // const frogWalkTextures = 
+     
       characterTextures = frogWalkTextures;
       const critter = createAnimatedSprite(characterTextures);
       critter.interactive = true;
@@ -1684,7 +1683,7 @@ playerSpawn.tint = desiredColor;
       enemyDeath.loop = false;
       enemyDeath.anchor.set(0.2, 0);
       enemyDeath.scale.set(0.35);
-
+      enemyDeath.position.set(-10000, -100000);
       const velocity = new PIXI.Point();
       const parallaxRatio = 0.5;
 
@@ -2033,7 +2032,6 @@ app.stage.y += movementY;
 
 // Return if the camera has reached the target position
 if (app.stage.x === targetX && app.stage.y === targetY) {
-  currentRound++;
   setCurrentRound(getCurrentRound() + 1);
       playRoundText(getCurrentRound());
       castle.tint = originalTint;
@@ -2061,6 +2059,7 @@ if (app.stage.x === targetX && app.stage.y === targetY) {
       critter.textures = frogWalkTextures;
       critter.play();
       setRoundOver(false);
+  
       app.stage.addChild(critter);
 
       // Loop through the enemies array and remove each enemy
@@ -2178,16 +2177,12 @@ console.log("enemiesinrange:", getEnemiesInRange());
             else {
 
               if (critter.textures != frogIdleTexture) {
-                if(getCurrentCharacter() === "character-snail"){
-               
-          
-              }
-              else{
+              
               critter.textures = frogIdleTextures;
                 critter.stop();
               
               critter.loop = false;
-              }
+              
               }
           }
         }
@@ -2240,12 +2235,12 @@ console.log("enemiesinrange:", getEnemiesInRange());
       critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
       updateEXP(0, expToLevel);
       updatePlayerHealthBar(getFrogHealth());
-      app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
-
-      spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures);
+      app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar,enemyDeath);
+     // spawnPuffer(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures);
+      spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures,snailWalkTextures);
       setInterval(() => {
-        if (!getisDead() && !getisPaused()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures); }
-      }, 12000);
+        if (!getisDead() && !getisPaused()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, snailWalkTextures); }
+      }, 5000);
 
     }
 
@@ -2265,7 +2260,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
 }
 
 
-  function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures) {
+  function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, snailWalkTextures) {
     let enemyAdded = false;
     const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
     const minScale = 0.4;
@@ -2307,8 +2302,7 @@ console.log("enemiesinrange:", getEnemiesInRange());
         app.stage.addChild(enemy);
       });
     }
-    let runOnce = 0;
-
+    enemy.play();
     app.ticker.add(() => {
       if (getisPaused() || getRoundOver()) {
         // Game is paused, skip logic
@@ -2318,52 +2312,19 @@ console.log("enemiesinrange:", getEnemiesInRange());
 
       if (app.stage.children.includes(enemy)) {
 
-
-
-// Assuming you have an array of enemy sprites called `enemies`
-// Iterate through each enemy to check for collision with the projectiles on the stag
-
-
-
-
-let projectile = null;
-
-for (let i = app.stage.children.length - 1; i >= 0; i--) {
-  const child = app.stage.children[i];
-  if (child.name === 'birdProjectile') {
-    projectile = child;
-
-    if (checkEnemyCollision(projectile, enemy)) {
-      // Enemy is hit by the projectile
-      // Perform desired actions here, such as removing the enemy sprite from the stage
-      // app.stage.removeChild(enemy);
-      rangedAttack(critter, enemy, enemyDeath);
-      app.stage.removeChild(projectile);
-      
-      break; // Exit the loop after processing the oldest projectile
-    }
-  }
-}
-
-
-
-        
+        checkProjectileCollisions(critter,enemy,enemyDeath);
 
         if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
 
-          if (enemy.visible && enemy.textures !== critterWalkTextures) {
-            // enemy.textures = critterWalkTextures;
-            enemy.play();
-          }
           enemy.position.x += enemy.vx;
           drawEnemyHPBar(enemy);
         } else {
-          if ((critter.textures !== frogWalkTextures) && (critter.textures !== snailWalkTextures)) {
+          if ((critter.textures !== frogWalkTextures)) {
             if (critter.currentFrame === critter.totalFrames - 2) {
               if (!getIsCharAttacking()) {
                 setIsCharAttacking(true);
                 if(getCurrentCharacter() != "character-bird"){
-                critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures);
+                critterAttack(critter, enemy, enemyDeath, critterAttackTextures);
                 }
               }
             } else if (critter.currentFrame === critter.totalFrames - 1) {
@@ -2382,7 +2343,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
             }
             isAttacking = true;
             isCombat = true;
-            handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
+            handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath,  frogIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
             if (enemy.isAlive && !getisDead()) {
               //console.log("here");
               drawEnemyHPBar(enemy);
@@ -2405,18 +2366,160 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
       }
     });
 
+
+
+  }
+
+
+
+
+
+function checkProjectileCollisions(critter,enemy,enemyDeath) {
+  let projectile = null;
+
+for (let i = app.stage.children.length - 1; i >= 0; i--) {
+  const child = app.stage.children[i];
+  if (child.name === 'birdProjectile') {
+    projectile = child;
+
+    if (checkEnemyCollision(projectile, enemy)) {
+      // Enemy is hit by the projectile
+      // Perform desired actions here, such as removing the enemy sprite from the stage
+      // app.stage.removeChild(enemy);
+      rangedAttack(critter, enemy, enemyDeath);
+      app.stage.removeChild(projectile);
+      
+      break; // Exit the loop after processing the oldest projectile
+    }
+  }
+}
+}
+
+
+
+
+
+
+
+  function spawnPuffer(critter, enemyName) {
+    let enemyAdded = false;
+    const enemy = null;
+    if(enemyName === "puffer"){
+      enemy = new PIXI.AnimatedSprite(pufferWalkTextures); // Start with idle textures
+    } else if(enemyName === "imp"){
+      enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
+    }
+    const minScale = 0.4;
+    const maxScale = 0.6;
+    const randomScale = minScale + Math.random() * (maxScale - minScale);
+    const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
+    // console.log("randomScale:", randomScale);
+    enemy.scale.set(randomScale);
+    enemy.anchor.set(0.5, .5);
+    enemy.position.set(foreground.width, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
+    enemy.zIndex = enemy.position.y + 10000;
+    enemy.animationSpeed = 0.25;
+    enemy.loop = true;
+    enemy.isAlive = true;
+    enemy.isVisible;
+    enemy.currentHP = 100;
+    enemy.play();
+    enemy.scale.x *= -1; // Flip the enemy horizontally
+    enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
+    let isAttacking = false; // Flag to track if enemy is attacking
+    addEnemies(enemy);
+    if (enemy.isAlive) {
+      app.stage.addChild(enemy);
+    }
     if (app.stage.children.includes(enemy)) {
       enemies.sort((a, b) => a.position.y - b.position.y);
       enemies.forEach((enemy) => {
         if (enemy.parent === app.stage) {
           app.stage.removeChild(enemy);
-          app.stage.addChild(enemy);
         }
+      });
+      enemies.forEach((enemy) => {
+        app.stage.addChild(enemy);
       });
     }
 
+    enemy.play();
+    app.ticker.add(() => {
+      if (getisPaused() || getRoundOver()) {
+        // Game is paused, skip logic
+        return;
+      }
+      
+      if (app.stage.children.includes(enemy)) {
+
+
+        checkProjectileCollisions(enemy);
+
+        if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
+          enemy.position.x += enemy.vx;
+          //drawEnemyHPBar(enemy);
+        } else {
+          if ((critter.textures !== frogWalkTextures)) {
+            if (critter.currentFrame === critter.totalFrames - 2) {
+              if (!getIsCharAttacking()) {
+                setIsCharAttacking(true);
+                if(getCurrentCharacter() != "character-bird"){
+                critterAttack(critter, enemy, enemyDeath, critterAttackTextures);
+                }
+              }
+            } else if (critter.currentFrame === critter.totalFrames - 1) {
+              setIsCharAttacking(false);
+            }
+          }
+          if (!enemyAdded) {
+            setEnemiesInRange(getEnemiesInRange() + 1);
+            enemyAdded = true;
+          }
+          if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
+            if (!isCombat) {
+              const enemyPortrait = document.getElementById('enemy-portrait');
+              updateEnemyGrayscale(100);
+              enemyPortrait.style.display = 'block'; // Make the element visible
+            }
+            isAttacking = true;
+            isCombat = true;
+            handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, frogIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background);
+            if (enemy.isAlive && !getisDead()) {
+              //console.log("here");
+              drawEnemyHPBar(enemy);
+            }
+          }
+        }
+      } else {
+        app.stage.removeChild(enemy);
+        if (enemy.hpBarBackground && enemy.hpBar) {
+          app.stage.removeChild(enemy.hpBarBackground);
+          app.stage.removeChild(enemy.hpBar);
+        }
+        // Remove the enemy object from the enemies array
+        const index = getEnemies().indexOf(enemy);
+        if (index !== -1) {
+          getEnemies().splice(index, 1);
+        }
+        app.ticker.remove(() => { });
+        return;
+      }
+    });
+
+ 
 
   }
+
+
+
+
+
+
+
+
+
+
+
 
   let isPlayerAttacking = false;
 
@@ -2466,7 +2569,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
 
   }
 
-  function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures, background) {
+  function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
     setIsDead(true);
     frogGhostPlayer.alpha = 0.5;
 
@@ -2505,7 +2608,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
       wobbleAmplitude *= wobbleDamping;
       if (frogGhostPlayer.y <= targetY) {
         frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
-        resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures, background);
+        resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
         clearInterval(moveInterval);
       }
     }, 16); // (16ms = 60fps)
@@ -2518,7 +2621,7 @@ for (let i = app.stage.children.length - 1; i >= 0; i--) {
   let shrinkSpeed = 0.02;
 
 
-  function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath, snailAttackTextures, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background) {
+  function handleEnemyAttacking(enemy, critterAttackTextures, critter, frogAttackTextures, enemyDeath,  frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
     enemy.textures = critterAttackTextures;
     enemy.loop = true;
     enemy.gotoAndPlay(0);
@@ -2540,11 +2643,7 @@ if(getRoundOver() || getisPaused()){return;}
             if (getPlayerCurrentHealth() <= 0) {
               setPlayerCurrentHealth(0);
 
-              if (enemy.textures != critterWalkTextures) {
-                enemy.textures = critterWalkTextures;
-                // console.log("ohhey");
-                enemy.gotoAndPlay(0);
-              }
+              
               if (!hasDied) {
                 // console.log("playerhp", playerHP);
                 hasDied = true;
@@ -2562,7 +2661,7 @@ if(getRoundOver() || getisPaused()){return;}
                     app.stage.removeChild(enemy.hpBar);
                   }
                 }
-                playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures, background);
+                playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures);
                 enemy.textures = critterWalkTextures;
                 enemy.play();
               }
@@ -2630,7 +2729,7 @@ if(getRoundOver() || getisPaused()){return;}
   }
 
 
-  function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures, background) {
+  function resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures) {
     let isReset = false;
     //  console.log(getEnemies());
 
@@ -2639,7 +2738,7 @@ if(getRoundOver() || getisPaused()){return;}
       setCharAttackAnimating(false);
       setIsCharAttacking(false);
       app.stage.removeChild(frogGhostPlayer);
-      background.position.set(0, 0); // Adjust the position as needed
+     // background.position.set(0, 0); // Adjust the position as needed
       //console.log("STORED", stored);
       critter.position.set(app.screen.width / 20, stored);
       setPlayerCurrentHealth(getPlayerHealth());
@@ -2771,7 +2870,7 @@ if(getRoundOver() || getisPaused()){return;}
 
 
   let isCritterAttackTriggered = false;
-  function critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures) {
+  function critterAttack(critter, enemy, enemyDeath, critterAttackTextures) {
     // Reduce enemy's HP
     console.log('ENEMY HP', enemy.currentHP);
     console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
