@@ -380,7 +380,7 @@
       touch-action: manipulation;
     }
 
-    .upgrade-box.character-puffer {
+    .upgrade-box.character-bird {
       outline: none;
       background-color: rgba(49, 47, 202, 0.801);
       top: -50px;
@@ -421,9 +421,9 @@
   touch-action: manipulation;
 }
 
-.upgrade-box.character-puffer .hp-indicator {
-  --current-health: var(--current-health-puffer);
-  --max-health: var(--max-health-puffer);
+.upgrade-box.character-bird .hp-indicator {
+  --current-health: var(--current-health-bird);
+  --max-health: var(--max-health-bird);
   height: calc(100% - var(--hp-indicator-height));
   touch-action: manipulation;
 }
@@ -583,9 +583,9 @@
 
       </div>
 
-      <div class="upgrade-box character-puffer">
+      <div class="upgrade-box character-bird">
         <div class="hp-indicator"></div>
-        <div class="character-icon">🐡</div>
+        <div class="character-icon">🦚</div>
 
       </div>
 
@@ -618,6 +618,7 @@
   });
 
   document.body.appendChild(app.view);
+  let numberOfProjectiles = 0;
   let currentRound = 1;
   let roundOver = false;
   let playerHealth = 100;
@@ -633,10 +634,10 @@
   let snailHealth = 100;
   let snailLevel = 1;
   let beeLevel = 1;
-  let pufferLevel = 1;
-  let pufferSpeed = 1;
-  let pufferDamage = 15;
-  let pufferHealth = 100;
+  let birdLevel = 1;
+  let birdSpeed = 1;
+  let birdDamage = 15;
+  let birdHealth = 100;
   let beeSpeed = 1;
   let beeDamage = 25;
   let beeHealth = 100;
@@ -647,7 +648,7 @@
   let currentFrogHealth = 100;
   let currentSnailHealth = 100;
   let currentBeeHealth = 100;
-  let currentPufferHealth = 100;
+  let currentBirdHealth = 100;
   let charSwap = false;
   let currentCharacter = "character-frog";
   let isCharAttacking = false;
@@ -694,7 +695,7 @@ const attackTint = 0xc62828; // Darker, slightly greyish red tint
       top: "-50px",
       left: "calc(45% - 70px)"
     },
-    "character-puffer": {
+    "character-bird": {
       top: "-50px",
       left: "calc(45% - 10px)"
     },
@@ -738,22 +739,30 @@ function getCurrentRound() {
     snailHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentSnailHealth() / getSnailHealth())) * 100}%`);
   }
 
-  function setCurrentPufferHealth(health) {
-    currentPufferHealth = health;
-    const pufferHpIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
-    pufferHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentPufferHealth() / getPufferHealth())) * 100}%`);
+  function setCurrentBirdHealth(health) {
+    currentBirdHealth = health;
+    const birdHpIndicator = document.querySelector('.upgrade-box.character-bird .hp-indicator');
+    birdHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (getCurrentBirdHealth() / getBirdHealth())) * 100}%`);
   }
 
   function getCurrentBeeHealth() {
     return currentBeeHealth;
   }
 
+  function getNumberOfProjectiles() {
+    return numberOfProjectiles;
+  }
+
+  function setNumberOfProjectiles(num) {
+    numberOfProjectiles = num;
+  }
+
   function getCurrentSnailHealth() {
     return currentSnailHealth;
   }
 
-  function getCurrentPufferHealth() {
-    return currentPufferHealth;
+  function getCurrentBirdHealth() {
+    return currentBirdHealth;
   }
 
   function setSnailLevel(level) {
@@ -772,12 +781,12 @@ function getCurrentRound() {
     return beeLevel;
   }
 
-  function setPufferLevel(level) {
-    pufferLevel = level;
+  function setBirdLevel(level) {
+    birdLevel = level;
   }
 
-  function getPufferLevel() {
-    return pufferLevel;
+  function getBirdLevel() {
+    return birdLevel;
   }
 
 
@@ -815,28 +824,28 @@ function getCurrentRound() {
   }
 
 
-  function getPufferSpeed() {
-    return pufferSpeed;
+  function getBirdSpeed() {
+    return birdSpeed;
   }
 
-  function setPufferSpeed(speed) {
-    pufferSpeed = speed;
+  function setBirdSpeed(speed) {
+    birdSpeed = speed;
   }
 
-  function getPufferDamage() {
-    return pufferDamage;
+  function getBirdDamage() {
+    return birdDamage;
   }
 
-  function setPufferDamage(damage) {
-    pufferDamage = damage;
+  function setBirdDamage(damage) {
+    birdDamage = damage;
   }
 
-  function getPufferHealth() {
-    return pufferHealth;
+  function getBirdHealth() {
+    return birdHealth;
   }
 
-  function setPufferHealth(health) {
-    pufferHealth = health;
+  function setBirdHealth(health) {
+    birdHealth = health;
   }
 
 
@@ -907,13 +916,13 @@ function getCurrentRound() {
 
 
   var snailHPIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
-  var pufferHPIndicator = document.querySelector('.upgrade-box.character-puffer .hp-indicator');
+  var birdHPIndicator = document.querySelector('.upgrade-box.character-bird .hp-indicator');
   var beeHPIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
   var frogHPIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
 
   // Calculate the height percentage for each character
   var snailHeightPercentage = (1 - getCurrentSnailHealth() / getSnailHealth()) * 100;
-  var pufferHeightPercentage = (1 - getCurrentPufferHealth() / getPufferHealth()) * 100;
+  var birdHeightPercentage = (1 - getCurrentBirdHealth() / getBirdHealth()) * 100;
   var beeHeightPercentage = (1 - getCurrentBeeHealth() / getBeeHealth()) * 100;
   var frogHeightPercentage = (1 - getCurrentFrogHealth() / getFrogHealth()) * 100;
 
@@ -922,9 +931,9 @@ function getCurrentRound() {
   snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
   snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
 
-  pufferHPIndicator.style.setProperty('--current-health-puffer', getCurrentPufferHealth());
-  pufferHPIndicator.style.setProperty('--max-health-puffer', getPufferHealth());
-  pufferHPIndicator.style.setProperty('--hp-indicator-height', pufferHeightPercentage + '%');
+  birdHPIndicator.style.setProperty('--current-health-bird', getCurrentBirdHealth());
+  birdHPIndicator.style.setProperty('--max-health-bird', getBirdHealth());
+  birdHPIndicator.style.setProperty('--hp-indicator-height', birdHeightPercentage + '%');
 
   beeHPIndicator.style.setProperty('--current-health-bee', getCurrentBeeHealth());
   beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
@@ -1036,8 +1045,8 @@ function getCurrentRound() {
       case 'character-snail':
         return getSnailHealth();
         break;
-      case 'character-puffer':
-        return getPufferHealth();
+      case 'character-bird':
+        return getBirdHealth();
         break;
       case 'character-frog':
         return getFrogHealth();
@@ -1063,8 +1072,8 @@ function getCurrentRound() {
       case 'character-snail':
         return getCurrentSnailHealth();
         break;
-      case 'character-puffer':
-        return getCurrentPufferHealth();
+      case 'character-bird':
+        return getCurrentBirdHealth();
         break;
       case 'character-frog':
         return getCurrentFrogHealth();
@@ -1086,8 +1095,8 @@ function getCurrentRound() {
       case 'character-snail':
         setSnailHealth(value);
         break;
-      case 'character-puffer':
-        setPufferHealth(value);
+      case 'character-bird':
+        setBirdHealth(value);
         break;
       case 'character-frog':
         setFrogHealth(value);
@@ -1105,8 +1114,8 @@ function getCurrentRound() {
       case 'character-snail':
         setCurrentSnailHealth(value);
         break;
-      case 'character-puffer':
-        setCurrentPufferHealth(value);
+      case 'character-bird':
+        setCurrentBirdHealth(value);
         break;
       case 'character-frog':
         setCurrentFrogHealth(value);
@@ -1225,7 +1234,7 @@ function getCurrentRound() {
     }
 
     // Toggle the visibility of the character info boxes
-    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
+    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
 
     if (isCharacterMenuOpen) {
       characterBoxes.forEach((box) => {
@@ -1251,12 +1260,12 @@ function getCurrentRound() {
     // Swap character portraits
     const characterPortrait = document.getElementById("character-portrait");
     characterPortrait.style.backgroundImage = `url('${getCharacterPortraitUrl(characterType)}')`;
-    characterPortrait.classList.remove("character-snail", "character-puffer", "character-bee", "character-frog");
+    characterPortrait.classList.remove("character-snail", "character-bird", "character-bee", "character-frog");
     characterPortrait.classList.add(characterType);
 
 
     // Close the character menu
-    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
+    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
     characterBoxes.forEach((box) => {
       box.style.visibility = 'hidden';
     });
@@ -1283,11 +1292,11 @@ function getCurrentRound() {
           updateHP.textContent = getSnailHealth().toString();
           updateDamage.textContent = getSnailDamage().toString();
           break;
-        case 'character-puffer':
-          level = getPufferLevel();
-          updateLightning.textContent = getPufferSpeed().toString();
-          updateHP.textContent = getPufferHealth().toString();
-          updateDamage.textContent = getPufferDamage().toString();
+        case 'character-bird':
+          level = getBirdLevel();
+          updateLightning.textContent = getBirdSpeed().toString();
+          updateHP.textContent = getBirdHealth().toString();
+          updateDamage.textContent = getBirdDamage().toString();
 
           break;
         case 'character-frog':
@@ -1340,12 +1349,12 @@ function getCurrentRound() {
         setSnailHealth(getSnailHealth());
         // Additional logic or actions specific to character-snail
         break;
-      case 'character-puffer':
-        // Update stats for character-puffer
-        setPufferSpeed(getPufferSpeed());
-        setPufferDamage(getPufferDamage());
-        setPufferHealth(getPufferHealth());
-        // Additional logic or actions specific to character-puffer
+      case 'character-bird':
+        // Update stats for character-bird
+        setBirdSpeed(getBirdSpeed());
+        setBirdDamage(getBirdDamage());
+        setBirdHealth(getBirdHealth());
+        // Additional logic or actions specific to character-bird
         break;
       case 'character-frog':
         // Update stats for character-frog
@@ -1373,7 +1382,7 @@ function getCurrentRound() {
 
 
   // Add click event listeners to character boxes
-  const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-puffer, .upgrade-box.character-bee, .upgrade-box.character-frog');
+  const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
   characterBoxes.forEach((box) => {
     box.addEventListener('click', function () {
       const characterType = box.classList[1];
@@ -1387,8 +1396,8 @@ function getCurrentRound() {
     switch (characterType) {
       case 'character-snail':
         return 'https://i.imgur.com/Chu3ZkP.png';
-      case 'character-puffer':
-        return 'https://i.imgur.com/9gLYMax.png';
+      case 'character-bird':
+        return 'https://i.imgur.com/WAwZpGS.png';
       case 'character-frog':
         return 'https://i.imgur.com/XaXTV73.png';
       case 'character-bee':
@@ -1494,6 +1503,11 @@ const hoverAlpha = 0.8;
 
 
     PIXI.Loader.shared.add([
+    { name: 'bird_egg', url: 'https://i.imgur.com/q5JvpXv.png' },
+    { name: 'bird_ghost', url: 'https://i.imgur.com/FKED8kx.png' },
+    { name: 'bird_portrait', url: 'https://i.imgur.com/WAwZpGS.png' },
+      { name: 'bird_walk', url: 'https://i.imgur.com/ABVoGmQ.png' },
+      { name: 'bird_attack', url: 'https://i.imgur.com/vRD1CeL.png' },
       { name: 'frog_snail', url: 'https://i.imgur.com/ekpSpFg.png' },
       { name: 'frog_bee', url: 'https://i.imgur.com/bUw6K0K.png' },
       { name: 'frog_puffer', url: 'https://i.imgur.com/fBWKqfA.png' },
@@ -1637,6 +1651,8 @@ const hoverAlpha = 0.8;
       const pufferAttackTextures = createAnimationTextures2('puffer_attack', 21, 413, 2223, 2891);
       const beeWalkTextures = createAnimationTextures2('bee_walk', 9, 256, 2753, 256);
       const beeAttackTextures = createAnimationTextures2('bee_attack', 18, 256, 1950, 1024);
+      const birdWalkTextures = createAnimationTextures2('bird_walk', 13, 403, 2541, 806);
+      const birdAttackTextures = createAnimationTextures2('bird_attack', 13, 403,2541, 806);
       const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
@@ -1648,7 +1664,6 @@ const hoverAlpha = 0.8;
       // const frogWalkTextures = 
       // const frogWalkTextures = 
       characterTextures = frogWalkTextures;
-
       const critter = createAnimatedSprite(characterTextures);
       critter.interactive = true;
 
@@ -1708,7 +1723,7 @@ playerSpawn.tint = desiredColor;
       }
 
 
-
+ 
 
       function createAnimatedSprite(textures) {
         const sprite = new PIXI.AnimatedSprite(textures);
@@ -1782,6 +1797,34 @@ playerSpawn.tint = desiredColor;
                   attackSound.volume = .25;
                   attackSound.src = "./attacksound.wav";
                   attackSound.play();
+                 if (getCurrentCharacter() === "character-bird") {
+  const birdProjectile = new PIXI.Sprite(PIXI.Loader.shared.resources['bird_egg'].texture);
+  birdProjectile.position.set(critter.position.x, critter.position.y); // Set the initial position of the projectile behind the bird
+  birdProjectile.name = 'birdProjectile'; // Set the name property of the projectile
+  birdProjectile.scale.set(0.3); // Scale the projectile
+
+  app.stage.addChild(birdProjectile); // Add the projectile to the stage
+
+  const projectileSpeed = 3; // Adjust this value to control the speed of the projectile
+
+  // Update function to move the projectile
+  function updateProjectile() {
+    birdProjectile.x += projectileSpeed; // Move the projectile to the right
+    
+    if (birdProjectile.x > castle.position.x) {
+      // If the projectile reaches the castle, stop updating its position
+      //app.ticker.remove(updateProjectile); // Stop updating the projectile
+    }
+
+    if (!app.stage.children.includes(birdProjectile)) {
+      // If the projectile is removed from the stage by an enemy, stop updating its position
+     // app.ticker.remove(updateProjectile); // Stop updating the projectile
+    }
+  }
+
+  app.ticker.add(updateProjectile); // Start updating the projectile
+}
+
 
                   if (critter.position.x > castle.position.x - castle.width / 1.1) {
                     console.log("takingDamage");
@@ -1858,6 +1901,13 @@ castle.filters = [greyscaleFilter];
         xDir = 1;
       }
 
+
+
+
+
+
+
+
       function resetCharacter() {
 
         isAttackingChar = false;
@@ -1872,8 +1922,8 @@ castle.filters = [greyscaleFilter];
       case 'character-snail':
         return getSnailSpeed();
         break;
-      case 'character-puffer':
-        return getPufferSpeed();
+      case 'character-bird':
+        return getBirdSpeed();
         break;
       case 'character-frog':
         return getFrogSpeed();
@@ -2034,13 +2084,13 @@ return;
 
         if (getCharSwap()) {
           console.log("getcurrentchat", getCurrentCharacter());
-          if (getCurrentCharacter() === "character-puffer") {
+          if (getCurrentCharacter() === "character-bird") {
             playerSpawn.tint = 0x0000ff; // Blue
             playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
             playSpawnAnimation(critter,playerSpawn);
-            frogWalkTextures = pufferWalkTextures;
-            frogIdleTextures = pufferWalkTextures;
-            frogAttackTextures = pufferAttackTextures;
+            frogWalkTextures = birdWalkTextures;
+            frogIdleTextures = birdWalkTextures;
+            frogAttackTextures = birdAttackTextures;
           }
           else if (getCurrentCharacter() === "character-frog") {
             console.log("SWAP TO SNELL");
@@ -2093,7 +2143,7 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
                   }
                   else {
                     if (critter.currentFrame > critter.totalFrames / 2) {
-                      critter.position.x += velocity.x + 1;
+                      critter.position.x += velocity.x * 2;
                     }
                   }
                   if ((critter.textures != frogWalkTextures)) {
@@ -2101,10 +2151,6 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
                     critter.textures = frogWalkTextures;
                     critter.play();
                     critter.loop = true;
-
-
-
-
                   }
                   mountain1.position.x -= velocity.x * mountain1Speed;
                   mountain2.position.x -= velocity.x * mountain2Speed;
@@ -2184,6 +2230,7 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
       updateEXP(0, expToLevel);
       updatePlayerHealthBar(getFrogHealth());
       app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar);
+
       spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures);
       setInterval(() => {
         if (!getisDead() && !getisPaused()) { spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures); }
@@ -2193,10 +2240,18 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
 
   }
   //frogPortrait.on('pointertap', handleFrogSpawn);
+  function checkEnemyCollision(projectile, enemy) {
+  const projectileX = projectile.position.x;
+  const projectileWidth = projectile.width;
 
+  const enemyX = enemy.x;
+  const enemyWidth = enemy.width;
 
-
-
+  return (
+    projectileX + projectileWidth > enemyX &&
+    projectileX < enemyX + enemyWidth
+  );
+}
 
 
   function spawnEnemy(critter, critterAttackTextures, frogAttackTextures, enemyDeath, critterWalkTextures, snailAttackTextures, foreground, frogIdleTextures, snailIdleTextures, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures, background, snailWalkTextures) {
@@ -2252,6 +2307,37 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
 
       if (app.stage.children.includes(enemy)) {
 
+
+
+// Assuming you have an array of enemy sprites called `enemies`
+// Iterate through each enemy to check for collision with the projectiles on the stag
+
+
+
+
+let projectile = null;
+
+for (let i = app.stage.children.length - 1; i >= 0; i--) {
+  const child = app.stage.children[i];
+  if (child.name === 'birdProjectile') {
+    projectile = child;
+
+    if (checkEnemyCollision(projectile, enemy)) {
+      // Enemy is hit by the projectile
+      // Perform desired actions here, such as removing the enemy sprite from the stage
+      // app.stage.removeChild(enemy);
+      rangedAttack(critter, enemy, enemyDeath);
+      app.stage.removeChild(projectile);
+      
+      break; // Exit the loop after processing the oldest projectile
+    }
+  }
+}
+
+
+
+        
+
         if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
 
           if (enemy.visible && enemy.textures !== critterWalkTextures) {
@@ -2264,7 +2350,9 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
             if (critter.currentFrame === critter.totalFrames - 2) {
               if (!getIsCharAttacking()) {
                 setIsCharAttacking(true);
+                if(getCurrentCharacter() != "character-bird"){
                 critterAttack(critter, enemy, enemiesInRange, enemyDeath, critterAttackTextures);
+                }
               }
             } else if (critter.currentFrame === critter.totalFrames - 1) {
               setIsCharAttacking(false);
@@ -2325,6 +2413,45 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
   }
 
 
+  function rangedAttack(critter, enemy, enemyDeath) {
+    // Reduce enemy's HP
+    console.log('ENEMY HP', enemy.currentHP);
+    console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
+    if (enemy.currentHP - getCharacterDamage(getCurrentCharacter()) <= 0) {
+      // Callback function to remove enemy after death animation
+      if (app.stage.children.includes(enemy)) {
+        drawHitSplat(enemy);
+        enemy.tint = 0xFF0000; // Set the hit color
+
+        setEnemiesInRange(getEnemiesInRange() - 1);
+        isCombat = false;
+        if (getEnemiesInRange() === 0) {
+          const enemyPortrait = document.getElementById('enemy-portrait');
+          enemyPortrait.style.display = 'none'; // Make the element visible
+        }
+
+        setIsCharAttacking(false);
+        console.log("ENEMY DEAD", enemy.position.x, enemy.position.y);
+        createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
+        app.stage.removeChild(enemy);
+        getEnemies().splice(getEnemies().indexOf(enemy), 1);
+
+        playDeathAnimation(enemy, enemyDeath, critter);
+      }
+    } else {
+      if (enemy.isAlive === true) {
+        if (getisDead() === false) {
+          drawHitSplat(enemy);
+
+        }
+      }
+
+
+    }
+
+
+  }
+
   function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures, background) {
     setIsDead(true);
     frogGhostPlayer.alpha = 0.5;
@@ -2338,8 +2465,8 @@ playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
       case "character-bee":
         frogGhostPlayer.texture = PIXI.Texture.from("frog_bee");
         break;
-      case "character-puffer":
-        frogGhostPlayer.texture = PIXI.Texture.from("frog_puffer");
+      case "character-bird":
+        frogGhostPlayer.texture = PIXI.Texture.from("bird_ghost");
         break;
 
       default:
@@ -2540,8 +2667,8 @@ if(getRoundOver() || getisPaused()){return;}
       case 'character-snail':
         return getSnailDamage();
         break;
-      case 'character-puffer':
-        return getPufferDamage();
+      case 'character-bird':
+        return getBirdDamage();
         break;
       case 'character-frog':
         return getFrogDamage();
@@ -2573,9 +2700,9 @@ if(getRoundOver() || getisPaused()){return;}
         enemy.currentHP -= getSnailDamage();
         damage = -getSnailDamage(); // Assuming getFrogDamage() returns a positive value
         break;
-      case 'character-puffer':
-        enemy.currentHP -= getPufferDamage();
-        damage = -getPufferDamage(); // Assuming getFrogDamage() returns a positive value
+      case 'character-bird':
+        enemy.currentHP -= getBirdDamage();
+        damage = -getBirdDamage(); // Assuming getFrogDamage() returns a positive value
         break;
       case 'character-frog':
         enemy.currentHP -= getFrogDamage();
@@ -2980,10 +3107,10 @@ critterSpawn.gotoAndPlay(0);
       attack: getSnailDamage(),
       health: getSnailHealth(),
     },
-    'character-puffer': {
-      speed: getPufferSpeed(),
-      attack: getPufferDamage(),
-      health: getPufferHealth(),
+    'character-bird': {
+      speed: getBirdSpeed(),
+      attack: getBirdDamage(),
+      health: getBirdHealth(),
     },
     'character-bee': {
       speed: getBeeSpeed(),
@@ -2999,8 +3126,8 @@ critterSpawn.gotoAndPlay(0);
       case 'character-snail':
         setSnailSpeed(speed);
         break;
-      case 'character-puffer':
-        setPufferSpeed(speed);
+      case 'character-bird':
+        setBirdSpeed(speed);
         break;
       case 'character-frog':
         setFrogSpeed(speed);
@@ -3018,8 +3145,8 @@ critterSpawn.gotoAndPlay(0);
       case 'character-snail':
         setSnailHealth(health);
         break;
-      case 'character-puffer':
-        setPufferHealth(health);
+      case 'character-bird':
+        setBirdHealth(health);
         break;
       case 'character-frog':
         setFrogHealth(health);
@@ -3037,8 +3164,8 @@ critterSpawn.gotoAndPlay(0);
       case 'character-snail':
         setSnailDamage(attack);
         break;
-      case 'character-puffer':
-        setPufferDamage(attack);
+      case 'character-bird':
+        setBirdDamage(attack);
         break;
       case 'character-frog':
         setFrogDamage(attack);
@@ -3056,8 +3183,8 @@ critterSpawn.gotoAndPlay(0);
       case 'character-snail':
         setSnailHealth(hp);
         break;
-      case 'character-puffer':
-        setPufferHealth(hp);
+      case 'character-bird':
+        setBirdHealth(hp);
         break;
       case 'character-frog':
         setFrogHealth(hp);
@@ -3075,8 +3202,8 @@ critterSpawn.gotoAndPlay(0);
       case 'character-snail':
         getSnailHealth();
         break;
-      case 'character-puffer':
-        getPufferHealth();
+      case 'character-bird':
+        getBirdHealth();
         break;
       case 'character-frog':
         getFrogHealth();
@@ -3176,8 +3303,8 @@ critterSpawn.gotoAndPlay(0);
         case 'character-snail':
           level = snailLevel;
           break;
-        case 'character-puffer':
-          level = pufferLevel;
+        case 'character-bird':
+          level = birdLevel;
           break;
         case 'character-frog':
           level = frogLevel;
@@ -3198,9 +3325,9 @@ critterSpawn.gotoAndPlay(0);
         // Update level for character-snail
         updateCharacterLevel(snailLevel++);
         break;
-      case 'character-puffer':
-        // Update level for character-puffer
-        updateCharacterLevel(pufferLevel++);
+      case 'character-bird':
+        // Update level for character-bird
+        updateCharacterLevel(birdLevel++);
         break;
       case 'character-frog':
         // Update level for character-frog
