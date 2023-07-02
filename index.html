@@ -2137,18 +2137,18 @@ console.log("HERXOROR:", getEnemiesInRange());
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
 
 
-        //console.log("isatt:", isAttackingChar);
-       // console.log("isdead:", getisDead());
-       // console.log("iscombat:", isCombat);
-       // console.log("ispointerdown:", isPointerDown);
-       // console.log("enemiesinrange:", getEnemiesInRange());
+        console.log("isatt:", isAttackingChar);
+       console.log("isdead:", getisDead());
+        console.log("iscombat:", isCombat);
+        console.log("ispointerdown:", isPointerDown);
+        console.log("enemiesinrange:", getEnemiesInRange());
 
         if (!isAttackingChar) {
           if (!getisDead()) {
             if (!isCombat) {
               if (!isPointerDown) {
                 if (getEnemiesInRange() <= 0) {
-
+console.log("broke");
 
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
@@ -2159,11 +2159,13 @@ console.log("HERXOROR:", getEnemiesInRange());
                     }
                   }
                   if ((critter.textures != frogWalkTextures)) {
-
+                      console.log("nope");
                     critter.textures = frogWalkTextures;
+                    
+                    
                     critter.play();
-                    critter.loop = true;
                   }
+                  critter.loop = true;
                   mountain1.position.x -= velocity.x * mountain1Speed;
                   mountain2.position.x -= velocity.x * mountain2Speed;
                 }
