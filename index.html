@@ -1906,7 +1906,7 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
           critter.play();
         };
         critter.play();
-      }
+      }else{isAttackingChar = false;}
     }
   }
 
@@ -1921,26 +1921,15 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
 
 
 function handleTouchEnd(event) {
-  clearInterval(pointerHoldInterval);
+ 
   activeTouches--;
-
-  if (activeTouches === 0) {
-    // No active touches, perform your functionality
-          isPointerDown = false;
-          console.log('Mouse haxxxxxxxxscreen');
-          attackAnimationPlayed = true;
-return;
-  }
-
+  clearInterval(pointerHoldInterval);
 
   isPointerDown = false;
 
   if (!attackAnimationPlayed) {
     return;
-  } else {
-    attackAnimationPlayed = true;
-    return;
-  }
+  } 
 
   xDir = 1;
 }
