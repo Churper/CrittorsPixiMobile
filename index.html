@@ -2074,10 +2074,15 @@ console.log("HERXOROR:", getEnemiesInRange());
             const enemyPortrait = document.getElementById('enemy-portrait');
             enemyPortrait.style.display = 'none'; // Make the element visible
             playAgain = false;
+            isAttackingChar = false;
+      isMoving = true;;
             setIsDead(false);
             critter.loop = true;
             critter.textures = frogWalkTextures;
             critter.play();
+      
+            // Clear the enemies array
+            isPointerDown = false;
             setRoundOver(false);
 
             app.stage.addChild(critter);
@@ -2092,12 +2097,9 @@ console.log("HERXOROR:", getEnemiesInRange());
               // Destroy the enemy object to free up memory
 
             }
-
-            // Clear the enemies array
-            isPointerDown = false;
+         
             enemies.length = 0;
-            isAttackingChar = false;
-      isMoving = true;;
+       
             return;
           }
           return;
