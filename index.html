@@ -632,7 +632,7 @@
   let frogTint = 0;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 5.5;
+  let speed = 1;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -2076,7 +2076,11 @@ function handleTouchEnd(event) {
             castleHealth = castleMaxHealth + 20;
             castleMaxHealth = castleHealth;
             updateHPBar(castleHealth, castleMaxHealth);
-
+            mountain1.tint = getRandomColor();
+            mountain2.tint = getRandomColor();
+            mountain3.tint = getRandomColor3();
+            mountain4.tint = getRandomColor3();
+            foreground.tint= getRandomColor();
             // Remove any existing enemy death sprites
             // Set isCombat and playAgain to false
             isCombat = false;
