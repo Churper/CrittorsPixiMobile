@@ -1917,6 +1917,12 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
 
 
 function handleTouchEnd(event) {
+  if (event.data && event.data.length === 0) {
+    // No active touches, perform your functionality
+ handleMouseLeave(event);
+    return;
+  }
+
   clearInterval(pointerHoldInterval);
   isPointerDown = false;
 
@@ -2021,7 +2027,7 @@ function handleTouchEnd(event) {
       const mountain4Speed = .03;
       initialClouds = clouds.position.x;
       app.ticker.add(() => {
-console.log("HERXOROR:", getEnemiesInRange());
+//console.log("HERXOROR:", getEnemiesInRange());
 
         if (getisPaused()) {
 
@@ -2178,7 +2184,7 @@ console.log("HERXOROR:", getEnemiesInRange());
             if (!isCombat) {
               if (!isPointerDown) {
                 if (getEnemiesInRange() <= 0) {
-console.log("broke");
+//console.log("broke");
 
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
