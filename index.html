@@ -2055,7 +2055,10 @@ function handleTouchEnd(event) {
           // Update the camera position
           app.stage.x += movementX;
           app.stage.y += movementY;
-
+          mountain1.position.x -= velocity.x * mountain1Speed;
+                  mountain2.position.x += velocity.x * mountain2Speed;
+                  mountain3.position.x += velocity.x * mountain3Speed;
+                  mountain4.position.x += velocity.x * mountain4Speed;
           // Return if the camera has reached the target position
           if (app.stage.x === targetX && app.stage.y === targetY) {
             setCurrentRound(getCurrentRound() + 1);
