@@ -11,7 +11,6 @@ document.body.appendChild(app.view);
 let currentRound = 1;
 let roundOver = false;
 let playerHealth = 100;
-let frogTint = 0;
 let coffee = 0;
 let frogSize = .35;
 let speed = 1;
@@ -45,13 +44,11 @@ let isCharAttacking = false;
 let playerEXP = 0;
 let isDead = false;
 let enemiesInRange = 0;
-let isCharAttackAnimating = false;
 let areResetting = false;
 let isPaused = false;
 let isAttackingChar = false;
 let isGameStarted = false;
 let initialClouds = 0;
-const attackTint = 0xc62828; // Darker, slightly greyish red tint
 let expToLevel = 100;
 let cooldownActive = false; // Track the cooldown status
 const cooldownDuration = 3000; // Cooldown duration in milliseconds
@@ -59,7 +56,6 @@ let stored = 0;
 let enemies = [];
 let isCharacterMenuOpen = false; // Flag to track if the character menu is open
 let selectedCharacter = getCurrentCharacter(); // Track the currently selected character
-let previousCharacter = ""; // Track the previously selected character
 const flashDuration = 100; // Adjust as needed (in milliseconds)
 const flashColor = 0xff5555; // Bright red color
 const attackSound = new Audio();
@@ -72,7 +68,6 @@ levelSound.volume = .2;
 const hitSound = new Audio();
 hitSound.src = "./hurt.wav";
 let isCombat = false;
-let playAgain = false;
 let isPointerDown = false;
 const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
 const menuSprite = new PIXI.Sprite(menuTexture);
@@ -109,18 +104,14 @@ function setCurrentBirdHealth(health) {
   birdHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentBirdHealth / getBirdHealth())) * 100}%`);
 }
 
-function setSnailLevel(level) { snailLevel = level; }
 function getSnailLevel() { return snailLevel; }
-function setBeeLevel(level) { beeLevel = level; }
 function getBeeLevel() { return beeLevel; }
-function setBirdLevel(level) { birdLevel = level; }
 function getBirdLevel() { return birdLevel; }
 function getSnailSpeed() { return snailSpeed; }
 function setSnailSpeed(speed) { snailSpeed = speed; }
 function getSnailDamage() { return snailDamage; }
 function setSnailDamage(damage) { snailDamage = damage; }
 function getFrogLevel() { return frogLevel; }
-function setFrogLevel(level) { frogLevel = level; }
 function getSnailHealth() { return snailHealth; }
 function setSnailHealth(health) { snailHealth = health; }
 function getBirdSpeed() { return birdSpeed; }
@@ -142,18 +133,14 @@ function setFrogDamage(damage) { frogDamage = damage; }
 function getFrogHealth() { return frogHealth; }
 function getEnemies() { return enemies; }
 function addEnemies(enemy) { console.log("added an eneymy"); return enemies.push(enemy); }
-function clearEnemies(value) { enemies = []; }
 function setFrogHealth(health) { frogHealth = health; }
 function getCharSwap() { return charSwap; }
 function setCharSwap(value) { charSwap = value; }
 function getCurrentCharacter() { return currentCharacter; }
 function setCurrentCharacter(value) { currentCharacter = value; }
-function getFrogTint() { return frogTint; }
-function setFrogTint(value) { frogTint = value; }
 function getCoffee() { return coffee; }
 function setCoffee(value) { coffee = value; }
 function getFrogSize() { return frogSize; }
-function setFrogSize(value) { frogSize = value; }
 function getFrogSpeed() { return speed; }
 function setFrogSpeed(value) { speed = value; }
 function getSpeedChanged() { return speedChanged; }
@@ -161,9 +148,6 @@ function setSpeedChanged(value) { speedChanged = value; }
 function getSelectLevel() { return selectLevel; }
 function setSelectLevel(value) { selectLevel = value; }
 function getFrogTintColor() { return frogTintColor; }
-function setFrogTintColor(value) { frogTintColor = value; }
-function getSpeed() { return speed; }
-function setSpeed(value) { speed = value; }
 function getPlayerEXP() { return playerEXP; }
 function setPlayerEXP(value) { playerEXP = value; }
 function getisDead() { return isDead; }
@@ -171,8 +155,6 @@ function setIsDead(value) { isDead = value; }
 function getIsCharAttacking() { return isCharAttacking; }
 function setIsCharAttacking(value) { isCharAttacking = value; }
 function getAreResetting() { return areResetting; }
-function setAreResetting(value) { areResetting = value; }
-function getIsCharAttackAnimating() { return isCharAttackAnimating; }
 function setCharAttackAnimating(value) { isCharAttackAnimating = value; }
 function getEnemiesInRange() { return enemiesInRange; }
 function setEnemiesInRange(value) { enemiesInRange = value; }
@@ -243,25 +225,6 @@ function getPlayerCurrentHealth() {
   return playerHealth;
 }
 
-
-function setPlayerHealth(value) {
-  switch (getCurrentCharacter()) {
-    case 'character-snail':
-      setSnailHealth(value);
-      break;
-    case 'character-bird':
-      setBirdHealth(value);
-      break;
-    case 'character-frog':
-      setFrogHealth(value);
-      break;
-    case 'character-bee':
-      setBeeHealth(value);
-      break;
-    default:
-      console.log('Invalid character type');
-  }
-}
 
 function setPlayerCurrentHealth(value) {
   switch (getCurrentCharacter()) {
@@ -545,9 +508,7 @@ const hoverScale = 1.2;
 const hoverAlpha = 0.8;
 app.stage.addChild(playButton);
 
-function getisPointerdown() {
-  return isPointerDown;
-}
+
 
 function startGame() {
 
@@ -649,9 +610,6 @@ function startGame() {
 
     app.stage.addChild(background);
     app.stage.addChild(anotherBackground);
-
-
-    const characterPortraitTexture = PIXI.Texture.from('https://i.imgur.com/8y7Ehfw.png');
 
 
     const frogGhostTextures = PIXI.Loader.shared.resources['frog_ghost'].texture;
@@ -1533,10 +1491,6 @@ function spawnPuffer(critter, pufferAttackTextures, enemyDeath, foreground, frog
       if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
 
         enemy.position.x += enemy.vx;
-        if (enemy.hpBar) {
-          //enemy.hpBar.position.x += enemy.vx;
-          // enemy.hpBarBackground.position.x += enemy.vx;
-        }
       } else {
         if ((critter.textures !== frogWalkTextures)) {
           if (critter.currentFrame === critter.totalFrames - 2) {
@@ -1563,10 +1517,6 @@ function spawnPuffer(critter, pufferAttackTextures, enemyDeath, foreground, frog
           isAttacking = true;
           isCombat = true;
           handleEnemyAttacking(enemy, pufferAttackTextures, critter, enemyDeath, frogGhostTextures, pufferWalkTextures, frogGhostPlayer, frogWalkTextures);
-          if (enemy.isAlive && !getisDead()) {
-            //console.log("here");
-            //drawEnemyHPBar(enemy);
-          }
         }
       }
     } else {
@@ -1585,9 +1535,6 @@ function spawnPuffer(critter, pufferAttackTextures, enemyDeath, foreground, frog
 
 
 }
-
-
-
 
 
 function checkProjectileCollisions(critter, enemy, enemyDeath) {
@@ -1617,18 +1564,6 @@ function checkProjectileCollisions(critter, enemy, enemyDeath) {
 
 
 
-
-
-
-
-
-
-
-let isPlayerAttacking = false;
-
-function onPlayerAttack() {
-  isPlayerAttacking = true;
-}
 
 
 function rangedAttack(critter, enemy, enemyDeath) {
@@ -1724,8 +1659,6 @@ function playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures) {
 
 const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
-const spawnCircleRadius = Math.sqrt(screenWidth * screenWidth + screenHeight * screenHeight);
-let shrinkSpeed = 0.02;
 
 
 function handleEnemyAttacking(enemy, critterAttackTextures, critter, enemyDeath, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
@@ -1968,7 +1901,7 @@ function drawHitSplat(enemy) {
 
 
 
-let isCritterAttackTriggered = false;
+
 function critterAttack(critter, enemy, enemyDeath, critterAttackTextures) {
   // Reduce enemy's HP
   console.log('ENEMY HP', enemy.currentHP);
@@ -2202,10 +2135,6 @@ function drawEnemyHPBar(enemy) {
 
 
 
-
-
-
-
 function handlePlayClick() {
 
   if (!isGameStarted) {
@@ -2215,19 +2144,7 @@ function handlePlayClick() {
   }
 }
 
-function handleSnailClick() {
-
-
-  if (!isGameStarted) {
-    isGameStarted = true;
-
-    startGame();
-  }
-}
-
-
-// Update the grayscale effect based on HP bar value
-
+// Update the grayscale effect based on HP bar valu
 
 
 function updatePlayerHealthBar(health) {
@@ -2312,12 +2229,6 @@ function animateUpgradeBoxes(critter) {
   });
 }
 
-
-
-let critterTint = 0;
-let currentLevel = 1;
-let currentAtkLevel = 1;
-let currentHpLevel = 1;
 
 
 // Define stats for each character
@@ -2422,24 +2333,6 @@ function setCharacterHealth(currentCharacter, hp) {
   }
 }
 
-function getCharacterHealth(currentCharacter, hp) {
-  switch (currentCharacter) {
-    case 'character-snail':
-      getSnailHealth();
-      break;
-    case 'character-bird':
-      getBirdHealth();
-      break;
-    case 'character-frog':
-      getFrogHealth();
-      break;
-    case 'character-bee':
-      getBeeHealth(hp);
-      break;
-    default:
-      console.log('Invalid character', currentCharacter);
-  }
-}
 
 
 
@@ -2573,10 +2466,6 @@ function levelUp(critter) {
   levelSound.play();
 }
 
-
-function updateTint(critter, percentage) {
-
-}
 
 playButton.on('mouseover', () => {
   playButton.scale.set(hoverScale);
