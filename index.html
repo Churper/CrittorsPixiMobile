@@ -1806,17 +1806,21 @@ function getRandomColor3() {
       // Variables
       let attackAnimationPlayed = false; // Flag variable to track if attack animation has played
 let pointerHoldInterval;
+let activeTouches = 0;
+
 app.stage.interactive = true;
 app.stage.on("pointerdown", handleTouchStart);
 app.stage.on("pointerup", handleTouchEnd);
 app.stage.on("touchendoutside", handleTouchEnd);
-app.stage.on("touchendoutside", handleTouchEnd);
+
 
 xDir = 1;
 updateVelocity();
 critter.loop = true;
 
 function handleTouchStart(event) {
+  activeTouches++;
+
   if (attackAnimationPlayed) {
     attackAnimationPlayed = false;
   }
@@ -1917,13 +1921,18 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
 
 
 function handleTouchEnd(event) {
-  if (event.data && event.data.length === 0) {
+  clearInterval(pointerHoldInterval);
+  activeTouches--;
+
+  if (activeTouches === 0) {
     // No active touches, perform your functionality
- handleMouseLeave(event);
-    return;
+          isPointerDown = false;
+          console.log('Mouse haxxxxxxxxscreen');
+          attackAnimationPlayed = true;
+return;
   }
 
-  clearInterval(pointerHoldInterval);
+
   isPointerDown = false;
 
   if (!attackAnimationPlayed) {
