@@ -1593,7 +1593,7 @@ let initialClouds = 0;
       foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height;
       foreground.anchor.set(0, 1);
       foreground.x = 0;
-      foreground.tint = getRandomColor3();
+      //foreground.tint = getRandomColor3();
 
       foreground.y = Math.max(app.screen.height);
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
@@ -1681,7 +1681,7 @@ console.log(mountain3);
       const birdAttackTextures = createAnimationTextures2('bird_attack', 13, 403, 2541, 806);
       const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
       const clouds2Texture = PIXI.Loader.shared.resources['clouds2'].texture;
-background.tint = getRandomColor1();
+//background.tint = getRandomColor1();
 
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 30, 200);
@@ -1966,8 +1966,7 @@ function getRandomColor3() {
 
       function resetCharacter() {
 
-        isAttackingChar = false;
-        isMoving = false;
+      
 
 
 
@@ -2840,6 +2839,15 @@ console.log("broke");
       updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
       // Reset castle health
       castleHealth = 100;
+      const mountain3 = foreground.getChildByName('mountain3');
+const mountain4 = foreground.getChildByName('mountain4');
+const mountain1 = foreground.getChildByName('mountain1');
+const mountain2 = foreground.getChildByName('mountain2');
+
+mountain3.tint = getRandomColor();
+mountain4.tint = getRandomColor();
+mountain1.tint = getRandomColor();
+mountain2.tint = getRandomColor();
 
       // Remove any existing enemy death sprites
       // Set isCombat and playAgain to false
@@ -2867,7 +2875,8 @@ console.log("broke");
 
       // Clear the enemies array
       enemies.length = 0;
-      resetCharacter();
+      isAttackingChar = false;
+      isMoving = true;
     }
   }
 
