@@ -1485,7 +1485,7 @@
 
     const sound = new Audio();
     sound.src = "./theme.ogg";
-    sound.volume = .12;
+    sound.volume = .02;
     sound.play();
 
     // Game elements and logic 
@@ -1499,8 +1499,11 @@
 
     const mountainVelocityX = 0;
     const mountainVelocityY = 0.2;
-    const mountainVelocity1 = new PIXI.Point(0.2, 0.2);
+    const mountainVelocity1 = new PIXI.Point(0.01, 0.01);
     const mountainVelocity2 = new PIXI.Point(0.05, 0.05);
+    const mountainVelocity3 = new PIXI.Point(0.1, 0.1);
+    const mountainVelocity4 = new PIXI.Point(0.1, 0.1);
+
     let keysPressed = 0;
     const hpBarColor = 0xff0000;
 
@@ -1542,6 +1545,9 @@
       { name: 'enemy_death', url: 'https://i.imgur.com/UD2YJ4w.png' },
       { name: 'mountain1', url: 'https://i.imgur.com/FP1W0k6.png' },
       { name: 'mountain2', url: 'https://i.imgur.com/Y6IKYjW.png' },
+      { name: 'mountain3', url: 'https://i.imgur.com/Y6IKYjW.png' },
+      { name: 'mountain4', url: 'https://i.imgur.com/FP1W0k6.png' },
+
       { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
       { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
     ]).load(setup);
@@ -1585,11 +1591,21 @@
       foreground.anchor.set(0, 1);
       foreground.x = 0;
 
+
       foreground.y = Math.max(app.screen.height);
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
-      const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.35, mountainVelocity2, foreground); // Adjust the position as needed
-      foreground.x = 0;
+      const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.45, mountainVelocity2, foreground); 
+      const mountain3 = createMountainSprite('mountain3', -200, mountainVelocity3, foreground); // Adjust the position as needed
+      const mountain4 = createMountainSprite('mountain4', app.screen.width * 1.2, mountainVelocity4, foreground); // Adjust the position as needed
 
+mountain3.scale.x = .6;
+mountain3.scale.y = .65;
+mountain4.scale.x = .5;
+mountain4.scale.y = .55;
+console.log(mountain2);
+console.log(mountain3);
+      foreground.x = 0;
+     // mountain3.scale.x = 100;
       const castleTexture = PIXI.Texture.from('castle');
       const castle = new PIXI.Sprite(castleTexture);
       castle.anchor.set(1, 1);
@@ -1713,6 +1729,9 @@
         return textures;
       }
 
+
+      
+
       function createAnimationTextures2(resourceName, frameCount, frameHeight, sheetWidth, sheetHeight) {
         const textures = [];
         const frameWidth = sheetWidth / Math.ceil(frameCount / (sheetHeight / frameHeight));
@@ -1729,7 +1748,13 @@
       }
 
 
-
+      function getRandomColor() {
+  const r = Math.floor(Math.random() * 192) + 64;
+  const g = Math.floor(Math.random() * 192) + 64;
+  const b = Math.floor(Math.random() * 128) + 128;
+  const color = (r << 16) | (g << 8) | b;
+  return color;
+}
 
       function createAnimatedSprite(textures) {
         const sprite = new PIXI.AnimatedSprite(textures);
@@ -1992,8 +2017,10 @@
       const maxY = app.screen.height * 0.85;
       const minY = app.screen.height * 0.5;
       const cloudSpeed = 1 / 3.5;
-      const mountain1Speed = 0.2;
+      const mountain1Speed = 0.01;
       const mountain2Speed = 0.05;
+      const mountain3Speed = .03;
+      const mountain4Speed = .03;
       app.ticker.add(() => {
 console.log("HERXOROR:", getEnemiesInRange());
 
@@ -2137,11 +2164,11 @@ console.log("HERXOROR:", getEnemiesInRange());
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
 
 
-        console.log("isatt:", isAttackingChar);
-       console.log("isdead:", getisDead());
-        console.log("iscombat:", isCombat);
-        console.log("ispointerdown:", isPointerDown);
-        console.log("enemiesinrange:", getEnemiesInRange());
+       // console.log("isatt:", isAttackingChar);
+    //   console.log("isdead:", getisDead());
+      //  console.log("iscombat:", isCombat);
+      //  console.log("ispointerdown:", isPointerDown);
+      //  console.log("enemiesinrange:", getEnemiesInRange());
 
         if (!isAttackingChar) {
           if (!getisDead()) {
@@ -2168,6 +2195,9 @@ console.log("broke");
                   critter.loop = true;
                   mountain1.position.x -= velocity.x * mountain1Speed;
                   mountain2.position.x -= velocity.x * mountain2Speed;
+                  mountain3.position.x -= velocity.x * mountain3Speed;
+                  mountain4.position.x -= velocity.x * mountain4Speed;
+
                 }
                 else {
 
@@ -2246,7 +2276,12 @@ console.log("broke");
       critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
       updateEXP(0, expToLevel);
       updatePlayerHealthBar(getFrogHealth());
-      app.stage.addChild(background, mountain1, mountain2, foreground, castle, critter, clouds, hpBarBackground, hpBar, enemyDeath);
+      const mountainSprites = [mountain1, mountain2, mountain3, mountain4];
+  mountain3.tint = getRandomColor();
+ mountain4.tint = getRandomColor();
+ mountain1.tint = getRandomColor();
+ mountain2.tint = getRandomColor();
+      app.stage.addChild(background,mountain4, mountain1, mountain2, mountain3,  foreground, castle, critter, clouds, hpBarBackground, hpBar, enemyDeath);
 
       spawnEnemy(critter, critterAttackTextures, enemyDeath, foreground, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
       setInterval(() => {
