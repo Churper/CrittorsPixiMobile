@@ -632,7 +632,7 @@
   let frogTint = 0;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1.5;
+  let speed = 5.5;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -2083,7 +2083,7 @@ console.log("HERXOROR:", getEnemiesInRange());
       
             // Clear the enemies array
             isPointerDown = false;
-            setRoundOver(false);
+          
 
             app.stage.addChild(critter);
 
@@ -2099,10 +2099,10 @@ console.log("HERXOROR:", getEnemiesInRange());
             }
          
             enemies.length = 0;
-       
-            return;
+            setRoundOver(false);
+           
           }
-          return;
+         return;
         }
 
 
