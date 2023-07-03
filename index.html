@@ -1152,7 +1152,8 @@ let initialClouds = 0;
     isDead = value;
   }
 
-
+  
+ 
   function getIsCharAttacking() {
     return isCharAttacking;
   }
@@ -1508,8 +1509,7 @@ let initialClouds = 0;
     let keysPressed = 0;
     const hpBarColor = 0xff0000;
 
-
-
+   
 
 
 
@@ -1758,29 +1758,7 @@ console.log(mountain3);
       }
 
 
-      function getRandomColor() {
-  const r = Math.floor(Math.random() * 192) + 64;
-  const g = Math.floor(Math.random() * 192) + 64;
-  const b = Math.floor(Math.random() * 128) + 128;
-  const color = (r << 16) | (g << 8) | b;
-  return color;
-}
-
-function getRandomColor1() {
-  const r = Math.floor(Math.random() * 64) + 192;
-  const g = Math.floor(Math.random() * 64) + 192;
-  const b = Math.floor(Math.random() * 128) + 128;
-  const color = (r << 16) | (g << 8) | b;
-  return color;
-}
-
-function getRandomColor3() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 128) + 128;
-  const b = Math.floor(Math.random() * 256);
-  const color = (r << 16) | (g << 8) | b;
-  return color;
-}
+    
 
       function createAnimatedSprite(textures) {
         const sprite = new PIXI.AnimatedSprite(textures);
@@ -2847,15 +2825,7 @@ function handleTouchEnd(event) {
         // Destroy the enemy object to free up memory
 
       }
-      const mountain3 = foreground.getChildByName('mountain3');
-const mountain4 = foreground.getChildByName('mountain4');
-const mountain1 = foreground.getChildByName('mountain1');
-const mountain2 = foreground.getChildByName('mountain2');
 
-mountain3.tint = getRandomColor();
-mountain4.tint = getRandomColor();
-mountain1.tint = getRandomColor();
-mountain2.tint = getRandomColor();
       // Clear the enemies array
       enemies.length = 0;
       isAttackingChar = false;
@@ -3649,6 +3619,30 @@ function handleAllTouchesReleased() {
   console.log("All touches released.");
   console.log("All touches released.");
   handleTouchEnd();
+}
+
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 192) + 64;
+  const g = Math.floor(Math.random() * 192) + 64;
+  const b = Math.floor(Math.random() * 128) + 128;
+  const color = (r << 16) | (g << 8) | b;
+  return color;
+}
+
+function getRandomColor1() {
+  const r = Math.floor(Math.random() * 64) + 192;
+  const g = Math.floor(Math.random() * 64) + 192;
+  const b = Math.floor(Math.random() * 128) + 128;
+  const color = (r << 16) | (g << 8) | b;
+  return color;
+}
+
+function getRandomColor3() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 128) + 128;
+  const b = Math.floor(Math.random() * 256);
+  const color = (r << 16) | (g << 8) | b;
+  return color;
 }
 </script>
 </body>
