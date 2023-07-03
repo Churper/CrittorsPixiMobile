@@ -2839,15 +2839,6 @@ console.log("broke");
       updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
       // Reset castle health
       castleHealth = 100;
-      const mountain3 = foreground.getChildByName('mountain3');
-const mountain4 = foreground.getChildByName('mountain4');
-const mountain1 = foreground.getChildByName('mountain1');
-const mountain2 = foreground.getChildByName('mountain2');
-
-mountain3.tint = getRandomColor();
-mountain4.tint = getRandomColor();
-mountain1.tint = getRandomColor();
-mountain2.tint = getRandomColor();
 
       // Remove any existing enemy death sprites
       // Set isCombat and playAgain to false
@@ -2876,7 +2867,7 @@ mountain2.tint = getRandomColor();
       // Clear the enemies array
       enemies.length = 0;
       isAttackingChar = false;
-      isMoving = true;
+      isMoving = true;;
     }
   }
 
