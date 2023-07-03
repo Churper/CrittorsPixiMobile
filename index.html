@@ -667,7 +667,7 @@
   let isPaused = false;
   let isAttackingChar = false;
   let isGameStarted = false;
-
+let initialClouds = 0;
   const attackTint = 0xc62828; // Darker, slightly greyish red tint
   let expToLevel = 100;
   let cooldownActive = false; // Track the cooldown status
@@ -1549,7 +1549,10 @@
       { name: 'mountain4', url: 'https://i.imgur.com/FP1W0k6.png' },
 
       { name: 'castle', url: 'https://i.imgur.com/a8MEgLK.png' },
-      { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' }
+      { name: 'clouds', url: 'https://i.imgur.com/ggEcYj9.png' },
+      { name: 'clouds2', url: 'https://i.imgur.com/GDrlJ72.png' },
+      { name: 'clouds3', url: 'https://i.imgur.com/QrTMhij.png' },
+
     ]).load(setup);
 
 
@@ -1590,7 +1593,7 @@
       foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height;
       foreground.anchor.set(0, 1);
       foreground.x = 0;
-
+      foreground.tint = getRandomColor3();
 
       foreground.y = Math.max(app.screen.height);
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
@@ -1677,8 +1680,14 @@ console.log(mountain3);
       const birdWalkTextures = createAnimationTextures2('bird_walk', 13, 403, 2541, 806);
       const birdAttackTextures = createAnimationTextures2('bird_attack', 13, 403, 2541, 806);
       const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
+      const clouds2Texture = PIXI.Loader.shared.resources['clouds2'].texture;
+background.tint = getRandomColor1();
+
       const backgroundImage = PIXI.Sprite.from('background');
-      const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 3, 200);
+      const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 30, 200);
+      const clouds2 = createTilingSprite(clouds2Texture, backgroundImage.width * 30, 200);
+      clouds2.position.y += 100;
+      clouds2.alpha = .3;
       const enemyDeathTextures = createAnimationTextures('enemy_death', 8, 317);
       const enemyDeath = createAnimatedSprite(enemyDeathTextures);
       const playerSpawn = createAnimatedSprite(enemyDeathTextures);
@@ -1752,6 +1761,22 @@ console.log(mountain3);
   const r = Math.floor(Math.random() * 192) + 64;
   const g = Math.floor(Math.random() * 192) + 64;
   const b = Math.floor(Math.random() * 128) + 128;
+  const color = (r << 16) | (g << 8) | b;
+  return color;
+}
+
+function getRandomColor1() {
+  const r = Math.floor(Math.random() * 64) + 192;
+  const g = Math.floor(Math.random() * 64) + 192;
+  const b = Math.floor(Math.random() * 128) + 128;
+  const color = (r << 16) | (g << 8) | b;
+  return color;
+}
+
+function getRandomColor3() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 128) + 128;
+  const b = Math.floor(Math.random() * 256);
   const color = (r << 16) | (g << 8) | b;
   return color;
 }
@@ -2010,17 +2035,20 @@ console.log(mountain3);
       function castleExplode() {
         setRoundOver(true);
       }
-
+   
       let unPauser = 0;
       const maxX = foreground.width - critter.width / 2;
       const minX = critter.width / 2;
       const maxY = app.screen.height * 0.85;
       const minY = app.screen.height * 0.5;
-      const cloudSpeed = 1 / 3.5;
+      const cloudSpeed = .5 / 3.5;
+      const cloud2Speed = 1.1 / 3.5;
+  
       const mountain1Speed = 0.01;
       const mountain2Speed = 0.05;
       const mountain3Speed = .03;
       const mountain4Speed = .03;
+      initialClouds = clouds.position.x;
       app.ticker.add(() => {
 console.log("HERXOROR:", getEnemiesInRange());
 
@@ -2248,10 +2276,13 @@ console.log("broke");
 
         // Update cloud position
         clouds.position.x -= cloudSpeed;
-
+        clouds2.position.x -= cloud2Speed;
         // Check if cloud has gone offscreen and move it to the right side
-        if (clouds.x + clouds.width / 2 < -700) {
-          clouds.x = app.screen.width + clouds.width / 2;
+        if (clouds.x + clouds.width / 2 < -3000) {
+          clouds.x = initialClouds;
+        }
+        if (clouds2.x + clouds2.width / 2 < -3000) {
+          clouds2.x = initialClouds;
         }
         if (!getAreResetting()) {
           // Adjust app stage position
@@ -2281,7 +2312,7 @@ console.log("broke");
  mountain4.tint = getRandomColor();
  mountain1.tint = getRandomColor();
  mountain2.tint = getRandomColor();
-      app.stage.addChild(background,mountain4, mountain1, mountain2, mountain3,  foreground, castle, critter, clouds, hpBarBackground, hpBar, enemyDeath);
+      app.stage.addChild(background,mountain4, mountain1, mountain2, mountain3,  foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath);
 
       spawnEnemy(critter, critterAttackTextures, enemyDeath, foreground, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
       setInterval(() => {
