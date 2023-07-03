@@ -1797,7 +1797,14 @@ updateVelocity();
 critter.loop = true;
 
 function handleTouchStart(event) {
+if(isPointerDown = true)
+{
+  isPointerDown = false;
+          console.log('Mouse has left the screen');
+          attackAnimationPlayed = true;
+          handleTouchEnd(event);
 
+}
 
 
   activeTouches++;
