@@ -1921,19 +1921,22 @@ function getRandomColor3() {
       // Function to handle pointerup event
       function handleTouchEnd(event) {
   clearInterval(pointerHoldInterval);
-  isPointerDown = false;
 
   if (event instanceof TouchEvent) {
-    event.target.removeEventListener("touchend", handleTouchEnd);
-    event.target.removeEventListener("touchcancel", handleTouchEnd);
-    event.target.removeEventListener("touchleave", handleTouchEnd);
+    // For touch events, check if any touches are still active
+    if (event.touches.length > 0) {
+      // If there are remaining touches, return without resetting the attackAnimationPlayed flag
+      return;
+    }
   }
+
+  isPointerDown = false;
 
   if (!attackAnimationPlayed) {
     return;
   } else {
     attackAnimationPlayed = true;
-    return;
+
     // Reset the textures and start the animation again
     critter.textures = frogAttackTextures;
     critter.loop = false;
