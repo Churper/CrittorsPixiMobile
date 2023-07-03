@@ -1807,6 +1807,7 @@ function getRandomColor3() {
       let pointerHoldInterval;
       app.stage.interactive = true;
       app.stage.on("pointerdown", handleTouchStart);
+      app.stage.on("touchstart", handleTouchStart);
       app.stage.on("pointerup", handleTouchEnd);
       xDir = 1;
       updateVelocity();
@@ -1814,149 +1815,133 @@ function getRandomColor3() {
 
 
       function handleTouchStart(event) {
-        if (attackAnimationPlayed) { attackAnimationPlayed = false; }
+  if (attackAnimationPlayed) { attackAnimationPlayed = false; }
 
-        if (getisPaused()) {
-          setisPaused(false);
-          return;
-        }
+  if (getisPaused()) {
+    setisPaused(false);
+    return;
+  }
 
-        function handleMouseLeave(event) {
-          isPointerDown = false;
-          console.log('Mouse has left the screen');
-          attackAnimationPlayed = true;
-          handleTouchEnd(event);
+  function handleMouseLeave(event) {
+    isPointerDown = false;
+    console.log('Mouse has left the screen');
+    attackAnimationPlayed = true;
+    handleTouchEnd(event);
 
-          // Perform any additional actions you want here
-        }
+    // Perform any additional actions you want here
+  }
 
-        function handleTouchHold() {
+  function handleTouchHold() {
+    if (getisPaused()) {
+      return;
+    }
 
-          if (getisPaused()) {
-            return;
-          }
-
+    if (!isAttackingChar) {
+      if (!getisDead()) {
+        isAttackingChar = true;
+        critter.textures = frogAttackTextures;
+        setCharAttackAnimating(true);
+        critter.loop = false;
+        critter.onComplete = function () {
           if (!isAttackingChar) {
-            if (!getisDead()) {
+            return; // Return early if attack was interrupted (paused)
+          }
+          if (isAttackingChar) {
+            attackAnimationPlayed = true;
+            attackSound.volume = 0.25;
+            attackSound.src = "./attacksound.wav";
+            attackSound.play();
+            if (getCurrentCharacter() === "character-bird") {
+              const birdProjectile = new PIXI.Sprite(PIXI.Loader.shared.resources['bird_egg'].texture);
+              birdProjectile.position.set(critter.position.x, critter.position.y);
+              birdProjectile.name = 'birdProjectile';
+              birdProjectile.scale.set(0.3);
+              app.stage.addChild(birdProjectile);
 
-              isAttackingChar = true;
-              critter.textures = frogAttackTextures;
-              setCharAttackAnimating(true);
-              critter.loop = false;
-              critter.onComplete = function () {
+              const projectileSpeed = 3;
 
-                if (!isAttackingChar) {
-                  return; // Return early if attack was interrupted (paused)
+              function updateProjectile() {
+                birdProjectile.x += projectileSpeed;
+
+                if (birdProjectile.x > castle.position.x) {
+                  // If the projectile reaches the castle, stop updating its position
+                  //app.ticker.remove(updateProjectile); // Stop updating the projectile
                 }
-                if (isAttackingChar) {
-                  attackAnimationPlayed = true;
-                  attackSound.volume = .25;
-                  attackSound.src = "./attacksound.wav";
-                  attackSound.play();
-                  if (getCurrentCharacter() === "character-bird") {
-                    const birdProjectile = new PIXI.Sprite(PIXI.Loader.shared.resources['bird_egg'].texture);
-                    birdProjectile.position.set(critter.position.x, critter.position.y); // Set the initial position of the projectile behind the bird
-                    birdProjectile.name = 'birdProjectile'; // Set the name property of the projectile
-                    birdProjectile.scale.set(0.3); // Scale the projectile
 
-                    app.stage.addChild(birdProjectile); // Add the projectile to the stage
-
-                    const projectileSpeed = 3; // Adjust this value to control the speed of the projectile
-
-                    // Update function to move the projectile
-                    function updateProjectile() {
-                      birdProjectile.x += projectileSpeed; // Move the projectile to the right
-
-                      if (birdProjectile.x > castle.position.x) {
-                        // If the projectile reaches the castle, stop updating its position
-                        //app.ticker.remove(updateProjectile); // Stop updating the projectile
-                      }
-
-                      if (!app.stage.children.includes(birdProjectile)) {
-                        // If the projectile is removed from the stage by an enemy, stop updating its position
-                        // app.ticker.remove(updateProjectile); // Stop updating the projectile
-                      }
-                    }
-
-                    app.ticker.add(updateProjectile); // Start updating the projectile
-                  }
-
-
-                  if (critter.position.x > castle.position.x - castle.width / 1.1) {
-                    console.log("takingDamage");
-                    // Apply the attack tint
-                    // Apply the attack tint
-                    const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
-                    const maxHealth = 100;
-                    const remainingHealthPercentage = castleHealth / castleMaxHealth;
-                    const greyscaleFactor = 1 - remainingHealthPercentage;
-
-                    greyscaleFilter.desaturate(greyscaleFactor);
-
-                    castle.filters = [greyscaleFilter];
-
-                    castleTakeDamage(getCharacterDamage(getCurrentCharacter())); // Damage calculation
-                  }
-                  isAttackingChar = false;
-                  isMoving = false;
-
+                if (!app.stage.children.includes(birdProjectile)) {
+                  // If the projectile is removed from the stage by an enemy, stop updating its position
+                  // app.ticker.remove(updateProjectile); // Stop updating the projectile
                 }
-                // isAttackingChar = false;
+              }
 
-                critter.play();
-              };
-              critter.play();
-
+              app.ticker.add(updateProjectile);
             }
 
+            if (critter.position.x > castle.position.x - castle.width / 1.1) {
+              console.log("takingDamage");
+              const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
+              const maxHealth = 100;
+              const remainingHealthPercentage = castleHealth / castleMaxHealth;
+              const greyscaleFactor = 1 - remainingHealthPercentage;
+
+              greyscaleFilter.desaturate(greyscaleFactor);
+
+              castle.filters = [greyscaleFilter];
+
+              castleTakeDamage(getCharacterDamage(getCurrentCharacter()));
+            }
+            isAttackingChar = false;
+            isMoving = false;
           }
 
-        }
-
-        isPointerDown = true;
-        pointerHoldInterval = setInterval(handleTouchHold, 10);
-
-        // Add an event listener to check if the mouse leaves the document
-        document.addEventListener("mouseout", handleMouseLeave);
-
-        // Remove the event listener when touch ends
-        document.addEventListener("touchend", function () {
-          clearInterval(pointerHoldInterval);
-          document.removeEventListener("mouseout", handleMouseLeave);
-
-        });
+          critter.play();
+        };
+        critter.play();
       }
+    }
+  }
+
+  if (event.data) {
+    // Touch event
+    isPointerDown = true;
+    pointerHoldInterval = setInterval(handleTouchHold, 10);
+    // Add event listeners to handle touch end and leave
+    event.data.originalEvent.target.addEventListener("touchend", handleTouchEnd);
+    event.data.originalEvent.target.addEventListener("touchcancel", handleTouchEnd);
+    event.data.originalEvent.target.addEventListener("touchleave", handleTouchEnd);
+  } else {
+    // Mouse event
+    isPointerDown = true;
+    pointerHoldInterval = setInterval(handleTouchHold, 10);
+    // Add an event listener to check if the mouse leaves the document
+    document.addEventListener("mouseout", handleMouseLeave);
+  }
+}
 
       // Function to handle pointerup event
       function handleTouchEnd(event) {
+  clearInterval(pointerHoldInterval);
+  isPointerDown = false;
 
-        // console.log("ping");
-        clearInterval(pointerHoldInterval);
-        isPointerDown = false;
+  if (event instanceof TouchEvent) {
+    event.target.removeEventListener("touchend", handleTouchEnd);
+    event.target.removeEventListener("touchcancel", handleTouchEnd);
+    event.target.removeEventListener("touchleave", handleTouchEnd);
+  }
 
+  if (!attackAnimationPlayed) {
+    return;
+  } else {
+    attackAnimationPlayed = true;
+    return;
+    // Reset the textures and start the animation again
+    critter.textures = frogAttackTextures;
+    critter.loop = false;
+    critter.play();
+  }
 
-
-        if (!attackAnimationPlayed) {
-          return;
-        } else {
-          attackAnimationPlayed = true;
-
-          return;
-
-          // Reset the textures and start the animation again
-          critter.textures = frogAttackTextures;
-          critter.loop = false;
-          critter.play();
-        }
-
-
-
-
-
-
-        xDir = 1;
-      }
-
+  xDir = 1;
+}
 
 
 
