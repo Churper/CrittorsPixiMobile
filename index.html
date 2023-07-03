@@ -2136,7 +2136,8 @@ console.log("HERXOROR:", getEnemiesInRange());
 
             // Clear the enemies array
             enemies.length = 0;
-
+            isAttackingChar = false;
+      isMoving = true;;
             return;
           }
           return;
@@ -2863,7 +2864,15 @@ console.log("broke");
         // Destroy the enemy object to free up memory
 
       }
+      const mountain3 = foreground.getChildByName('mountain3');
+const mountain4 = foreground.getChildByName('mountain4');
+const mountain1 = foreground.getChildByName('mountain1');
+const mountain2 = foreground.getChildByName('mountain2');
 
+mountain3.tint = getRandomColor();
+mountain4.tint = getRandomColor();
+mountain1.tint = getRandomColor();
+mountain2.tint = getRandomColor();
       // Clear the enemies array
       enemies.length = 0;
       isAttackingChar = false;
