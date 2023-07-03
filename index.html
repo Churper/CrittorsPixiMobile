@@ -644,6 +644,7 @@
   let birdLevel = 1;
   let birdSpeed = 1;
   let birdDamage = 15;
+  let touchCount = 0;
   let birdHealth = 100;
   let beeSpeed = 1;
   let beeDamage = 25;
@@ -1911,6 +1912,9 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
 
   document.addEventListener("touchend", handleMouseLeave);
 }
+
+
+
 
 function handleTouchEnd(event) {
   clearInterval(pointerHoldInterval);
@@ -3610,7 +3614,34 @@ const hpBarY = -(enemy.height / 3);
   // Add event listeners for visibility change
   document.addEventListener("visibilitychange", handleVisibilityChange);
   document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
+// Add touchstart event listener
+document.addEventListener("touchstart", () => {
+  // Increment touch count
+  touchCount++;
+});
 
+// Add touchend event listener
+document.addEventListener("touchend", () => {
+  // Decrement touch count
+  touchCount--;
+
+  // Check if all touches are released
+  if (touchCount === 0) {
+    handleAllTouchesReleased();
+  }
+});
+
+// Function to handle all touches released
+function handleAllTouchesReleased() {
+  // Your functionality when all touches are released
+  console.log("All touches released.");
+  console.log("All touches released.");
+  console.log("All touches released.");
+  console.log("All touches released.");
+  console.log("All touches released.");
+  console.log("All touches released.");
+  handleTouchEnd();
+}
 </script>
 </body>
 
