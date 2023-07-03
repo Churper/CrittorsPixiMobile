@@ -2787,7 +2787,7 @@ console.log("broke");
       critter.play();
       app.stage.addChild(critter);
       playRoundText(getCurrentRound());
-      resetCharacter();
+    
       // Loop through the enemies array and remove each enemy
       for (let i = 0; i < getEnemies().length; i++) {
         let enemy = getEnemies()[i];
@@ -2801,6 +2801,7 @@ console.log("broke");
 
       // Clear the enemies array
       enemies.length = 0;
+      resetCharacter();
     }
   }
 
