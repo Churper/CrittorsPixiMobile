@@ -1809,6 +1809,8 @@ app.stage.interactive = true;
 app.stage.on("pointerdown", handleTouchStart);
 app.stage.on("pointerup", handleTouchEnd);
 app.stage.on("touchendoutside", handleTouchEnd);
+app.stage.on("touchendoutside", handleTouchEnd);
+
 xDir = 1;
 updateVelocity();
 critter.loop = true;
@@ -1822,6 +1824,14 @@ function handleTouchStart(event) {
     setisPaused(false);
     return;
   }
+  function handleMouseLeave(event) {
+          isPointerDown = false;
+          console.log('Mouse has left the screen');
+          attackAnimationPlayed = true;
+          handleTouchEnd(event);
+
+          // Perform any additional actions you want here
+        }
 
   function handleTouchHold() {
     if (getisPaused()) {
@@ -1897,10 +1907,9 @@ if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false
 
   isPointerDown = true;
   pointerHoldInterval = setInterval(handleTouchHold, 10);
+  document.addEventListener("mouseout", handleMouseLeave);
 
-  document.addEventListener("touchend", function () {
-    clearInterval(pointerHoldInterval);
-  });
+  document.addEventListener("touchend", handleMouseLeave);
 }
 
 function handleTouchEnd(event) {
