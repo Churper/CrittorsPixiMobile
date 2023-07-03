@@ -1827,7 +1827,7 @@ function handleTouchStart(event) {
     if (getisPaused()) {
       return;
     }
-
+if(getRoundOver() === true ){isAttacking = false;  attackAnimationPlayed = false; return;}
     if (!isAttackingChar) {
       if (!getisDead()) {
         isAttackingChar = true;
