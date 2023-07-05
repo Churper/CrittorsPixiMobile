@@ -1297,9 +1297,11 @@ function updateEXPIndicatorText(character, level) {
 
           //console.log("isatt:", isAttackingChar);
           if (roundOver) {
-            document.getElementById('spawn-text').style.visibility = 'visible';
-            document.getElementById("pause-text").style.visibility = "hidden";
-
+           if(getPlayerCurrentHealth() <= 0)
+           
+           { document.getElementById('spawn-text').style.visibility = 'visible';
+            //document.getElementById("pause-text").style.visibility = "hidden";
+          }
 
             // Calculate the amount to move the camera per frame
             const cameraSpeed = 3;
