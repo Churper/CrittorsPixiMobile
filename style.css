@@ -417,10 +417,9 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 10%;
-  height: 100%;
+  width: 100%;
+  height: 10%;
   touch-action: manipulation;
-
   background-color: rgba(182, 10, 10, 0.9);
   /* Change the background color to red with opacity 0.5 */
   z-index: 999;
@@ -429,31 +428,87 @@ body {
 .upgrade-box.character-snail .hp-indicator {
   --current-health: var(--current-health-snail);
   --max-health: var(--max-health-snail);
-  height: calc(100% - var(--hp-indicator-height));
+  width: calc(100% - var(--hp-indicator-height));
   touch-action: manipulation;
 }
 
 .upgrade-box.character-bird .hp-indicator {
   --current-health: var(--current-health-bird);
   --max-health: var(--max-health-bird);
-  height: calc(100% - var(--hp-indicator-height));
+  width: calc(100% - var(--hp-indicator-height));
   touch-action: manipulation;
 }
 
 .upgrade-box.character-bee .hp-indicator {
   --current-health: var(--current-health-bee);
   --max-health: var(--max-health-bee);
-  height: calc(100% - var(--hp-indicator-height));
+  width: calc(100% - var(--hp-indicator-height));
   touch-action: manipulation;
 }
 
 .upgrade-box.character-frog .hp-indicator {
   --current-health: var(--current-health-frog);
   --max-health: var(--max-health-frog);
-  height: calc(100% - var(--hp-indicator-height));
+  width: calc(100% - var(--hp-indicator-height));
   touch-action: manipulation;
 }
 
+.exp-indicator {
+  visibility: inherit;
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  touch-action: manipulation;
+  background-color: rgba(35, 4, 121, 0.966);
+  /* Change the background color to red with opacity 0.5 */
+  z-index: 999;
+}
+
+.exp-indicator .level {
+  position: absolute;
+  bottom: -10px;
+  left: 36px;
+  font-size: 20px;
+  font-family: "Marker Felt", cursive;
+  font-weight: bold;
+  white-space: nowrap;
+  /* Prevent text from wrapping */
+  text-align: left;
+  /* Add padding to align with the right edge */
+  user-select: none;
+  touch-action: manipulation;
+  z-index: 99999999999999999;
+}
+
+.upgrade-box.character-snail .exp-indicator {
+  --current-health: var(--current-exp-snail);
+  --max-health: var(--max-exp-snail);
+  width: calc(100% - var(--exp-indicator-height));
+  touch-action: manipulation;
+}
+
+.upgrade-box.character-bird .exp-indicator {
+  --current-health: var(--current-exp-bird);
+  --max-health: var(--max-exp-bird);
+  width: calc(100% - var(--exp-indicator-height));
+  touch-action: manipulation;
+}
+
+.upgrade-box.character-bee .exp-indicator {
+  --current-health: var(--current-exp-bee);
+  --max-health: var(--max-exp-bee);
+  width: calc(100% - var(--exp-indicator-height));
+  touch-action: manipulation;
+}
+
+.upgrade-box.character-frog .exp-indicator {
+  --current-health: var(--current-exp-frog);
+  --max-health: var(--max-exp-frog);
+  width: calc(100% - var(--exp-indicator-height));
+  touch-action: manipulation;
+}
 
 
 .upgrade-box:hover {
