@@ -589,6 +589,7 @@ function updateEXPIndicatorText(character, level) {
           console.log('Invalid character', characterType);
           return;
       }
+      document.getElementById('spawn-text').style.visibility = 'hidden';
 
       if (characterHealth <= 0) {
         return; // Exit the function, don't perform any further actions
@@ -1074,9 +1075,14 @@ function updateEXPIndicatorText(character, level) {
           }
 
           if (getisPaused()) {
+
+
             if(getPlayerCurrentHealth()>0)
             {
+
             setisPaused(false);
+            // Hide the spawn text
+            document.getElementById('spawn-text').style.visibility = 'hidden';
             }
             return;
           }
@@ -1291,6 +1297,9 @@ function updateEXPIndicatorText(character, level) {
 
           //console.log("isatt:", isAttackingChar);
           if (roundOver) {
+            document.getElementById('spawn-text').style.visibility = 'visible';
+            document.getElementById("pause-text").style.visibility = "hidden";
+
 
             // Calculate the amount to move the camera per frame
             const cameraSpeed = 3;
@@ -1471,7 +1480,8 @@ function updateEXPIndicatorText(character, level) {
             }
             critter.position.x -= 20;
             updateEXP(getCharEXP(getCurrentCharacter()) , getEXPtoLevel(getCurrentCharacter),critter);
-      
+            document.getElementById('spawn-text').style.visibility = 'hidden';
+
             setCharSwap(false);
             return;
           }
