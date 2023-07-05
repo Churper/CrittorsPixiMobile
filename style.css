@@ -27,10 +27,24 @@ body {
 
 }
 
+#wipe-text {
+  visibility: hidden;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Marker Felt", cursive;
+  color: black;
+  text-shadow: 0px 0px 12px white;
+  font-size: 74px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
 #pause-text {
   visibility: hidden;
   position: fixed;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: "Marker Felt", cursive;
@@ -505,5 +519,65 @@ body {
 
   50% {
     transform: translateY(-10px);
+  }
+}
+
+#snail {
+  position: absolute;
+  top: 12px;
+  left: calc(4%);
+  width: 60px;
+  height: 60px;
+  background-image: url('https://i.imgur.com/shRbAl5.png');
+  background-size: cover;
+  animation: snail-movement 100s linear infinite, snail-animation 1s steps(2) infinite;
+  z-index: 4;
+}
+
+@keyframes snail-movement {
+  0% {
+    left: calc(4%);
+  }
+  100% {
+    left: calc(88%);
+  }
+}
+
+@keyframes snail-animation {
+  0%, 49% {
+    background-image: url('https://i.imgur.com/shRbAl5.png');
+  }
+  50%, 100% {
+    background-image: url('https://i.imgur.com/r3DQaWf.png');
+  }
+}
+
+#progress {
+  position: fixed;
+  top: 40px;
+  left: 80px;
+  width: 88%;
+  height: 20px; /* Adjust the height of the progress bar as needed */
+  background-color: rgba(0, 0, 0, 0.363); /* Use the desired semi-transparent color */
+  z-index: 2;
+}
+
+#progress-filled {
+  position: fixed;
+  top: 40px;
+  left: 80px;
+  width: 0;
+  height: 20px; /* Adjust the height of the progress bar as needed */
+  background-color: rgba(0, 0, 0, 0.411); /* Use the desired opaque color */
+  z-index: 3;
+  animation: progress-fill 100s linear infinite;
+}
+
+@keyframes progress-fill {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 84%;
   }
 }

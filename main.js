@@ -8,12 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.body.appendChild(app.view);
+let fullReset = false;
+let exploded = false;
   let currentRound = 1;
   let roundOver = false;
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 1.5;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let frogDamage = 20;
   let frogHealth = 100;
   let frogLevel = 1;
-  let currentFrogHealth = 100;
+  let currentFrogHealth = 1;
   let currentSnailHealth = 100;
   let currentBeeHealth = 100;
   let currentBirdHealth = 100;
@@ -42,10 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentCharacter = "character-frog";
   let isCharAttacking = false;
   let playerEXP = 0;
+  let repicked =false;
   let isDead = false;
   let enemiesInRange = 0;
   let areResetting = false;
   let isPaused = false;
+  let isWiped = false;
   let isAttackingChar = false;
   let isGameStarted = false;
   let initialClouds = 0;
@@ -78,29 +82,80 @@ document.addEventListener('DOMContentLoaded', function () {
     "character-bee": { top: "-50px", left: "calc(45% + 50px)" }
   };
 
+  let characterStats = {
+    'character-frog': { speed: getFrogSpeed(), attack: getFrogDamage(), health: getFrogHealth() },
+    'character-snail': { speed: getSnailSpeed(), attack: getSnailDamage(), health: getSnailHealth() },
+    'character-bird': { speed: getBirdSpeed(), attack: getBirdDamage(), health: getBirdHealth() },
+    'character-bee': { speed: getBeeSpeed(), attack: getBeeDamage(), health: getBeeHealth() },
+    // Add stats for other characters here
+  };
+  
+
   function setCurrentFrogHealth(health) {
     currentFrogHealth = health;
     const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
+    const frogBox = document.querySelector('.upgrade-box.character-frog');
+  
     frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentFrogHealth / getFrogHealth())) * 100}%`);
+  
+    if (currentFrogHealth <= 0) {
+      frogBox.style.backgroundColor = 'grey';
+      frogBox.style.pointerEvents = 'none';
+    } else {
+      frogBox.style.backgroundColor = ''; // Reset to default color
+      frogBox.style.pointerEvents = ''; // Reset pointer events
+    }
   }
-
+  
   function setCurrentBeeHealth(health) {
     currentBeeHealth = health;
     const beeHpIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
+    const beeBox = document.querySelector('.upgrade-box.character-bee');
+  
     beeHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentBeeHealth / getBeeHealth())) * 100}%`);
+  
+    if (currentBeeHealth <= 0) {
+      beeBox.style.backgroundColor = 'grey';
+      beeBox.style.pointerEvents = 'none';
+    } else {
+      beeBox.style.backgroundColor = ''; // Reset to default color
+      beeBox.style.pointerEvents = ''; // Reset pointer events
+    }
   }
-
+  
   function setCurrentSnailHealth(health) {
     currentSnailHealth = health;
     const snailHpIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
+    const snailBox = document.querySelector('.upgrade-box.character-snail');
+  
     snailHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentSnailHealth / getSnailHealth())) * 100}%`);
+  
+    if (currentSnailHealth <= 0) {
+      snailBox.style.backgroundColor = 'grey';
+      snailBox.style.pointerEvents = 'none';
+    } else {
+      snailBox.style.backgroundColor = ''; // Reset to default color
+      snailBox.style.pointerEvents = ''; // Reset pointer events
+    }
   }
-
+  
   function setCurrentBirdHealth(health) {
     currentBirdHealth = health;
     const birdHpIndicator = document.querySelector('.upgrade-box.character-bird .hp-indicator');
+    const birdBox = document.querySelector('.upgrade-box.character-bird');
+  
     birdHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentBirdHealth / getBirdHealth())) * 100}%`);
+  
+    if (currentBirdHealth <= 0) {
+      birdBox.style.backgroundColor = 'grey';
+      birdBox.style.pointerEvents = 'none';
+    } else {
+      birdBox.style.backgroundColor = ''; // Reset to default color
+      birdBox.style.pointerEvents = ''; // Reset pointer events
+    }
   }
+  
+
 
   function getSnailLevel() { return snailLevel; }
   function getBeeLevel() { return beeLevel; }
@@ -241,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function setisPaused(value) {
+    //console.log("PAYSING");
     isPaused = value;
 
     // Get the pause text element
@@ -254,6 +310,54 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
   }
+
+  function getIsWiped() {
+    return isWiped;
+  }
+
+  function setisWiped(value) {
+    console.log("WIPED");
+    isWiped = value;
+
+    // Get the pause text element
+    var wipeText = document.getElementById("wipe-text");
+
+    // Swap the visibility based on the isPaused value
+    if (getIsWiped()) {
+      wipeText.style.visibility = "visible";
+    } else {
+      wipeText.style.visibility = "hidden";
+    }
+
+  }
+
+
+
+
+    var pauseButton = document.getElementById("pause-button");
+
+    document.addEventListener("contextmenu", function (event) {
+      event.preventDefault();
+    });
+
+    pauseButton.addEventListener("click", function () {
+      setisPaused(!getisPaused());
+      console.log("PAUSED");
+    });
+
+
+    var pauseButton = document.getElementById("pause-button");
+
+    pauseButton.addEventListener("mousedown", function () {
+      pauseButton.style.backgroundImage = 'url("https://i.imgur.com/gGcCLKj.png")';
+      console.log("Button Pressed");
+    });
+
+    pauseButton.addEventListener("mouseup", function () {
+      pauseButton.style.backgroundImage = 'url("https://i.imgur.com/HTeDEQJ.png")';
+      console.log("Button Released");
+    });
+
 
   function isCooldownActive() {
     return cooldownActive;
@@ -284,6 +388,10 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
+    if(roundOver){
+      return;
+    }
+
     // Toggle the visibility of the character info boxes
     const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
 
@@ -308,6 +416,35 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function handleCharacterClick(characterType) {
+    let characterHealthSnail= currentSnailHealth;;
+    let characterHealthBird = currentBirdHealth;
+    let characterHealthFrog  = currentFrogHealth;
+    let characterHealthBee = currentBeeHealth;
+    let characterHealth;
+
+  switch (characterType) {
+    case 'character-snail':
+      characterHealth = currentSnailHealth;
+      break;
+    case 'character-bird':
+      characterHealth = currentBirdHealth;
+      break;
+    case 'character-frog':
+      characterHealth = currentFrogHealth;
+      break;
+    case 'character-bee':
+      characterHealth = currentBeeHealth;
+      break;
+    default:
+      console.log('Invalid character', characterType);
+      return;
+  }
+ 
+  if (characterHealth <= 0) {
+    return; // Exit the function, don't perform any further actions
+  }
+
+
     // Swap character portraits
     const characterPortrait = document.getElementById("character-portrait");
     characterPortrait.style.backgroundImage = `url('${getCharacterPortraitUrl(characterType)}')`;
@@ -362,6 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('Invalid character', characterType);
           return;
       }
+      setisPaused(false);
       startCooldown();
       updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
       characterLevelElement.textContent = 'Lvl. ' + level;
@@ -442,32 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var pauseButton = document.getElementById("pause-button");
 
-    document.addEventListener("contextmenu", function (event) {
-      event.preventDefault();
-    });
-
-    pauseButton.addEventListener("click", function () {
-      setisPaused(!getisPaused());
-      console.log("PAUSED");
-    });
-  });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    var pauseButton = document.getElementById("pause-button");
-
-    pauseButton.addEventListener("mousedown", function () {
-      pauseButton.style.backgroundImage = 'url("https://i.imgur.com/gGcCLKj.png")';
-      console.log("Button Pressed");
-    });
-
-    pauseButton.addEventListener("mouseup", function () {
-      pauseButton.style.backgroundImage = 'url("https://i.imgur.com/HTeDEQJ.png")';
-      console.log("Button Released");
-    });
-  });
 
   menuSprite.anchor.set(0.5);
   menuSprite.width = app.screen.width;
@@ -519,6 +632,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const hpBarColor = 0xff0000;
 
     PIXI.Loader.shared.add([
+
+      { name: 'timer1', url: 'https://i.imgur.com/shRbAl5.png' },
+      { name: 'timer2', url: 'https://i.imgur.com/r3DQaWf.png' },
       { name: 'bird_egg', url: 'https://i.imgur.com/q5JvpXv.png' },
       { name: 'bird_ghost', url: 'https://i.imgur.com/FKED8kx.png' },
       { name: 'bird_portrait', url: 'https://i.imgur.com/WAwZpGS.png' },
@@ -560,7 +676,22 @@ document.addEventListener('DOMContentLoaded', function () {
     ]).load(setup);
 
     function setup() {
-
+      const timer1Texture = PIXI.Loader.shared.resources['timer1'].texture;
+      const timer2Texture = PIXI.Loader.shared.resources['timer2'].texture;
+      
+      const timerFrames = [timer1Texture, timer2Texture];
+      
+      const timerAnimation = new PIXI.AnimatedSprite(timerFrames);
+      timerAnimation.position.set(200, 30);
+      timerAnimation.animationSpeed = 0.02; // Adjust the animation speed as desired
+      timerAnimation.loop = true; // Set whether the animation should loop
+      
+      // Start the timer animation
+      timerAnimation.play();
+      
+      // Add the timer animation to the stage
+ 
+      
       const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
       const background = new PIXI.Sprite(backgroundTexture);
       background.width = app.screen.width * 2.75;
@@ -607,6 +738,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // mountain3.scale.x = 100;
       const castleTexture = PIXI.Texture.from('castle');
       const castle = new PIXI.Sprite(castleTexture);
+      const castlePlayer = new PIXI.Sprite(castleTexture);
+      castlePlayer.anchor.set(1, 1);
+      castlePlayer.position.set(200, app.screen.height - castle.height * 0.25);
       castle.anchor.set(1, 1);
       castle.position.set(foreground.width, app.screen.height - castle.height * 0.25);
       const originalTint = castle.tint;
@@ -789,7 +923,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (getisPaused()) {
-          setisPaused(false);
+         setisPaused(false);
           return;
         }
         function handleMouseLeave(event) {
@@ -950,7 +1084,19 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       function castleExplode() {
+
+     
+
+        currentRound++;
         roundOver = true;
+        setEnemiesInRange(0); 
+        isCombat = false; 
+        console.log("enemies has been updated to",  getEnemiesInRange())
+        resett=false; 
+      isAttacking=false;
+    isCombat=false;
+    exploded = true;
+  
       }
 
       let unPauser = 0;
@@ -963,10 +1109,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const mountain3Speed = .03;
       const mountain4Speed = .03;
       initialClouds = clouds.position.x;
+      let once = 0;
       app.ticker.add(() => {
         //console.log("HERXOROR:", getEnemiesInRange());
 
         if (getisPaused()) {
+
 
           // Game is paused, skip logic
           critter.stop();
@@ -985,8 +1133,11 @@ document.addEventListener('DOMContentLoaded', function () {
           unPauser = 0;
           return;
         }
+
+
         //console.log("isatt:", isAttackingChar);
         if (roundOver) {
+         
           // Calculate the amount to move the camera per frame
           const cameraSpeed = 3;
 
@@ -1001,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', function () {
           // Calculate the movement for this frame
           const movementX = Math.sign(distanceX) * Math.min(Math.abs(distanceX), cameraSpeed);
           const movementY = Math.sign(distanceY) * Math.min(Math.abs(distanceY), cameraSpeed);
-
+        
           // Update the camera position
           app.stage.x += movementX;
           app.stage.y += movementY;
@@ -1011,26 +1162,50 @@ document.addEventListener('DOMContentLoaded', function () {
           mountain4.position.x += velocity.x * mountain4Speed;
           // Return if the camera has reached the target position
           if (app.stage.x === targetX && app.stage.y === targetY) {
-            currentRound++;
-            playRoundText(currentRound);
-            castle.tint = originalTint;
 
-            setEnemiesInRange(0);
+            if(currentSnailHealth + currentBeeHealth + currentBirdHealth + currentFrogHealth <= 0){
+              console.log("BANG");
+                            setisWiped(true);
+                }
+              
+            if(exploded)
+            {
+              mountain1.tint = getRandomColor();
+              mountain2.tint = getRandomColor();
+              mountain3.tint = getRandomColor3();
+              mountain4.tint = getRandomColor3();
+              foreground.tint = getRandomColor();
+              for (let i = 0; i < getEnemies().length; i++) {
+                let enemy = getEnemies()[i];
+                // console.log(i);
+                app.stage.removeChild(enemy);
+                app.stage.removeChild(enemy.hpBar);
+                app.stage.removeChild(enemy.hpBarBackground);
+                // Destroy the enemy object to free up memory
+      
+              }
+              exploded=false;
+        
+            }
+          
+            playRoundText(currentRound);
+     
+     
+          
+          castle.tint = originalTint;
             setCharAttackAnimating(false);
             setIsCharAttacking(false);
             app.stage.removeChild(frogGhostPlayer);
             critter.position.set(app.screen.width / 20, stored);
+            if(fullReset){
             setPlayerCurrentHealth(getPlayerHealth());
             updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
+            }
             // Reset castle health
             castleHealth = castleMaxHealth + 20;
             castleMaxHealth = castleHealth;
             updateHPBar(castleHealth, castleMaxHealth);
-            mountain1.tint = getRandomColor();
-            mountain2.tint = getRandomColor();
-            mountain3.tint = getRandomColor3();
-            mountain4.tint = getRandomColor3();
-            foreground.tint = getRandomColor();
+        
             // Remove any existing enemy death sprites
             // Set isCombat and playAgain to false
             isCombat = false;
@@ -1043,13 +1218,38 @@ document.addEventListener('DOMContentLoaded', function () {
             critter.loop = true;
             critter.textures = frogWalkTextures;
             critter.play();
-
+            setEnemiesInRange(0);
+           // setPlayerCurrentHealth(0);
             // Clear the enemies array
             isPointerDown = false;
 
+               let characterHealth;
+  
+               switch (getCurrentCharacter()) {
+                 case 'character-snail':
+                   characterHealth = currentSnailHealth;
+                   console.log("SNALIED");
+                   break;
+                 case 'character-bird':
+                   characterHealth = currentBirdHealth;
+                   break;
+                 case 'character-frog':
+                   characterHealth = currentFrogHealth;
+                   break;
+                 case 'character-bee':
+                   characterHealth = currentBeeHealth;
+                   break;
+                 default:
+                   console.log('Invalid character', characterType);
+                   return;
+               }
+               if (characterHealth == 0) {
+                setisPaused(true); // Exit the function, don't perform any further actions
+               }
+             
 
             app.stage.addChild(critter);
-
+if(fullReset){
             // Loop through the enemies array and remove each enemy
             for (let i = 0; i < getEnemies().length; i++) {
               let enemy = getEnemies()[i];
@@ -1062,12 +1262,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             enemies.length = 0;
+          }
             roundOver = false;
-
+           // setisPaused(false);
           }
           return;
         }
-
+        //setisPaused(true);
 
         if (getCharSwap()) {
           console.log("getcurrentchat", getCurrentCharacter());
@@ -1078,6 +1279,7 @@ document.addEventListener('DOMContentLoaded', function () {
             frogWalkTextures = birdWalkTextures;
             frogIdleTextures = birdWalkTextures;
             frogAttackTextures = birdAttackTextures;
+           
           }
           else if (getCurrentCharacter() === "character-frog") {
             console.log("SWAP TO SNELL");
@@ -1088,6 +1290,8 @@ document.addEventListener('DOMContentLoaded', function () {
             frogWalkTextures = frogWalkTextures1;
             frogIdleTextures = frogIdleTextures1;
             frogAttackTextures = frogAttackTextures1;
+          
+
           }
           else if (getCurrentCharacter() === "character-snail") {
             playerSpawn.blendMode = PIXI.BLEND_MODES.ADD;
@@ -1097,6 +1301,8 @@ document.addEventListener('DOMContentLoaded', function () {
             frogWalkTextures = snailWalkTextures;
             frogIdleTextures = snailWalkTextures;
             frogAttackTextures = snailAttackTextures;
+         
+
 
           }
           else if (getCurrentCharacter() === "character-bee") {
@@ -1107,19 +1313,28 @@ document.addEventListener('DOMContentLoaded', function () {
             frogWalkTextures = beeWalkTextures;
             frogIdleTextures = beeWalkTextures;
             frogAttackTextures = beeAttackTextures;
+            
+
 
           }
           critter.position.x -= 20;
+      
           setCharSwap(false);
           return;
         }
 
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
         if (!isAttackingChar) {
+        //  console.log("attacking char",isAttackingChar);
           if (!getisDead()) {
+          //  console.log("not getisdead");
+          console.log("getenemiesinrange", getEnemiesInRange());
             if (!isCombat) {
+           //   console.log("not iscombat");
               if (!isPointerDown) {
+               // console.log("not ispointerdown");
                 if (getEnemiesInRange() <= 0) {
+                
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
                   }
@@ -1203,11 +1418,8 @@ document.addEventListener('DOMContentLoaded', function () {
       critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
       updateEXP(0, expToLevel);
       updatePlayerHealthBar(getFrogHealth());
-      mountain3.tint = getRandomColor();
-      mountain4.tint = getRandomColor();
-      mountain1.tint = getRandomColor();
-      mountain2.tint = getRandomColor();
-      app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath);
+
+      app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath,castlePlayer);
 
       spawnEnemy(critter, critterAttackTextures, enemyDeath, foreground, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
       setInterval(() => {
@@ -1220,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       setInterval(() => {
         if (!getisDead() && !getisPaused()) {
-          spawnPuffer(critter, pufferAttackTextures, enemyDeath, foreground, frogGhostTextures, pufferWalkTextures, frogGhostPlayer, frogWalkTextures);
+          spawnEnemy(critter, critterAttackTextures, enemyDeath, foreground, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
 
 
         }
@@ -1246,22 +1458,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function spawnEnemy(critter, critterAttackTextures, enemyDeath, foreground, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
     let enemyAdded = false;
+    let inRange = false
     const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-
-
+    let resett = false;
     const minScale = 0.4;
     const maxScale = 0.6;
     const randomScale = minScale + Math.random() * (maxScale - minScale);
     const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
-    // console.log("randomScale:", randomScale);
     enemy.scale.set(randomScale);
     enemy.anchor.set(0.5, .5);
     enemy.position.set(foreground.width, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
-
     enemy.zIndex = enemy.position.y + 10000;
-    // console.log("ZINEX:", -enemy.position.y);
-    //console.log("enemy.zIndex:", enemy.zIndex);
-
     enemy.animationSpeed = 0.25;
     enemy.loop = true;
     enemy.isAlive = true;
@@ -1271,6 +1478,8 @@ document.addEventListener('DOMContentLoaded', function () {
     enemy.scale.x *= -1; // Flip the enemy horizontally
     enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
     let isAttacking = false; // Flag to track if enemy is attacking
+    let inRangeRef = { value: inRange };
+
     // Add enemy to the enemies array
     addEnemies(enemy);
     if (enemy.isAlive) {
@@ -1289,24 +1498,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     enemy.play();
     app.ticker.add(() => {
-      if (getisPaused() || roundOver) {
+
+      if (getisPaused()) {
         // Game is paused, skip logic
         return;
       }
 
-
       if (app.stage.children.includes(enemy)) {
+
+
+        if (getisDead() ){
+    
+      resett = true; 
+          
+         }
+
 
         checkProjectileCollisions(critter, enemy, enemyDeath);
 
-        if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
 
+        if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
+       if(enemy.position.x > 250)
+       {
           enemy.position.x += enemy.vx;
-          if (enemy.hpBar) {
-            //  enemy.hpBar.position.x += enemy.vx;
-            // enemy.hpBarBackground.x += enemy.vx
-          }
+       }
         } else {
+          
+
+          if(resett == true){ 
+            inRange = false;
+            if(!getisDead()){
+              if(app.stage.children.includes(critter)){
+          //  setEnemiesInRange(0); 
+            isCombat = false; 
+                        //setEnemiesInRange(getEnemiesInRange() + 1);
+
+            console.log("enemies haxxxxted to",  getEnemiesInRange())
+            resett=false; 
+          isAttacking=false;
+        isCombat=false;
+      enemyAdded=false;}
+    
+              }
+        }
+       
           if ((critter.textures !== frogWalkTextures)) {
             if (critter.currentFrame === critter.totalFrames - 2) {
               if (!getIsCharAttacking()) {
@@ -1319,10 +1554,15 @@ document.addEventListener('DOMContentLoaded', function () {
               setIsCharAttacking(false);
             }
           }
+         
           if (!enemyAdded) {
-            setEnemiesInRange(getEnemiesInRange() + 1);
             enemyAdded = true;
+            setEnemiesInRange(getEnemiesInRange() + 1);
+return;
           }
+       
+          
+         
           if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
             if (!isCombat) {
               const enemyPortrait = document.getElementById('enemy-portrait');
@@ -1332,13 +1572,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             isAttacking = true;
             isCombat = true;
+          
             handleEnemyAttacking(enemy, critterAttackTextures, critter, enemyDeath, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures);
-            if (enemy.isAlive && !getisDead()) {
-              //console.log("here");
-              //
-            }
+
+            
+            
           }
+     
         }
+      
+        isCombat=false;
       } else {
         app.stage.removeChild(enemy);
 
@@ -1359,29 +1602,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function spawnPuffer(critter, pufferAttackTextures, enemyDeath, foreground, frogGhostTextures, pufferWalkTextures, frogGhostPlayer, frogWalkTextures) {
     let enemyAdded = false;
+    let inRange = false
     const enemy = new PIXI.AnimatedSprite(pufferWalkTextures); // Start with idle textures
-
-
-    const minScale = 0.42;
-    const maxScale = 0.55;
-    const randomScale = minScale + Math.random() * (maxScale - minScale) - .2;
+    let resett = false;
+    const minScale = 0.4;
+    const maxScale = 0.6;
+    const randomScale = minScale + Math.random() * (maxScale - minScale);
     const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
-    // console.log("randomScale:", randomScale);
     enemy.scale.set(randomScale);
     enemy.anchor.set(0.5, .5);
-    enemy.position.set(foreground.width, app.screen.height - 122 - randomScale * 120 + (Math.random() * 60 - 30));
-
+    enemy.position.set(foreground.width, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
     enemy.zIndex = enemy.position.y + 10000;
-    // console.log("ZINEX:", -enemy.position.y);
-    //console.log("enemy.zIndex:", enemy.zIndex);
-
     enemy.animationSpeed = 0.25;
     enemy.loop = true;
     enemy.isAlive = true;
     enemy.isVisible;
     enemy.currentHP = 100;
     enemy.play();
-
     enemy.scale.x *= -1; // Flip the enemy horizontally
     enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
     let isAttacking = false; // Flag to track if enemy is attacking
@@ -1403,20 +1640,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     enemy.play();
     app.ticker.add(() => {
-      if (getisPaused() || roundOver) {
+      if (getisPaused()) {
         // Game is paused, skip logic
         return;
       }
 
-
       if (app.stage.children.includes(enemy)) {
 
+
+        if (getisDead() ){
+    
+      resett = true; 
+          
+         }
+
+
         checkProjectileCollisions(critter, enemy, enemyDeath);
+
 
         if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
 
           enemy.position.x += enemy.vx;
+          
+          if (enemy.hpBar) {
+            //  enemy.hpBar.position.x += enemy.vx;
+            // enemy.hpBarBackground.x += enemy.vx
+          }
         } else {
+          if(enemy.position.x < 380)
+          {
+  return;
+          }
+          if(resett == true){ 
+            inRange = false;
+            if(!getisDead()){
+              if(app.stage.children.includes(critter)){
+          //  setEnemiesInRange(0); 
+            isCombat = false; 
+            console.log("enemies has been updated to",  getEnemiesInRange())
+            resett=false; 
+          isAttacking=false;
+        isCombat=false;}
+              }
+        }
+       
           if ((critter.textures !== frogWalkTextures)) {
             if (critter.currentFrame === critter.totalFrames - 2) {
               if (!getIsCharAttacking()) {
@@ -1429,19 +1696,30 @@ document.addEventListener('DOMContentLoaded', function () {
               setIsCharAttacking(false);
             }
           }
+         
           if (!enemyAdded) {
-            setEnemiesInRange(getEnemiesInRange() + 1);
             enemyAdded = true;
           }
+          if(!inRange)
+          {
+
+            setEnemiesInRange(getEnemiesInRange() + 1);
+            console.log("SETTING");
+inRange = true;
+          }
+         
           if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
             if (!isCombat) {
               const enemyPortrait = document.getElementById('enemy-portrait');
               updateEnemyGrayscale(100);
               enemyPortrait.style.display = 'block'; // Make the element visible
+              //drawEnemyHPBar(enemy);
             }
             isAttacking = true;
             isCombat = true;
+         
             handleEnemyAttacking(enemy, pufferAttackTextures, critter, enemyDeath, frogGhostTextures, pufferWalkTextures, frogGhostPlayer, frogWalkTextures);
+         
           }
         }
       } else {
@@ -1456,6 +1734,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
     });
+
 
 
 
@@ -1567,41 +1846,79 @@ document.addEventListener('DOMContentLoaded', function () {
     let wobbleSpeed = 0.05; // speed of the wobble
     let wobbleAmplitude = 7.5; // initial amplitude of the wobble
     let wobbleDamping = 0.99; // damping factor of the wobble
+    let moveInterval;
 
-    let moveInterval = setInterval(() => {
+    moveInterval = setInterval(() => {
       frogGhostPlayer.y -= speed;
       let wobbleOffset = Math.sin(frogGhostPlayer.y * wobbleSpeed) * wobbleAmplitude;
       frogGhostPlayer.x += wobbleOffset;
       wobbleAmplitude *= wobbleDamping;
       if (frogGhostPlayer.y <= targetY) {
         frogGhostPlayer.y = targetY; // Ensure the frog reaches the exact target position
-        resetGame(critter, enemy, frogGhostPlayer, enemies, frogWalkTextures);
+    
+        // Stop the frog's movement temporarily until character is selected
         clearInterval(moveInterval);
+    
+        // Check if character is selected
+        if (selectedCharacter !== "") {
+          // Hide the character info boxes
+          const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
+          characterBoxes.forEach((box) => {
+            if (box.classList.contains(selectedCharacter)) {
+              box.style.visibility = 'hidden';
+            } else {
+              box.style.visibility = 'visible';
+            }
+          });
+          isCharacterMenuOpen = true;
+          setIsDead(false);
+          app.stage.removeChild(frogGhostPlayer);
+          roundOver = true;
+    
+          // Continue with the game logic here
+          // ...
+    
+        } else {
+          // Character not selected, wait for player to pick a character box
+          // Show any necessary UI or display a message to prompt the player
+          // Once the player selects a character, call startGame() again to resume the game
+        }
       }
     }, 16); // (16ms = 60fps)
   }
 
-
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-
-
   function handleEnemyAttacking(enemy, critterAttackTextures, critter, enemyDeath, frogGhostTextures, critterWalkTextures, frogGhostPlayer, frogWalkTextures) {
     enemy.textures = critterAttackTextures;
+   
     enemy.loop = true;
     enemy.gotoAndPlay(0);
     let hasDied = false;
+    if ( roundOver){return;}
 
+    
     function onFrameChange(currentFrame) {
-      if (roundOver || getisPaused()) { return; }
-      if (currentFrame === enemy.totalFrames - 5) {
+      
+      if ( roundOver) {  
+        enemy.isAttacking=false; 
+        setEnemiesInRange(0);
+    
+        enemy.removeInRange=false;
+        console.log("notstuck");
+        return;
+         }
 
+         if(enemiesInRange <= 0){
+          return;}
+      if (currentFrame === enemy.totalFrames - 5) {
+        
         if (enemy.isAlive) {
           if (!getisDead()) {
             if (!hasDied) {
+              
               critter.tint = flashColor;
               setPlayerCurrentHealth(getPlayerCurrentHealth() - 5);
               updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth()) * 100);
+              
             }
             updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
             if (getPlayerCurrentHealth() <= 0) {
@@ -1628,6 +1945,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 playGhostFly(critter, enemy, frogGhostPlayer, frogWalkTextures);
                 enemy.textures = critterWalkTextures;
                 enemy.play();
+                
               }
               return;
             }
@@ -1640,7 +1958,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             hasPlayedSound = true;
           }
-          else { if (enemy.textures != critterWalkTextures) { enemy.textures = critterWalkTextures; enemy.play(); } }
+          else { 
+            
+            
+            
+            
+            if (enemy.textures != critterWalkTextures) { enemy.textures = critterWalkTextures; enemy.play(); } 
+          isAttacking=false;
+          isCombat=false;
+          }
 
         }
         else { console.log("enemy is dead"); }
@@ -1715,6 +2041,7 @@ document.addEventListener('DOMContentLoaded', function () {
       critter.play();
       app.stage.addChild(critter);
       playRoundText(currentRound);
+  
 
       // Loop through the enemies array and remove each enemy
       for (let i = 0; i < getEnemies().length; i++) {
@@ -1735,7 +2062,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-
   function getCharacterDamage(currentCharacter) {
     switch (currentCharacter) {
       case 'character-snail':
@@ -1750,8 +2076,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Invalid character', currentCharacter);
     }
   }
-
-
 
   function drawHitSplat(enemy) {
 
@@ -1824,9 +2148,6 @@ document.addEventListener('DOMContentLoaded', function () {
     app.ticker.add(update); // Start the ticker update for hitsplat animation
   }
 
-
-
-
   function critterAttack(critter, enemy, enemyDeath, critterAttackTextures) {
     // Reduce enemy's HP
     console.log('ENEMY HP', enemy.currentHP);
@@ -1865,6 +2186,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   }
+
+
+
+
+  
   function createCoffeeDrop(x, y) {
     // Create a container to hold the coffee beans
     const coffeeContainer = new PIXI.Container();
@@ -2061,7 +2387,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Update the grayscale effect based on HP bar valu
 
 
   function updatePlayerHealthBar(health) {
@@ -2146,31 +2471,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Define stats for each character
-  let characterStats = {
-    'character-frog': {
-      speed: getFrogSpeed(),
-      attack: getFrogDamage(),
-      health: getFrogHealth(),
-    },
-    'character-snail': {
-      speed: getSnailSpeed(),
-      attack: getSnailDamage(),
-      health: getSnailHealth(),
-    },
-    'character-bird': {
-      speed: getBirdSpeed(),
-      attack: getBirdDamage(),
-      health: getBirdHealth(),
-    },
-    'character-bee': {
-      speed: getBeeSpeed(),
-      attack: getBeeDamage(),
-      health: getBeeHealth(),
-    },
-    // Add stats for other characters here
-  };
-
 
   function setCharacterSpeed(currentCharacter, speed) {
     switch (currentCharacter) {
@@ -2228,27 +2528,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Invalid character', currentCharacter);
     }
   }
-
-  function setCharacterHealth(currentCharacter, hp) {
-    switch (currentCharacter) {
-      case 'character-snail':
-        setSnailHealth(hp);
-        break;
-      case 'character-bird':
-        setBirdHealth(hp);
-        break;
-      case 'character-frog':
-        setFrogHealth(hp);
-        break;
-      case 'character-bee':
-        setBeeHealth(hp);
-        break;
-      default:
-        console.log('Invalid character', currentCharacter);
-    }
-  }
-
-
 
 
   function handleUpgrade(upgradeType, critter) {
@@ -2377,18 +2656,6 @@ document.addEventListener('DOMContentLoaded', function () {
     levelSound.play();
   }
 
-
-  playButton.on('mouseover', () => {
-    playButton.scale.set(hoverScale);
-    playButton.alpha = hoverAlpha;
-  });
-
-  playButton.on('mouseout', () => {
-    playButton.scale.set(1);
-    playButton.alpha = 1;
-  });
-  playButton.on('pointertap', handlePlayClick);
-
   function handleVisibilityChange() {
     if (document.hidden || document.webkitHidden) {
       // Document is hidden, perform actions here (e.g., pause the game)
@@ -2427,6 +2694,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 10); // Adjust the interval duration by changing this value
   }
 
+  playButton.on('mouseover', () => {
+    playButton.scale.set(hoverScale);
+    playButton.alpha = hoverAlpha;
+  });
+
+  playButton.on('mouseout', () => {
+    playButton.scale.set(1);
+    playButton.alpha = 1;
+  });
+  playButton.on('pointertap', handlePlayClick);
 
   // Add event listeners for visibility change
   document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -2436,18 +2713,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Increment touch count
     touchCount++;
   });
-
   // Add touchend event listener
   document.addEventListener("touchend", () => {
     // Decrement touch count
     touchCount--;
-
     // Check if all touches are released
     if (touchCount === 0) {
       handleAllTouchesReleased();
     }
   });
 
+
+  
   // Function to handle all touches released
   function handleAllTouchesReleased() {
     // Your functionality when all touches are released
