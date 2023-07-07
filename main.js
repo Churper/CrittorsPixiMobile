@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.body.appendChild(app.view);
+  let critter;
+  let enemyTypes= [];
   let frogGhostPlayer;
   let fullReset = false;
   let exploded = false;
@@ -982,7 +984,7 @@ function updateEXPIndicatorText(character, level) {
         let characterTextures;
 
         characterTextures = frogWalkTextures;
-        const critter = createAnimatedSprite(characterTextures);
+       critter = createAnimatedSprite(characterTextures);
         critter.interactive = true;
 
         critter.textures = frogWalkTextures;
@@ -1361,7 +1363,7 @@ function updateEXPIndicatorText(character, level) {
 
                 }
                 exploded = false;
-
+                spawnEnemies();
               }
 
               playRoundText(currentRound);
@@ -1599,7 +1601,7 @@ function updateEXPIndicatorText(character, level) {
 
         app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
         
-        const enemyTypes = [
+         enemyTypes = [
           { attackTextures: pigAttackTextures, walkTextures: pigWalkTextures, name: "pig" },
           { attackTextures: octoAttackTextures, walkTextures: octoWalkTextures, name: "octo" },
           { attackTextures: eleAttackTextures, walkTextures: eleWalkTextures, name: "ele" },
@@ -1609,50 +1611,68 @@ function updateEXPIndicatorText(character, level) {
           { attackTextures: tooferAttackTextures, walkTextures: tooferWalkTextures, name: "toofer" }
         ];
         
-        let currentRound = 1; // Current round value
-        let interval = 0; // Initial interval value
-        const delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
-        const randomIndex12 = Math.floor(Math.random() * enemyTypes.length);
-        const selectedEnemy1 = enemyTypes[randomIndex12];
-        spawnEnemy(
-          critter,
-          selectedEnemy1.attackTextures,
-          selectedEnemy1.walkTextures,
-          selectedEnemy1.name
-        );
+     
+        startNewRound();
 
-        setInterval(() => {
-          if (!getisDead() && !getisPaused()) {
-            const randomIndex = Math.floor(Math.random() * enemyTypes.length);
-            const selectedEnemy = enemyTypes[randomIndex];
-        
-            setTimeout(() => {
-              spawnEnemy(
-                critter,
-                selectedEnemy.attackTextures,
-                selectedEnemy.walkTextures,
-                selectedEnemy.name
-              );
-        
-              // Adjust spawn timer based on current round
-              if (currentRound > 1) {
-                const reductionFactor = 0.95; // The factor by which the delay will be reduced
-                const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
-                interval = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
-              }
-            }, interval);
-        
-            interval += delayBetweenEnemies;
-            //currentRound++; // Increment the current round value
-          }
-        }, delayBetweenEnemies);
-        
-        
 
 
       }
 
     }
+
+// Move the enemy spawning logic outside the setup function
+let interval = 0; // Initial interval value
+let delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
+
+
+function startNewRound() {
+  currentRound++; // Increment the current round value
+  interval = 0; // Reset the interval value
+
+  // Adjust delayBetweenEnemies based on current round
+  if (currentRound > 1) {
+    const reductionFactor = 0.95; // The factor by which the delay will be reduced
+    const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
+    delayBetweenEnemies = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
+  }
+
+  spawnEnemies();
+}
+
+function spawnEnemies() {
+  if (!getisDead() && !getisPaused()) {
+    const randomIndex = Math.floor(Math.random() * enemyTypes.length);
+    const selectedEnemy = enemyTypes[randomIndex];
+
+    setTimeout(() => {
+      spawnEnemy(
+        critter,
+        selectedEnemy.attackTextures,
+        selectedEnemy.walkTextures,
+        selectedEnemy.name
+      );
+
+      spawnEnemies(); // Spawn the next enemy
+    }, interval);
+
+    interval += delayBetweenEnemies;
+  }
+}
+
+// Call startNewRound() to start a new round
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function checkEnemyCollision(projectile, enemy) {
       const projectileX = projectile.position.x;
@@ -2456,7 +2476,7 @@ if(getCurrentCharacter !== 'character-bird'){
         //ox setPlayerEXP(getPlayerEXP() + 100);
         console.log("YEP",getCharEXP(getCurrentCharacter()));
         console.log("YEPX",getEXPtoLevel(getCurrentCharacter()));
-        updateEXP( getCharEXP(getCurrentCharacter()), getEXPtoLevel(getCurrentCharacter()), critter);
+        updateEXP( getCharEXP(getCurrentCharacter()) + enemy.exp, getEXPtoLevel(getCurrentCharacter()), critter);
 
         // Create the EXP drop text
 
