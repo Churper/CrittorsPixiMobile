@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let playerHealth = 100;
     let coffee = 0;
     let frogSize = .35;
-    let speed = 1.5;
+    let speed = 1;
     let speedChanged = false;
     let selectLevel = 0;
     let frogTintColor = 0xffffff;
@@ -748,7 +748,7 @@ function updateEXPIndicatorText(character, level) {
     app.stage.addChild(playButton);
 
     function startGame() {
-
+  
       window.addEventListener('blur', () => {
 
         setisPaused(true);
@@ -834,18 +834,9 @@ function updateEXPIndicatorText(character, level) {
       ]).load(setup);
 
       function setup() {
-        const timer1Texture = PIXI.Loader.shared.resources['timer1'].texture;
-        const timer2Texture = PIXI.Loader.shared.resources['timer2'].texture;
 
-        const timerFrames = [timer1Texture, timer2Texture];
 
-        const timerAnimation = new PIXI.AnimatedSprite(timerFrames);
-        timerAnimation.position.set(200, 30);
-        timerAnimation.animationSpeed = 0.02; // Adjust the animation speed as desired
-        timerAnimation.loop = true; // Set whether the animation should loop
-
-        // Start the timer animation
-        timerAnimation.play();
+     
 
         // Add the timer animation to the stage
 
@@ -1604,35 +1595,50 @@ function updateEXPIndicatorText(character, level) {
         critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
         updateEXP(0, expToLevel);
         updatePlayerHealthBar(getFrogHealth());
+   // Start the timer animation
 
         app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
 
-        spawnEnemy(critter, pigAttackTextures, pigWalkTextures, "pig");
-        const delayBetweenEnemies = 6000; // Delay between each enemy spawn
         const enemyTypes = [
-          
+          { attackTextures: pigAttackTextures, walkTextures: pigWalkTextures, name: "pig" },
           { attackTextures: octoAttackTextures, walkTextures: octoWalkTextures, name: "octo" },
           { attackTextures: eleAttackTextures, walkTextures: eleWalkTextures, name: "ele" },
           { attackTextures: critterAttackTextures, walkTextures: critterWalkTextures, name: "imp" },
           { attackTextures: pufferAttackTextures, walkTextures: pufferWalkTextures, name: "puffer" },
           { attackTextures: scorpAttackTextures, walkTextures: scorpWalkTextures, name: "scorp" },
           { attackTextures: tooferAttackTextures, walkTextures: tooferWalkTextures, name: "toofer" }
-         
-        
         ];
         
+        let currentRound = 1; // Current round value
         let interval = 0; // Initial interval value
-        let enemyIndex = 0; // Initial enemy index
+        const delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
         
         setInterval(() => {
           if (!getisDead() && !getisPaused()) {
+            const randomIndex = Math.floor(Math.random() * enemyTypes.length);
+            const selectedEnemy = enemyTypes[randomIndex];
+        
             setTimeout(() => {
-              spawnEnemy(critter, enemyTypes[enemyIndex].attackTextures, enemyTypes[enemyIndex].walkTextures, enemyTypes[enemyIndex].name);
-              enemyIndex = (enemyIndex + 1) % enemyTypes.length; // Increment enemy index and wrap around to 0 when it exceeds the number of enemy types
+              spawnEnemy(
+                critter,
+                selectedEnemy.attackTextures,
+                selectedEnemy.walkTextures,
+                selectedEnemy.name
+              );
+        
+              // Adjust spawn timer based on current round
+              if (currentRound > 1) {
+                const reductionFactor = 0.95; // The factor by which the delay will be reduced
+                const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
+                interval = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
+              }
             }, interval);
+        
             interval += delayBetweenEnemies;
+            currentRound++; // Increment the current round value
           }
         }, delayBetweenEnemies);
+        
         
 
 
@@ -1662,11 +1668,26 @@ function updateEXPIndicatorText(character, level) {
       const maxScale = 0.55;
       const randomScale = minScale + Math.random() * (maxScale - minScale);
       const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
-      enemy.scale.set(randomScale);
+      enemy.scale.set(.45);
 
 
     if(enemyName == "puffer"){
       enemy.scale.set(.35);
+    }
+    if(enemyName == "octo"){
+      enemy.scale.set(.45);
+    }
+    if(enemyName == "scorp"){
+      enemy.scale.set(.4);
+    }
+    if(enemyName == "pig"){
+      enemy.scale.set(.5);
+    }
+    if(enemyName == "ele"){
+      enemy.scale.set(.45);
+    }
+    if(enemyName == "imp"){
+      enemy.scale.set(.45);
     }
     console.log("ENEMY NAME", enemyName);
     if((enemyName != "scorp")){
@@ -1677,13 +1698,13 @@ function updateEXPIndicatorText(character, level) {
    
     }
       enemy.anchor.set(0.5, .5);
-      enemy.position.set(3000, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
+      enemy.position.set(3000, app.screen.height - 90 -  enemy.height/4  - randomScale * 120 + (Math.random() * 60 - 30));
       enemy.zIndex = enemy.position.y + 10000;
       enemy.animationSpeed = 0.25;
       enemy.loop = true;
       enemy.isAlive = true;
       enemy.isVisible;
-      enemy.currentHP = 100;
+      enemy.currentHP = 100 + currentRound * 5;
       enemy.play();
       enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
       let isAttacking = false; // Flag to track if enemy is attacking
@@ -1727,6 +1748,12 @@ function updateEXPIndicatorText(character, level) {
 
           if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
             if (enemy.position.x > 250) {
+              if(enemy.textures !== critterWalkTextures){
+                enemy.textures = critterWalkTextures;
+                enemy.loop = true;
+
+                enemy.play();
+              }
               enemy.position.x += enemy.vx;
             }
           } else {
@@ -1937,6 +1964,7 @@ function updateEXPIndicatorText(character, level) {
     }
 
     function handleEnemyAttacking(enemy, critterAttackTextures, critter) {
+      if(roundOver) { return; }
       enemy.textures = critterAttackTextures;
 
       enemy.loop = true;
@@ -1993,8 +2021,8 @@ function updateEXPIndicatorText(character, level) {
                     }
                   }
                   playGhostFly();
-                  enemy.textures = critterWalkTextures;
-                  enemy.play();
+                 // enemy.textures = critterWalkTextures;
+                  //enemy.play();
 
                 }
                 return;
@@ -2009,11 +2037,6 @@ function updateEXPIndicatorText(character, level) {
               hasPlayedSound = true;
             }
             else {
-
-
-
-
-              if (enemy.textures != critterWalkTextures) { enemy.textures = critterWalkTextures; enemy.play(); }
               isAttacking = false;
               isCombat = false;
             }
@@ -2390,8 +2413,8 @@ if(getCurrentCharacter !== 'character-bird'){
 
       const hpBarWidth = 100;
       const hpBarHeight = 8;
-      const hpBarX = (enemy.anchor.x - 30);
-      const hpBarY = -(enemy.height / 3);
+      const hpBarX = enemy.anchor.x - 32 ;
+      const hpBarY = -(enemy.height / 3.75);
 
 
       if (!enemy.hpBarContainer) {
@@ -2598,7 +2621,7 @@ if(getCurrentCharacter !== 'character-bird'){
 
           stats.level++;
           // Update the display
-          stats.speed += 0.5; // Update the speed stat for the current character
+          stats.speed += 1; // Update the speed stat for the current character
           setCharacterSpeed(currentCharacter, stats.speed);
           setSpeedChanged(true);
           //console.log(getCharacterSpeed(currentCharacter));
