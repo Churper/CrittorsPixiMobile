@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     transparent: false,
     resolution: 1,
   });
-let gameData;
+  let gameData;
   document.body.appendChild(app.view);
   let critter;
   let enemyTypes = [];
@@ -22,7 +22,7 @@ let gameData;
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 5;
+  let speed = 1;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -1257,7 +1257,7 @@ let gameData;
         if (castleHealth <= 0) {
           castleExplode();
           setPlayerCurrentHealth(getPlayerCurrentHealth() + 25);
-          updatePlayerHealthBar(getPlayerCurrentHealth()/ getPlayerHealth() * 100);
+          updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
 
         }
 
@@ -1363,15 +1363,15 @@ let gameData;
               for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
                 console.log("hex", i);
-              
+
                 // Remove the enemy and its associated HP bar elements from the PIXI stage
                 app.stage.removeChild(enemy);
                 app.stage.removeChild(enemy.hpBar);
                 app.stage.removeChild(enemy.hpBarBackground);
-              
+
                 // Destroy the enemy object to free up memory
                 enemy.destroy();
-              
+
                 // Remove the enemy from the enemies array
                 enemies.splice(i, 1);
                 i--; // Decrement i to adjust for the removed enemy
@@ -1402,7 +1402,7 @@ let gameData;
             // Remove any existing enemy death sprites
             // Set isCombat and playAgain to false
             isCombat = false;
-           enemyPortrait = document.getElementById('enemy-portrait');
+            enemyPortrait = document.getElementById('enemy-portrait');
             enemyPortrait.style.display = 'none'; // Make the element visible
             playAgain = false;
             isAttackingChar = false;
@@ -1643,43 +1643,43 @@ let gameData;
     if (roundStarted) {
       return; // Only allow one round to be active at a time
     }
-  
+
     roundStarted = true; // Set the flag to indicate that a round has started
     clearTimeout(enemySpawnTimeout); // Clear the enemy spawn timeout
-  
-   // currentRound++; // Increment the current round value
+
+    // currentRound++; // Increment the current round value
     interval = delayBetweenEnemies; // Set the interval to delay the initial spawn
-  
+
     // Adjust delayBetweenEnemies based on current round
     if (currentRound > 1) {
       const reductionFactor = 0.95; // The factor by which the delay will be reduced
       const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
       delayBetweenEnemies = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
     }
-  
+
     spawnEnemies();
   }
-  
+
   function spawnEnemies() {
     if (!getisDead() && !getisPaused()) {
       const randomIndex = Math.floor(Math.random() * enemyTypes.length);
       const selectedEnemy = enemyTypes[randomIndex];
-  
+
       spawnEnemy(
         critter,
         selectedEnemy.attackTextures,
         selectedEnemy.walkTextures,
         selectedEnemy.name
       );
-  
+
       enemySpawnTimeout = setTimeout(() => {
         spawnEnemies(); // Spawn the next enemy
       }, interval);
-  
+
       interval += delayBetweenEnemies;
     }
   }
-  
+
 
 
   function endRound() {
@@ -1724,9 +1724,9 @@ let gameData;
 
   ];
   function updateEnemyPortrait(enemyName) {
-    
+
     const enemyPortrait = document.getElementById('enemy-portrait');
-    console.log("FLUBX", enemyPortrait );
+    console.log("FLUBX", enemyPortrait);
     const portraitUrl = getEnemyPortraitUrl(enemyName);
     enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
     enemyPortrait.style.display = 'block'; // Make the element visible
@@ -1736,7 +1736,7 @@ let gameData;
     const enemy = enemyPortraits.find(portrait => portrait.name === enemyName);
     return enemy ? enemy.url : ''; // Return the URL or an empty string if not found
   }
-let enemyPortrait;
+  let enemyPortrait;
   function spawnEnemy(critter, critterAttackTextures, critterWalkTextures, enemyName) {
     let enemyAdded = false;
     const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
@@ -1874,45 +1874,45 @@ let enemyPortrait;
             if (!isCombat) {
               enemyPortrait = document.getElementById('enemy-portrait');
               updateEnemyGrayscale(100);
-               // Determine the enemy name
+              // Determine the enemy name
 
-  console.log("FLUB", enemyName);
-  switch (enemyName) {
-    case 'ele':
-      enemyName = 'ele_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-      case 'puffer':
-        enemyName = 'puffer_portrait';
-        updateEnemyPortrait(enemyName);
-        break;
-    case 'octo':
-      enemyName = 'octo_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-    case 'pig':
-      enemyName = 'pig_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-    case 'scorp':
-      enemyName = 'scorp_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-    case 'toofer':
-      enemyName = 'toofer_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-    case 'imp':
-      enemyName = 'imp_portrait';
-      updateEnemyPortrait(enemyName);
-      break;
-  }
+              console.log("FLUB", enemyName);
+              switch (enemyName) {
+                case 'ele':
+                  enemyName = 'ele_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'puffer':
+                  enemyName = 'puffer_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'octo':
+                  enemyName = 'octo_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'pig':
+                  enemyName = 'pig_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'scorp':
+                  enemyName = 'scorp_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'toofer':
+                  enemyName = 'toofer_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+                case 'imp':
+                  enemyName = 'imp_portrait';
+                  updateEnemyPortrait(enemyName);
+                  break;
+              }
 
-  // Update the enemy portrait URL based on the enemy name
-  const portraitUrl = getEnemyPortraitUrl(enemyName);
-  enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
+              // Update the enemy portrait URL based on the enemy name
+              const portraitUrl = getEnemyPortraitUrl(enemyName);
+              enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
 
-  enemyPortrait.style.display = 'block'; // Make the element visible
+              enemyPortrait.style.display = 'block'; // Make the element visible
             }
             isAttacking = true;
             isCombat = true;
@@ -3007,146 +3007,123 @@ let enemyPortrait;
 
 
 
-// Save game data
-function saveGame() {
-  gameData = {
-    expToLevel: expToLevel,
-    currentRound: currentRound,
-    roundOver: roundOver,
-    playerHealth: playerHealth,
-    coffee: coffee,
-    frogSize: frogSize,
-    speed: speed,
-    speedChanged: speedChanged,
-    selectLevel: selectLevel,
-    frogTintColor: frogTintColor,
-    snailSpeed: snailSpeed,
-    snailDamage: snailDamage,
-    snailHealth: snailHealth,
-    snailLevel: snailLevel,
-    beeLevel: beeLevel,
-    birdLevel: birdLevel,
-    birdSpeed: birdSpeed,
-    birdDamage: birdDamage,
-    touchCount: touchCount,
-    birdHealth: birdHealth,
-    beeSpeed: beeSpeed,
-    beeDamage: beeDamage,
-    beeHealth: beeHealth,
-    frogSpeed: frogSpeed,
-    frogDamage: frogDamage,
-    frogHealth: frogHealth,
-    frogLevel: frogLevel,
-    currentFrogHealth: currentFrogHealth,
-    currentSnailHealth: currentSnailHealth,
-    currentBeeHealth: currentBeeHealth,
-    currentBirdHealth: currentBirdHealth,
-    charSwap: charSwap,
-    currentCharacter: currentCharacter,
-    isCharAttacking: isCharAttacking,
-    playerEXP: playerEXP,
-    repicked: repicked,
-    isDead: isDead,
-    isPaused: isPaused,
-    isWiped: isWiped,
-    isAttackingChar: isAttackingChar,
-    isGameStarted: isGameStarted,
-    cooldownActive: cooldownActive,
-    stored: stored,
-    isCharacterMenuOpen: isCharacterMenuOpen,
-    selectedCharacter: selectedCharacter,
-    characterStats: characterStats,
-    frogEXP: frogEXP,
-    snailEXP: snailEXP,
-    beeEXP: beeEXP,
-    birdEXP: birdEXP,
-    frogEXPToLevel: frogEXPToLevel,
-    snailEXPToLevel: snailEXPToLevel,
-    beeEXPToLevel: beeEXPToLevel,
-    birdEXPToLevel: birdEXPToLevel
-  };
+  // Save game data
+  function saveGame() {
+    localStorage.removeItem('gameSave');
+    gameData = {
+      expToLevel: expToLevel,
+      currentRound: currentRound,
+      roundOver: roundOver,
+      playerHealth: playerHealth,
+      coffee: coffee,
+      frogSize: frogSize,
+      speed: speed,
+      speedChanged: speedChanged,
+      selectLevel: selectLevel,
+      frogTintColor: frogTintColor,
+      snailSpeed: snailSpeed,
+      snailDamage: snailDamage,
+      snailHealth: snailHealth,
+      snailLevel: snailLevel,
+      beeLevel: beeLevel,
+      birdLevel: birdLevel,
+      birdSpeed: birdSpeed,
+      birdDamage: birdDamage,
+      touchCount: touchCount,
+      birdHealth: birdHealth,
+      beeSpeed: beeSpeed,
+      beeDamage: beeDamage,
+      beeHealth: beeHealth,
+      frogSpeed: frogSpeed,
+      frogDamage: frogDamage,
+      frogHealth: frogHealth,
+      frogLevel: frogLevel,
+      currentFrogHealth: currentFrogHealth,
+      currentSnailHealth: currentSnailHealth,
+      currentBeeHealth: currentBeeHealth,
+      currentBirdHealth: currentBirdHealth,
+      isCharAttacking: isCharAttacking,
+      repicked: repicked,
+      isDead: isDead,
+      isPaused: isPaused,
+      isWiped: isWiped,
+      isAttackingChar: isAttackingChar,
+      isGameStarted: isGameStarted,
+      stored: stored,
+      characterStats: characterStats,
+      frogEXP: frogEXP,
+      snailEXP: snailEXP,
+      beeEXP: beeEXP,
+      birdEXP: birdEXP,
+      frogEXPToLevel: frogEXPToLevel,
+      snailEXPToLevel: snailEXPToLevel,
+      beeEXPToLevel: beeEXPToLevel,
+      birdEXPToLevel: birdEXPToLevel
+    };
 
-  const saveData = JSON.stringify(gameData);
-  localStorage.setItem('gameSave', saveData);
-}
-
-// Load game data
-function loadGame() {
-  const savedData = localStorage.getItem('gameSave');
-  if (savedData) {
-    const gameData = JSON.parse(savedData);
-console.log("LOADING");
-    // Load the saved values into your variables
-    expToLevel = gameData.expToLevel;
-    currentRound = gameData.currentRound;
-    roundOver = gameData.roundOver;
-    playerHealth = gameData.playerHealth;
-    coffee = gameData.coffee;
-    frogSize = gameData.frogSize;
-    speed = gameData.speed;
-    speedChanged = gameData.speedChanged;
-    selectLevel = gameData.selectLevel;
-    frogTintColor = gameData.frogTintColor;
-    snailSpeed = gameData.snailSpeed;
-    snailDamage = gameData.snailDamage;
-    snailHealth = gameData.snailHealth;
-    snailLevel = gameData.snailLevel;
-    beeLevel = gameData.beeLevel;
-    birdLevel = gameData.birdLevel;
-    birdSpeed = gameData.birdSpeed;
-    birdDamage = gameData.birdDamage;
-    touchCount = gameData.touchCount;
-    birdHealth = gameData.birdHealth;
-    beeSpeed = gameData.beeSpeed;
-    beeDamage = gameData.beeDamage;
-    beeHealth = gameData.beeHealth;
-    frogSpeed = gameData.frogSpeed;
-    frogDamage = gameData.frogDamage;
-    frogHealth = gameData.frogHealth;
-    frogLevel = gameData.frogLevel;
-    currentFrogHealth = gameData.currentFrogHealth;
-    currentSnailHealth = gameData.currentSnailHealth;
-    currentBeeHealth = gameData.currentBeeHealth;
-    currentBirdHealth = gameData.currentBirdHealth;
-    charSwap = gameData.charSwap;
-    currentCharacter = gameData.currentCharacter;
-    isCharAttacking = gameData.isCharAttacking;
-    playerEXP = gameData.playerEXP;
-    repicked = gameData.repicked;
-    isDead = gameData.isDead;
-
-
-    isPaused = gameData.isPaused;
-    isWiped = gameData.isWiped;
-    isAttackingChar = gameData.isAttackingChar;
-    isGameStarted = gameData.isGameStarted;
-    cooldownActive = gameData.cooldownActive;
-    stored = gameData.stored;
-    isCharacterMenuOpen = gameData.isCharacterMenuOpen;
-    selectedCharacter = gameData.selectedCharacter;
-    characterStats = gameData.characterStats;
-    frogEXP = gameData.frogEXP;
-    snailEXP = gameData.snailEXP;
-    beeEXP = gameData.beeEXP;
-    birdEXP = gameData.birdEXP;
-    frogEXPToLevel = gameData.frogEXPToLevel;
-    snailEXPToLevel = gameData.snailEXPToLevel;
-    beeEXPToLevel = gameData.beeEXPToLevel;
-    birdEXPToLevel = gameData.birdEXPToLevel;
+    const saveData = JSON.stringify(gameData);
+    localStorage.setItem('gameSave', saveData);
   }
-}
+
+  // Load game data
+  function loadGame() {
+    const savedData = localStorage.getItem('gameSave');
+    if (savedData) {
+      const gameData = JSON.parse(savedData);
+      console.log("LOADING");
+      // Load the saved values into your variables
+      setCurrentFrogHealth(gameData.currentFrogHealth);
+      setCurrentSnailHealth(gameData.currentSnailHealth);
+      setCurrentBeeHealth(gameData.currentBeeHealth);
+      setCurrentBirdHealth(gameData.currentBirdHealth);
+      setCharEXP("character-frog", gameData.frogEXP);
+      setCharEXP("character-snail", gameData.snailEXP);
+      setCharEXP("character-bee", gameData.beeEXP);
+      setCharEXP("character-bird", gameData.birdEXP);
+      setEXPtoLevel("character-frog", gameData.frogEXPToLevel);
+      setEXPtoLevel("character-snail", gameData.snailEXPToLevel);
+      setEXPtoLevel("character-bee", gameData.beeEXPToLevel);
+      setEXPtoLevel("character-bird", gameData.birdEXPToLevel);
+      expToLevel = gameData.expToLevel;
+      currentRound = gameData.currentRound;
+      roundOver = gameData.roundOver;
+      playerHealth = gameData.playerHealth;
+      coffee = gameData.coffee;
+      frogSize = gameData.frogSize;
+      speed = gameData.speed;
+      speedChanged = gameData.speedChanged;
+      selectLevel = gameData.selectLevel;
+      frogTintColor = gameData.frogTintColor;
+      snailSpeed = gameData.snailSpeed;
+      snailDamage = gameData.snailDamage;
+      snailHealth = gameData.snailHealth;
+      snailLevel = gameData.snailLevel;
+      beeLevel = gameData.beeLevel;
+      birdLevel = gameData.birdLevel;
+      birdSpeed = gameData.birdSpeed;
+      birdDamage = gameData.birdDamage;
+      touchCount = gameData.touchCount;
+      birdHealth = gameData.birdHealth;
+      beeSpeed = gameData.beeSpeed;
+      beeDamage = gameData.beeDamage;
+      beeHealth = gameData.beeHealth;
+      frogSpeed = gameData.frogSpeed;
+      frogDamage = gameData.frogDamage;
+      frogHealth = gameData.frogHealth;
+      frogLevel = gameData.frogLevel;
+      isCharAttacking = gameData.isCharAttacking;
+      repicked = gameData.repicked;
+      isDead = gameData.isDead;
+      isPaused = gameData.isPaused;
+      isWiped = gameData.isWiped;
+      isAttackingChar = gameData.isAttackingChar;
+      isGameStarted = gameData.isGameStarted;
+      stored = gameData.stored;
+      characterStats = gameData.characterStats;
 
 
-
-
-
-
-
-
-
-
-
-
+    }
+  }
 
 
 
