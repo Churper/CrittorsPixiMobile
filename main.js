@@ -1677,7 +1677,7 @@ function updateEXPIndicatorText(character, level) {
    
     }
       enemy.anchor.set(0.5, .5);
-      enemy.position.set(3000, app.screen.height - 200 - randomScale * 120 + (Math.random() * 60 - 30));
+      enemy.position.set(3000, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
       enemy.zIndex = enemy.position.y + 10000;
       enemy.animationSpeed = 0.25;
       enemy.loop = true;
