@@ -567,10 +567,6 @@ function updateEXPIndicatorText(character, level) {
     });
 
     function handleCharacterClick(characterType) {
-      let characterHealthSnail = currentSnailHealth;;
-      let characterHealthBird = currentBirdHealth;
-      let characterHealthFrog = currentFrogHealth;
-      let characterHealthBee = currentBeeHealth;
       let characterHealth;
 
       switch (characterType) {
@@ -785,7 +781,16 @@ function updateEXPIndicatorText(character, level) {
       const hpBarColor = 0xff0000;
 
       PIXI.Loader.shared.add([
-
+        { name: 'pig_walk', url: 'https://i.imgur.com/sLNMWY4.png' },
+        { name: 'pig_attack', url: 'https://i.imgur.com/O0FXcIH.png' },
+        { name: 'ele_walk', url: 'https://i.imgur.com/HAbxzx2.png' },
+        { name: 'ele_attack', url: 'https://i.imgur.com/zqpWWPI.png' },
+        { name: 'scorp_walk', url: 'https://i.imgur.com/VpGHryx.png' },
+        { name: 'scorp_attack', url: 'https://i.imgur.com/Js0c1Yn.png' },
+        { name: 'octo_walk', url: 'https://i.imgur.com/8T713I9.png' },
+        { name: 'octo_attack', url: 'https://i.imgur.com/mNbn4eJ.png' },
+        { name: 'toofer_walk', url: 'https://i.imgur.com/aapkoqq.png' },
+        { name: 'toofer_attack', url: 'https://i.imgur.com/inBwJ2p.png' },
         { name: 'timer1', url: 'https://i.imgur.com/shRbAl5.png' },
         { name: 'timer2', url: 'https://i.imgur.com/r3DQaWf.png' },
         { name: 'bird_egg', url: 'https://i.imgur.com/q5JvpXv.png' },
@@ -949,6 +954,11 @@ function updateEXPIndicatorText(character, level) {
         const frogAttackTextures1 = createAnimationTextures('frog_attack', 12, 351);
         const critterAttackTextures = createAnimationTextures('critter_attack', 13, 266);
         const critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
+
+
+
+
+
         const snailWalkTextures = createAnimationTextures2('snail_walk', 20, 562, 3560, 2248);
         const snailAttackTextures = createAnimationTextures2('snail_attack', 20, 562, 2848, 3372);
         const pufferWalkTextures = createAnimationTextures2('puffer_walk', 15, 413, 3705, 1239);
@@ -959,8 +969,16 @@ function updateEXPIndicatorText(character, level) {
         const birdAttackTextures = createAnimationTextures2('bird_attack', 13, 403, 2541, 806);
         const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
         const clouds2Texture = PIXI.Loader.shared.resources['clouds2'].texture;
-        //background.tint = getRandomColor1();
-
+        const scorpWalkTextures = createAnimationTextures2('scorp_walk', 6, 499, 2202, 499);
+        const scorpAttackTextures = createAnimationTextures2('scorp_attack',9, 499, 3303, 499);
+        const tooferWalkTextures = createAnimationTextures2('toofer_walk', 6, 377, 2412, 377);
+        const tooferAttackTextures = createAnimationTextures2('toofer_attack',15, 377, 1206 , 1885);
+        const octoWalkTextures = createAnimationTextures2('octo_walk', 10, 482, 3415, 964);
+        const octoAttackTextures = createAnimationTextures2('octo_attack',18, 482, 2049 , 2892);
+        const eleWalkTextures = createAnimationTextures2('ele_walk', 6, 377, 2256, 377);
+        const eleAttackTextures = createAnimationTextures2('ele_attack',12, 377, 1128 , 1508);
+        const pigWalkTextures = createAnimationTextures2('pig_walk', 6, 618, 1590, 1854);
+        const pigAttackTextures = createAnimationTextures2('pig_attack',15, 618, 2385 , 3090);
         const backgroundImage = PIXI.Sprite.from('background');
         const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 30, 200);
         const clouds2 = createTilingSprite(clouds2Texture, backgroundImage.width * 30, 200);
@@ -1589,22 +1607,34 @@ function updateEXPIndicatorText(character, level) {
 
         app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
 
-        spawnEnemy(critter, critterAttackTextures, critterWalkTextures);
+        spawnEnemy(critter, pigAttackTextures, pigWalkTextures, "pig");
+        const delayBetweenEnemies = 6000; // Delay between each enemy spawn
+        const enemyTypes = [
+          
+          { attackTextures: octoAttackTextures, walkTextures: octoWalkTextures, name: "octo" },
+          { attackTextures: eleAttackTextures, walkTextures: eleWalkTextures, name: "ele" },
+          { attackTextures: critterAttackTextures, walkTextures: critterWalkTextures, name: "imp" },
+          { attackTextures: pufferAttackTextures, walkTextures: pufferWalkTextures, name: "puffer" },
+          { attackTextures: scorpAttackTextures, walkTextures: scorpWalkTextures, name: "scorp" },
+          { attackTextures: tooferAttackTextures, walkTextures: tooferWalkTextures, name: "toofer" }
+         
+        
+        ];
+        
+        let interval = 0; // Initial interval value
+        let enemyIndex = 0; // Initial enemy index
+        
         setInterval(() => {
           if (!getisDead() && !getisPaused()) {
-
-
-            spawnEnemy(critter, critterAttackTextures, critterWalkTextures);
+            setTimeout(() => {
+              spawnEnemy(critter, enemyTypes[enemyIndex].attackTextures, enemyTypes[enemyIndex].walkTextures, enemyTypes[enemyIndex].name);
+              enemyIndex = (enemyIndex + 1) % enemyTypes.length; // Increment enemy index and wrap around to 0 when it exceeds the number of enemy types
+            }, interval);
+            interval += delayBetweenEnemies;
           }
-        }, 21000);
+        }, delayBetweenEnemies);
+        
 
-        setInterval(() => {
-          if (!getisDead() && !getisPaused()) {
-            spawnEnemy(critter, critterAttackTextures, critterWalkTextures);
-
-
-          }
-        }, 16000);
 
       }
 
@@ -1624,7 +1654,7 @@ function updateEXPIndicatorText(character, level) {
     }
 
 
-    function spawnEnemy(critter, critterAttackTextures, critterWalkTextures) {
+    function spawnEnemy(critter, critterAttackTextures, critterWalkTextures,enemyName) {
       let enemyAdded = false;
       const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
       let resett = false;
@@ -1633,8 +1663,21 @@ function updateEXPIndicatorText(character, level) {
       const randomScale = minScale + Math.random() * (maxScale - minScale);
       const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
       enemy.scale.set(randomScale);
+
+
+    if(enemyName == "puffer"){
+      enemy.scale.set(.35);
+    }
+    console.log("ENEMY NAME", enemyName);
+    if((enemyName != "scorp")){
+      if(enemyName != "octo"){
+        enemy.scale.x *= -1; // Flip the enemy horizontally
+        console.log("ENEMY XXXXXXXXXXXXXXXXNAME", enemyName);
+      }
+   
+    }
       enemy.anchor.set(0.5, .5);
-      enemy.position.set(app.screen.width*1.1, app.screen.height - 80 - randomScale * 120 + (Math.random() * 60 - 30));
+      enemy.position.set(3000, app.screen.height - 200 - randomScale * 120 + (Math.random() * 60 - 30));
       enemy.zIndex = enemy.position.y + 10000;
       enemy.animationSpeed = 0.25;
       enemy.loop = true;
@@ -1642,7 +1685,6 @@ function updateEXPIndicatorText(character, level) {
       enemy.isVisible;
       enemy.currentHP = 100;
       enemy.play();
-      enemy.scale.x *= -1; // Flip the enemy horizontally
       enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
       let isAttacking = false; // Flag to track if enemy is attacking
 
@@ -1715,15 +1757,11 @@ function updateEXPIndicatorText(character, level) {
                 setIsCharAttacking(false);
               }
             }
-
             if (!enemyAdded) {
               enemyAdded = true;
               setEnemiesInRange(getEnemiesInRange() + 1);
               return;
             }
-
-
-
             if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
               if (!isCombat) {
                 const enemyPortrait = document.getElementById('enemy-portrait');
@@ -1733,19 +1771,12 @@ function updateEXPIndicatorText(character, level) {
               }
               isAttacking = true;
               isCombat = true;
-
               handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures);
-
-
-
             }
-
           }
-
           isCombat = false;
         } else {
           app.stage.removeChild(enemy);
-
           // Remove the enemy object from the enemies array
           const index = getEnemies().indexOf(enemy);
           if (index !== -1) {
@@ -1755,9 +1786,6 @@ function updateEXPIndicatorText(character, level) {
           return;
         }
       });
-
-
-
     }
 
 
@@ -1836,7 +1864,7 @@ function updateEXPIndicatorText(character, level) {
 
     }
 
-    function playGhostFly(critter, enemy) {
+    function playGhostFly() {
       setIsDead(true);
       frogGhostPlayer.alpha = 0.5;
 
@@ -1964,7 +1992,7 @@ function updateEXPIndicatorText(character, level) {
                       app.stage.removeChild(enemy.hpBar);
                     }
                   }
-                  playGhostFly(critter, enemy, frogGhostPlayer);
+                  playGhostFly();
                   enemy.textures = critterWalkTextures;
                   enemy.play();
 
@@ -2063,8 +2091,6 @@ function updateEXPIndicatorText(character, level) {
         critter.play();
         app.stage.addChild(critter);
         playRoundText(currentRound);
-
-
         // Loop through the enemies array and remove each enemy
         for (let i = 0; i < getEnemies().length; i++) {
           let enemy = getEnemies()[i];
@@ -2073,7 +2099,6 @@ function updateEXPIndicatorText(character, level) {
           app.stage.removeChild(enemy.hpBar);
           app.stage.removeChild(enemy.hpBarBackground);
           // Destroy the enemy object to free up memory
-
         }
 
         // Clear the enemies array
