@@ -1598,7 +1598,7 @@ function updateEXPIndicatorText(character, level) {
    // Start the timer animation
 
         app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
-
+        
         const enemyTypes = [
           { attackTextures: pigAttackTextures, walkTextures: pigWalkTextures, name: "pig" },
           { attackTextures: octoAttackTextures, walkTextures: octoWalkTextures, name: "octo" },
@@ -1612,7 +1612,15 @@ function updateEXPIndicatorText(character, level) {
         let currentRound = 1; // Current round value
         let interval = 0; // Initial interval value
         const delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
-        
+        const randomIndex12 = Math.floor(Math.random() * enemyTypes.length);
+        const selectedEnemy1 = enemyTypes[randomIndex12];
+        spawnEnemy(
+          critter,
+          selectedEnemy1.attackTextures,
+          selectedEnemy1.walkTextures,
+          selectedEnemy1.name
+        );
+
         setInterval(() => {
           if (!getisDead() && !getisPaused()) {
             const randomIndex = Math.floor(Math.random() * enemyTypes.length);
@@ -1697,6 +1705,7 @@ function updateEXPIndicatorText(character, level) {
       }
    
     }
+    enemy.exp = 20 + Math.floor(currentRound * 2);
       enemy.anchor.set(0.5, .5);
       enemy.position.set(3000, app.screen.height - 90 -  enemy.height/4  - randomScale * 120 + (Math.random() * 60 - 30));
       enemy.zIndex = enemy.position.y + 10000;
@@ -1704,6 +1713,8 @@ function updateEXPIndicatorText(character, level) {
       enemy.loop = true;
       enemy.isAlive = true;
       enemy.isVisible;
+      enemy.attackDamage = 1 + currentRound;
+      enemy.maxHP = 80 + currentRound * 5;
       enemy.currentHP = 80 + currentRound * 5;
       enemy.play();
       enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
@@ -1767,6 +1778,7 @@ function updateEXPIndicatorText(character, level) {
                   isAttacking = false;
                   isCombat = false;
                   enemyAdded = false;
+                  
                 }
 
               }
@@ -1855,8 +1867,9 @@ function updateEXPIndicatorText(character, level) {
         if (app.stage.children.includes(enemy)) {
           drawHitSplat(enemy);
           enemy.tint = 0xFF0000; // Set the hit color
-
+if(getEnemiesInRange() > 0){  
           setEnemiesInRange(getEnemiesInRange() - 1);
+}
           //isCombat = false;
           if (getEnemiesInRange() === 0) {
             const enemyPortrait = document.getElementById('enemy-portrait');
@@ -1994,7 +2007,8 @@ function updateEXPIndicatorText(character, level) {
               if (!hasDied) {
 
                 critter.tint = flashColor;
-                setPlayerCurrentHealth(getPlayerCurrentHealth() - 5);
+                setPlayerCurrentHealth(getPlayerCurrentHealth() - enemy.attackDamage);
+                drawCharHitSplat(critter,enemy);
                 updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth()) * 100);
 
               }
@@ -2147,6 +2161,51 @@ function updateEXPIndicatorText(character, level) {
       }
     }
 
+
+    function drawCharHitSplat(critter,enemy) {
+
+  
+      let damage = -enemy.attackDamage;
+
+
+      const damageText = new PIXI.Text(`${damage}`, {
+        fontFamily: 'Marker Felt Cursive',
+        fontSize: 24,
+        fill: 'red',
+        dropShadow: true,
+        dropShadowColor: 'black',
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 4,
+        dropShadowDistance: 2,
+      });
+
+      damageText.anchor.set(0.5);
+      damageText.position.set(critter.position.x - 40, critter.position.y - 60 );
+      app.stage.addChild(damageText);
+
+      // Animate the hitsplat
+      const startY = damageText.position.y; // Adjust the starting Y position as needed
+      const duration = 100; // Animation duration in milliseconds
+      let elapsed = 0; // Elapsed time
+      const update = (delta) => {
+        elapsed += delta;
+
+        if (elapsed >= duration) {
+          app.ticker.remove(update); // Stop the ticker update
+          app.stage.removeChild(damageText); // Remove hitsplat after animation
+        } else {
+          const progress = elapsed / duration;
+          damageText.position.y = startY - (progress * 30); // Update the Y position based on progress
+          damageText.alpha = 1 - progress; // Update the alpha (opacity) based on progress
+        }
+      };
+
+      app.ticker.add(update); // Start the ticker update for hitsplat animation
+    }
+
+
+
+
     function drawHitSplat(enemy) {
 
       // Flash hit color for a brief second
@@ -2228,7 +2287,8 @@ function updateEXPIndicatorText(character, level) {
           drawHitSplat(enemy);
           enemy.tint = 0xFF0000; // Set the hit color
 if(getCurrentCharacter !== 'character-bird'){
-          setEnemiesInRange(getEnemiesInRange() - 1);
+  if(getEnemiesInRange() > 0){
+          setEnemiesInRange(getEnemiesInRange() - 1);}
 }
           isCombat = false;
           if (getEnemiesInRange() === 0) {
@@ -2352,7 +2412,8 @@ if(getCurrentCharacter !== 'character-bird'){
       // Add the death animation sprite to the stage
       enemyDeath.position.set(enemy.position.x, enemy.position.y);
       app.stage.addChild(enemyDeath);
-      const expDrop = new PIXI.Text("+15 EXP", {
+      const expDropText = enemy.exp;
+      const expDrop = new PIXI.Text("+" + enemy.exp + " EXP", {
         fontSize: 18,
         fill: "orange",
         fontWeight: "bold",
@@ -2391,7 +2452,7 @@ if(getCurrentCharacter !== 'character-bird'){
 
       // Remove the death animation after it completes
       enemyDeath.onComplete = () => {
-        setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 100);
+        setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + enemy.exp);
         //ox setPlayerEXP(getPlayerEXP() + 100);
         console.log("YEP",getCharEXP(getCurrentCharacter()));
         console.log("YEPX",getEXPtoLevel(getCurrentCharacter()));
@@ -2437,7 +2498,7 @@ if(getCurrentCharacter !== 'character-bird'){
         enemy.hpBar.position.set(hpBarX, hpBarY);
       }
 
-      const maxHealth = 100; // Replace with actual max health of enemy
+      const maxHealth = enemy.maxHP; // Replace with actual max health of enemy
       const currentHealth = enemy.currentHP; // Replace with actual current health of enemy
       const hpBarRatio = currentHealth / maxHealth;
       const hpBarWidthActual = Math.max(Math.round(hpBarWidth * hpBarRatio), 0);
