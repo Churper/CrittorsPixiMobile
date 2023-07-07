@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 5;
+  let speed = 1;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -1357,17 +1357,25 @@ document.addEventListener('DOMContentLoaded', function () {
               mountain3.tint = getRandomColor3();
               mountain4.tint = getRandomColor3();
               foreground.tint = getRandomColor();
-              for (let i = 0; i < getEnemies().length; i++) {
-                let enemy = getEnemies()[i];
-                // console.log(i);
+              for (let i = 0; i < enemies.length; i++) {
+                const enemy = enemies[i];
+                console.log("hex", i);
+              
+                // Remove the enemy and its associated HP bar elements from the PIXI stage
                 app.stage.removeChild(enemy);
                 app.stage.removeChild(enemy.hpBar);
                 app.stage.removeChild(enemy.hpBarBackground);
+              
                 // Destroy the enemy object to free up memory
-
+                enemy.destroy();
+              
+                // Remove the enemy from the enemies array
+                enemies.splice(i, 1);
+                i--; // Decrement i to adjust for the removed enemy
               }
               exploded = false;
-              spawnEnemies();
+              endRound();
+              startNewRound();
             }
 
             playRoundText(currentRound);
@@ -1623,50 +1631,59 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
   }
-
-  // Move the enemy spawning logic outside the setup function
   let interval = 0; // Initial interval value
   let delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
-
+  let enemySpawnTimeout; // Variable to store the enemy spawn timeout ID
+  let roundStarted = false; // Flag to track if a round has started
 
   function startNewRound() {
-    currentRound++; // Increment the current round value
-    interval = 0; // Reset the interval value
-
+    if (roundStarted) {
+      return; // Only allow one round to be active at a time
+    }
+  
+    roundStarted = true; // Set the flag to indicate that a round has started
+    clearTimeout(enemySpawnTimeout); // Clear the enemy spawn timeout
+  
+   // currentRound++; // Increment the current round value
+    interval = delayBetweenEnemies; // Set the interval to delay the initial spawn
+  
     // Adjust delayBetweenEnemies based on current round
     if (currentRound > 1) {
       const reductionFactor = 0.95; // The factor by which the delay will be reduced
       const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
       delayBetweenEnemies = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
     }
-
+  
     spawnEnemies();
   }
-
+  
   function spawnEnemies() {
     if (!getisDead() && !getisPaused()) {
       const randomIndex = Math.floor(Math.random() * enemyTypes.length);
       const selectedEnemy = enemyTypes[randomIndex];
-
-      setTimeout(() => {
-        spawnEnemy(
-          critter,
-          selectedEnemy.attackTextures,
-          selectedEnemy.walkTextures,
-          selectedEnemy.name
-        );
-
+  
+      spawnEnemy(
+        critter,
+        selectedEnemy.attackTextures,
+        selectedEnemy.walkTextures,
+        selectedEnemy.name
+      );
+  
+      enemySpawnTimeout = setTimeout(() => {
         spawnEnemies(); // Spawn the next enemy
       }, interval);
-
+  
       interval += delayBetweenEnemies;
     }
   }
-
-  // Call startNewRound() to start a new round
-
+  
 
 
+  function endRound() {
+    clearTimeout(enemySpawnTimeout); // Clear the enemy spawn timeout
+    roundStarted = false; // Reset the roundStarted flag
+    // Other round-ending logic...
+  }
 
 
 
