@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
   let frogWalkTextures;
   let frogAttackTextures;
   let expToLevel = 100;
-  let currentRound = 1;
+  let currentRound;
+  
+  if (!currentRound)
+  {currentRound = 1;}
   let roundOver = false;
   let playerHealth = 100;
   let coffee = 0;
@@ -60,7 +63,14 @@ document.addEventListener('DOMContentLoaded', function () {
   let isAttackingChar = false;
   let isGameStarted = false;
   let initialClouds = 0;
-
+  let frogEXP = 0;
+  let snailEXP = 0;
+  let beeEXP = 0;
+  let birdEXP = 0;
+  let frogEXPToLevel = 100;
+  let snailEXPToLevel = 100;
+  let beeEXPToLevel = 100;
+  let birdEXPToLevel = 100;
   let cooldownActive = false; // Track the cooldown status
   const cooldownDuration = 3000; // Cooldown duration in milliseconds
   let stored = 0;
@@ -162,14 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  let frogEXP = 0;
-  let snailEXP = 0;
-  let beeEXP = 0;
-  let birdEXP = 0;
-  let frogEXPToLevel = 100;
-  let snailEXPToLevel = 100;
-  let beeEXPToLevel = 100;
-  let birdEXPToLevel = 100;
+
+
+
 
   function getCharEXP(currentChar) {
     switch (currentChar) {
@@ -335,60 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
   }
-  var snailHPIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
-  var birdHPIndicator = document.querySelector('.upgrade-box.character-bird .hp-indicator');
-  var beeHPIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
-  var frogHPIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
-  // Calculate the height percentage for each character
-  var snailHeightPercentage = (1 - currentSnailHealth / getSnailHealth()) * 100;
-  var birdHeightPercentage = (1 - currentBirdHealth / getBirdHealth()) * 100;
-  var beeHeightPercentage = (1 - currentBeeHealth / getBeeHealth()) * 100;
-  var frogHeightPercentage = (1 - currentFrogHealth / getFrogHealth()) * 100;
-  // Update the custom properties and height for each character
-  snailHPIndicator.style.setProperty('--current-health-snail', currentSnailHealth);
-  snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
-  snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
-
-  birdHPIndicator.style.setProperty('--current-health-bird', currentBirdHealth);
-  birdHPIndicator.style.setProperty('--max-health-bird', getBirdHealth());
-  birdHPIndicator.style.setProperty('--hp-indicator-height', birdHeightPercentage + '%');
-
-  beeHPIndicator.style.setProperty('--current-health-bee', currentBeeHealth);
-  beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
-  beeHPIndicator.style.setProperty('--hp-indicator-height', beeHeightPercentage + '%');
-
-  frogHPIndicator.style.setProperty('--current-health-frog', currentFrogHealth);
-  frogHPIndicator.style.setProperty('--max-health-frog', getFrogHealth());
-  frogHPIndicator.style.setProperty('--hp-indicator-height', frogHeightPercentage + '%');
-
-  var snailEXPIndicator = document.querySelector('.upgrade-box.character-snail .exp-indicator');
-  var birdEXPIndicator = document.querySelector('.upgrade-box.character-bird .exp-indicator');
-  var beeEXPIndicator = document.querySelector('.upgrade-box.character-bee .exp-indicator');
-  var frogEXPIndicator = document.querySelector('.upgrade-box.character-frog .exp-indicator');
-
-  // Calculate the height percentage for each character
-  var snailEXPHeightPercentage = (1 - getCharEXP('character-snail') / getEXPtoLevel('character-snail')) * 100;
-  var birdEXPHeightPercentage = (1 - getCharEXP('character-bird') / getEXPtoLevel('character-bird')) * 100;
-  var beeEXPHeightPercentage = (1 - getCharEXP('character-bee') / getEXPtoLevel('character-bee')) * 100;
-  var frogEXPHeightPercentage = (1 - getCharEXP('character-frog') / getEXPtoLevel('character-frog')) * 100;
-
-  // Update the custom properties and height for each character
-  snailEXPIndicator.style.setProperty('--current-exp-snail', getCharEXP('character-snail'));
-  snailEXPIndicator.style.setProperty('--max-exp-snail', getEXPtoLevel('character-snail'));
-  snailEXPIndicator.style.setProperty('--exp-indicator-height', snailEXPHeightPercentage + '%');
-
-  birdEXPIndicator.style.setProperty('--current-exp-bird', getCharEXP('character-bird'));
-  birdEXPIndicator.style.setProperty('--max-exp-bird', getEXPtoLevel('character-bird'));
-  birdEXPIndicator.style.setProperty('--exp-indicator-height', birdEXPHeightPercentage + '%');
-
-  beeEXPIndicator.style.setProperty('--current-exp-bee', getCharEXP('character-bee'));
-  beeEXPIndicator.style.setProperty('--max-exp-bee', getEXPtoLevel('character-bee'));
-  beeEXPIndicator.style.setProperty('--exp-indicator-height', beeEXPHeightPercentage + '%');
-
-  frogEXPIndicator.style.setProperty('--current-exp-frog', getCharEXP('character-frog'));
-  frogEXPIndicator.style.setProperty('--max-exp-frog', getEXPtoLevel('character-frog'));
-  frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
-
+ 
 
 
   function getPlayerHealth() {
@@ -622,7 +574,6 @@ document.addEventListener('DOMContentLoaded', function () {
       switch (characterType) {
         case 'character-snail':
           level = getSnailLevel();
-
           updateLightning.textContent = getSnailSpeed().toString();
           updateHP.textContent = getSnailHealth().toString();
           updateDamage.textContent = getSnailDamage().toString();
@@ -781,7 +732,61 @@ document.addEventListener('DOMContentLoaded', function () {
     const mountainVelocity3 = new PIXI.Point(0.1, 0.1);
     const mountainVelocity4 = new PIXI.Point(0.1, 0.1);
     const hpBarColor = 0xff0000;
-
+    loadGame();
+    var snailHPIndicator = document.querySelector('.upgrade-box.character-snail .hp-indicator');
+    var birdHPIndicator = document.querySelector('.upgrade-box.character-bird .hp-indicator');
+    var beeHPIndicator = document.querySelector('.upgrade-box.character-bee .hp-indicator');
+    var frogHPIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
+    // Calculate the height percentage for each character
+    var snailHeightPercentage = (1 - currentSnailHealth / getSnailHealth()) * 100;
+    var birdHeightPercentage = (1 - currentBirdHealth / getBirdHealth()) * 100;
+    var beeHeightPercentage = (1 - currentBeeHealth / getBeeHealth()) * 100;
+    var frogHeightPercentage = (1 - currentFrogHealth / getFrogHealth()) * 100;
+    // Update the custom properties and height for each character
+    snailHPIndicator.style.setProperty('--current-health-snail', currentSnailHealth);
+    snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
+    snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
+  
+    birdHPIndicator.style.setProperty('--current-health-bird', currentBirdHealth);
+    birdHPIndicator.style.setProperty('--max-health-bird', getBirdHealth());
+    birdHPIndicator.style.setProperty('--hp-indicator-height', birdHeightPercentage + '%');
+  
+    beeHPIndicator.style.setProperty('--current-health-bee', currentBeeHealth);
+    beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
+    beeHPIndicator.style.setProperty('--hp-indicator-height', beeHeightPercentage + '%');
+  
+    frogHPIndicator.style.setProperty('--current-health-frog', currentFrogHealth);
+    frogHPIndicator.style.setProperty('--max-health-frog', getFrogHealth());
+    frogHPIndicator.style.setProperty('--hp-indicator-height', frogHeightPercentage + '%');
+  
+    var snailEXPIndicator = document.querySelector('.upgrade-box.character-snail .exp-indicator');
+    var birdEXPIndicator = document.querySelector('.upgrade-box.character-bird .exp-indicator');
+    var beeEXPIndicator = document.querySelector('.upgrade-box.character-bee .exp-indicator');
+    var frogEXPIndicator = document.querySelector('.upgrade-box.character-frog .exp-indicator');
+  
+    // Calculate the height percentage for each character
+    var snailEXPHeightPercentage = (1 - getCharEXP('character-snail') / getEXPtoLevel('character-snail')) * 100;
+    var birdEXPHeightPercentage = (1 - getCharEXP('character-bird') / getEXPtoLevel('character-bird')) * 100;
+    var beeEXPHeightPercentage = (1 - getCharEXP('character-bee') / getEXPtoLevel('character-bee')) * 100;
+    var frogEXPHeightPercentage = (1 - getCharEXP('character-frog') / getEXPtoLevel('character-frog')) * 100;
+  
+    // Update the custom properties and height for each character
+    snailEXPIndicator.style.setProperty('--current-exp-snail', getCharEXP('character-snail'));
+    snailEXPIndicator.style.setProperty('--max-exp-snail', getEXPtoLevel('character-snail'));
+    snailEXPIndicator.style.setProperty('--exp-indicator-height', snailEXPHeightPercentage + '%');
+  
+    birdEXPIndicator.style.setProperty('--current-exp-bird', getCharEXP('character-bird'));
+    birdEXPIndicator.style.setProperty('--max-exp-bird', getEXPtoLevel('character-bird'));
+    birdEXPIndicator.style.setProperty('--exp-indicator-height', birdEXPHeightPercentage + '%');
+  
+    beeEXPIndicator.style.setProperty('--current-exp-bee', getCharEXP('character-bee'));
+    beeEXPIndicator.style.setProperty('--max-exp-bee', getEXPtoLevel('character-bee'));
+    beeEXPIndicator.style.setProperty('--exp-indicator-height', beeEXPHeightPercentage + '%');
+  
+    frogEXPIndicator.style.setProperty('--current-exp-frog', getCharEXP('character-frog'));
+    frogEXPIndicator.style.setProperty('--max-exp-frog', getEXPtoLevel('character-frog'));
+    frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
+  
     PIXI.Loader.shared.add([
       { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
       { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
@@ -841,9 +846,13 @@ document.addEventListener('DOMContentLoaded', function () {
       { name: 'clouds3', url: 'https://i.imgur.com/QrTMhij.png' },
     ]).load(setup);
 
+
+
+
+
     function setup() {
 
-      loadGame();
+   
 
 
       // Add the timer animation to the stage
@@ -1256,8 +1265,10 @@ document.addEventListener('DOMContentLoaded', function () {
         castleHealth -= damage;
         if (castleHealth <= 0) {
           castleExplode();
-          setPlayerCurrentHealth(getPlayerCurrentHealth() + 25);
-          updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
+          setPlayerCurrentHealth(getPlayerHealth());
+          updatePlayerHealthBar(getPlayerHealth());
+          setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 25);
+          updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()), critter);
 
         }
 
@@ -1277,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isAttacking = false;
         isCombat = false;
         exploded = true;
-        saveGame();
+       
 
       }
 
@@ -1377,8 +1388,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 i--; // Decrement i to adjust for the removed enemy
               }
               exploded = false;
+              saveGame();
               endRound();
               startNewRound();
+             
             }
 
             playRoundText(currentRound);
@@ -1597,7 +1610,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else { }
       });
       app.stage.removeChild(loadingSprite);
-      playRoundText(1);
+      playRoundText(currentRound);
 
       // document.getElementById("infoboxs").style.visibility = "visible";
       document.getElementById("coffee-button").style.visibility = "visible";
@@ -1611,7 +1624,7 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log("STORED", stored);
       critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
       updateEXP(0, expToLevel);
-      updatePlayerHealthBar(getFrogHealth());
+      updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
       // Start the timer animation
 
       app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
@@ -1635,58 +1648,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
   let interval = 0; // Initial interval value
-  let delayBetweenEnemies = 12000; // Delay between each enemy spawn (12 seconds)
+  const baseDelayBetweenEnemies = 12000; // Base delay between each enemy spawn (12 seconds)
   let enemySpawnTimeout; // Variable to store the enemy spawn timeout ID
   let roundStarted = false; // Flag to track if a round has started
-
+  
   function startNewRound() {
     if (roundStarted) {
       return; // Only allow one round to be active at a time
     }
-
+  
     roundStarted = true; // Set the flag to indicate that a round has started
     clearTimeout(enemySpawnTimeout); // Clear the enemy spawn timeout
-
-    // currentRound++; // Increment the current round value
-    interval = delayBetweenEnemies; // Set the interval to delay the initial spawn
-
-    // Adjust delayBetweenEnemies based on current round
-    if (currentRound > 1) {
-      const reductionFactor = 0.95; // The factor by which the delay will be reduced
-      const reductionAmount = delayBetweenEnemies * (1 - Math.pow(reductionFactor, currentRound - 1));
-      delayBetweenEnemies = Math.max(delayBetweenEnemies - reductionAmount, delayBetweenEnemies / 2);
-    }
-
+  
+    interval = baseDelayBetweenEnemies; // Set the initial interval based on the base delay
+  
     spawnEnemies();
   }
-
+  
   function spawnEnemies() {
     if (!getisDead() && !getisPaused()) {
       const randomIndex = Math.floor(Math.random() * enemyTypes.length);
       const selectedEnemy = enemyTypes[randomIndex];
-
+  
       spawnEnemy(
         critter,
         selectedEnemy.attackTextures,
         selectedEnemy.walkTextures,
         selectedEnemy.name
       );
-
+  
+      // Adjust interval based on current round
+      const intervalReduction = 100 * currentRound; // Fixed reduction amount for each round
+      interval -= intervalReduction;
+  
+      if (interval < 1000) {
+        interval = 1000; // Set a minimum interval of 1000 milliseconds (1 second)
+      }
+  
       enemySpawnTimeout = setTimeout(() => {
         spawnEnemies(); // Spawn the next enemy
       }, interval);
-
-      interval += delayBetweenEnemies;
     }
   }
-
-
-
+  
   function endRound() {
     clearTimeout(enemySpawnTimeout); // Clear the enemy spawn timeout
     roundStarted = false; // Reset the roundStarted flag
     // Other round-ending logic...
   }
+  
 
 
 
@@ -1829,10 +1839,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (enemy.isAlive && (enemy.position.x - critter.position.x > 100) || getisDead()) {
           if (enemy.position.x > 250) {
             if (enemy.textures !== critterWalkTextures) {
+              if(getEnemiesInRange() ==0){
               enemy.textures = critterWalkTextures;
               enemy.loop = true;
 
-              enemy.play();
+              enemy.play();}
             }
             enemy.position.x += enemy.vx;
           }
@@ -1870,7 +1881,7 @@ document.addEventListener('DOMContentLoaded', function () {
             setEnemiesInRange(getEnemiesInRange() + 1);
             return;
           }
-          if (!getisDead() && !isAttacking && enemy.isAlive && enemy.visible) {
+          if (!getisDead() && !isAttacking && enemy.isAlive ) {
             if (!isCombat) {
               enemyPortrait = document.getElementById('enemy-portrait');
               updateEnemyGrayscale(100);
@@ -3013,8 +3024,6 @@ document.addEventListener('DOMContentLoaded', function () {
     gameData = {
       expToLevel: expToLevel,
       currentRound: currentRound,
-      roundOver: roundOver,
-      playerHealth: playerHealth,
       coffee: coffee,
       frogSize: frogSize,
       speed: speed,
@@ -3042,15 +3051,9 @@ document.addEventListener('DOMContentLoaded', function () {
       currentSnailHealth: currentSnailHealth,
       currentBeeHealth: currentBeeHealth,
       currentBirdHealth: currentBirdHealth,
-      isCharAttacking: isCharAttacking,
-      repicked: repicked,
-      isDead: isDead,
-      isPaused: isPaused,
-      isWiped: isWiped,
-      isAttackingChar: isAttackingChar,
       isGameStarted: isGameStarted,
-      stored: stored,
       characterStats: characterStats,
+      repicked: repicked,
       frogEXP: frogEXP,
       snailEXP: snailEXP,
       beeEXP: beeEXP,
@@ -3069,8 +3072,10 @@ document.addEventListener('DOMContentLoaded', function () {
   function loadGame() {
     const savedData = localStorage.getItem('gameSave');
     if (savedData) {
+      
       const gameData = JSON.parse(savedData);
-      console.log("LOADING");
+      currentRound = gameData.currentRound;
+
       // Load the saved values into your variables
       setCurrentFrogHealth(gameData.currentFrogHealth);
       setCurrentSnailHealth(gameData.currentSnailHealth);
@@ -3084,10 +3089,11 @@ document.addEventListener('DOMContentLoaded', function () {
       setEXPtoLevel("character-snail", gameData.snailEXPToLevel);
       setEXPtoLevel("character-bee", gameData.beeEXPToLevel);
       setEXPtoLevel("character-bird", gameData.birdEXPToLevel);
+   
+    
+    
       expToLevel = gameData.expToLevel;
-      currentRound = gameData.currentRound;
-      roundOver = gameData.roundOver;
-      playerHealth = gameData.playerHealth;
+
       coffee = gameData.coffee;
       frogSize = gameData.frogSize;
       speed = gameData.speed;
@@ -3111,15 +3117,45 @@ document.addEventListener('DOMContentLoaded', function () {
       frogDamage = gameData.frogDamage;
       frogHealth = gameData.frogHealth;
       frogLevel = gameData.frogLevel;
-      isCharAttacking = gameData.isCharAttacking;
-      repicked = gameData.repicked;
-      isDead = gameData.isDead;
-      isPaused = gameData.isPaused;
-      isWiped = gameData.isWiped;
-      isAttackingChar = gameData.isAttackingChar;
       isGameStarted = gameData.isGameStarted;
-      stored = gameData.stored;
       characterStats = gameData.characterStats;
+      repicked = gameData.repicked;
+      characterLevelElement = document.getElementById("character-level");
+       updateLightning = document.getElementById("lightning-level");
+       updateHP = document.getElementById("heart-level");
+       updateDamage = document.getElementById("swords-level");
+      let level;
+
+          level = getSnailLevel();
+         
+          updateLightning.textContent = getSnailSpeed().toString();
+          updateHP.textContent = getSnailHealth().toString();
+          updateDamage.textContent = getSnailDamage().toString();
+
+          level = getBirdLevel();
+          console.log("DIRTY",level);
+          updateLightning.textContent = getBirdSpeed().toString();
+          updateHP.textContent = getBirdHealth().toString();
+          updateDamage.textContent = getBirdDamage().toString();
+
+          level = getFrogLevel();
+          updateLightning.textContent = getFrogSpeed().toString();
+          updateHP.textContent = getFrogHealth().toString();
+          updateDamage.textContent = getFrogDamage().toString();
+          characterLevelElement.textContent = 'Lvl. ' + level;
+
+          level = getBeeLevel();
+          updateLightning.textContent = getBeeSpeed().toString();
+          updateHP.textContent = getBeeHealth().toString();
+          updateDamage.textContent = getBeeDamage().toString();
+          updateEXPIndicatorText("character-bird", gameData.birdLevel);
+          updateEXPIndicatorText("character-snail", gameData.snailLevel);
+          updateEXPIndicatorText("character-frog", gameData.frogLevel);
+          updateEXPIndicatorText("character-bee", gameData.beeLevel);
+          //updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
+          console.log("LOADING",getPlayerCurrentHealth());
+          addCoffee(gameData.coffee-gameData.coffee);
+
 
 
     }
