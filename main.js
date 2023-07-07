@@ -1704,7 +1704,7 @@ function updateEXPIndicatorText(character, level) {
       enemy.loop = true;
       enemy.isAlive = true;
       enemy.isVisible;
-      enemy.currentHP = 100 + currentRound * 5;
+      enemy.currentHP = 80 + currentRound * 5;
       enemy.play();
       enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
       let isAttacking = false; // Flag to track if enemy is attacking
@@ -1746,7 +1746,7 @@ function updateEXPIndicatorText(character, level) {
           checkProjectileCollisions(critter, enemy);
 
 
-          if (enemy.isAlive && (enemy.position.x - critter.position.x > 150) || getisDead()) {
+          if (enemy.isAlive && (enemy.position.x - critter.position.x > 100) || getisDead()) {
             if (enemy.position.x > 250) {
               if(enemy.textures !== critterWalkTextures){
                 enemy.textures = critterWalkTextures;
