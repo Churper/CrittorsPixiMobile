@@ -1643,7 +1643,7 @@ function updateEXPIndicatorText(character, level) {
             }, interval);
         
             interval += delayBetweenEnemies;
-            currentRound++; // Increment the current round value
+            //currentRound++; // Increment the current round value
           }
         }, delayBetweenEnemies);
         
@@ -2456,7 +2456,7 @@ if(getCurrentCharacter !== 'character-bird'){
         //ox setPlayerEXP(getPlayerEXP() + 100);
         console.log("YEP",getCharEXP(getCurrentCharacter()));
         console.log("YEPX",getEXPtoLevel(getCurrentCharacter()));
-        updateEXP(getCharEXP(getCurrentCharacter()), getEXPtoLevel(getCurrentCharacter()), critter);
+        updateEXP( getCharEXP(getCurrentCharacter()) + enemy.exp, getEXPtoLevel(getCurrentCharacter()), critter);
 
         // Create the EXP drop text
 
