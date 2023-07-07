@@ -25,7 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 0;
+
+  if (speed ==0)
+  {
+    speed = 1;
+  }
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -1525,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', function () {
           critter.position.x -= 20;
           updateEXP(getCharEXP(getCurrentCharacter()), getEXPtoLevel(getCurrentCharacter), critter);
           document.getElementById('spawn-text').style.visibility = 'hidden';
-
+          updateVelocity();
           setCharSwap(false);
           return;
         }
@@ -1535,7 +1540,7 @@ document.addEventListener('DOMContentLoaded', function () {
           //  console.log("attacking char",isAttackingChar);
           if (!getisDead()) {
             //  console.log("not getisdead");
-            console.log("getenemiesinrange", getEnemiesInRange());
+            console.log("getenemiesinrange", getisPaused(),getisDead());
             if (!isCombat) {
               //   console.log("not iscombat");
               if (!isPointerDown) {
@@ -1677,14 +1682,6 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedEnemy.name
       );
   
-      // Adjust interval based on current round
-      const intervalReduction = 100 * currentRound; // Fixed reduction amount for each round
-      interval -= intervalReduction;
-  
-      if (interval < 1000) {
-        interval = 1000; // Set a minimum interval of 1000 milliseconds (1 second)
-      }
-  
       enemySpawnTimeout = setTimeout(() => {
         spawnEnemies(); // Spawn the next enemy
       }, interval);
@@ -1696,6 +1693,7 @@ document.addEventListener('DOMContentLoaded', function () {
     roundStarted = false; // Reset the roundStarted flag
     // Other round-ending logic...
   }
+  
   
 
 
@@ -3026,7 +3024,6 @@ document.addEventListener('DOMContentLoaded', function () {
       currentRound: currentRound,
       coffee: coffee,
       frogSize: frogSize,
-      speed: speed,
       speedChanged: speedChanged,
       selectLevel: selectLevel,
       frogTintColor: frogTintColor,
@@ -3096,7 +3093,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       coffee = gameData.coffee;
       frogSize = gameData.frogSize;
-      speed = gameData.speed;
       speedChanged = gameData.speedChanged;
       selectLevel = gameData.selectLevel;
       frogTintColor = gameData.frogTintColor;
@@ -3155,6 +3151,7 @@ document.addEventListener('DOMContentLoaded', function () {
           //updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
           console.log("LOADING",getPlayerCurrentHealth());
           addCoffee(gameData.coffee-gameData.coffee);
+          //updateVelocity();
 
 
 
