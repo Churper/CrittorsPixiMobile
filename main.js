@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     transparent: false,
     resolution: 1,
   });
-
+let gameData;
   document.body.appendChild(app.view);
   let critter;
   let enemyTypes = [];
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 5;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -843,7 +843,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setup() {
 
-
+      loadGame();
 
 
       // Add the timer animation to the stage
@@ -1256,6 +1256,8 @@ document.addEventListener('DOMContentLoaded', function () {
         castleHealth -= damage;
         if (castleHealth <= 0) {
           castleExplode();
+          setPlayerCurrentHealth(getPlayerCurrentHealth() + 25);
+          updatePlayerHealthBar(getPlayerCurrentHealth()/ getPlayerHealth() * 100);
 
         }
 
@@ -1275,6 +1277,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isAttacking = false;
         isCombat = false;
         exploded = true;
+        saveGame();
 
       }
 
@@ -3001,4 +3004,150 @@ let enemyPortrait;
     const color = (r << 16) | (g << 8) | b;
     return color;
   }
+
+
+
+// Save game data
+function saveGame() {
+  gameData = {
+    expToLevel: expToLevel,
+    currentRound: currentRound,
+    roundOver: roundOver,
+    playerHealth: playerHealth,
+    coffee: coffee,
+    frogSize: frogSize,
+    speed: speed,
+    speedChanged: speedChanged,
+    selectLevel: selectLevel,
+    frogTintColor: frogTintColor,
+    snailSpeed: snailSpeed,
+    snailDamage: snailDamage,
+    snailHealth: snailHealth,
+    snailLevel: snailLevel,
+    beeLevel: beeLevel,
+    birdLevel: birdLevel,
+    birdSpeed: birdSpeed,
+    birdDamage: birdDamage,
+    touchCount: touchCount,
+    birdHealth: birdHealth,
+    beeSpeed: beeSpeed,
+    beeDamage: beeDamage,
+    beeHealth: beeHealth,
+    frogSpeed: frogSpeed,
+    frogDamage: frogDamage,
+    frogHealth: frogHealth,
+    frogLevel: frogLevel,
+    currentFrogHealth: currentFrogHealth,
+    currentSnailHealth: currentSnailHealth,
+    currentBeeHealth: currentBeeHealth,
+    currentBirdHealth: currentBirdHealth,
+    charSwap: charSwap,
+    currentCharacter: currentCharacter,
+    isCharAttacking: isCharAttacking,
+    playerEXP: playerEXP,
+    repicked: repicked,
+    isDead: isDead,
+    isPaused: isPaused,
+    isWiped: isWiped,
+    isAttackingChar: isAttackingChar,
+    isGameStarted: isGameStarted,
+    cooldownActive: cooldownActive,
+    stored: stored,
+    isCharacterMenuOpen: isCharacterMenuOpen,
+    selectedCharacter: selectedCharacter,
+    characterStats: characterStats,
+    frogEXP: frogEXP,
+    snailEXP: snailEXP,
+    beeEXP: beeEXP,
+    birdEXP: birdEXP,
+    frogEXPToLevel: frogEXPToLevel,
+    snailEXPToLevel: snailEXPToLevel,
+    beeEXPToLevel: beeEXPToLevel,
+    birdEXPToLevel: birdEXPToLevel
+  };
+
+  const saveData = JSON.stringify(gameData);
+  localStorage.setItem('gameSave', saveData);
+}
+
+// Load game data
+function loadGame() {
+  const savedData = localStorage.getItem('gameSave');
+  if (savedData) {
+    const gameData = JSON.parse(savedData);
+console.log("LOADING");
+    // Load the saved values into your variables
+    expToLevel = gameData.expToLevel;
+    currentRound = gameData.currentRound;
+    roundOver = gameData.roundOver;
+    playerHealth = gameData.playerHealth;
+    coffee = gameData.coffee;
+    frogSize = gameData.frogSize;
+    speed = gameData.speed;
+    speedChanged = gameData.speedChanged;
+    selectLevel = gameData.selectLevel;
+    frogTintColor = gameData.frogTintColor;
+    snailSpeed = gameData.snailSpeed;
+    snailDamage = gameData.snailDamage;
+    snailHealth = gameData.snailHealth;
+    snailLevel = gameData.snailLevel;
+    beeLevel = gameData.beeLevel;
+    birdLevel = gameData.birdLevel;
+    birdSpeed = gameData.birdSpeed;
+    birdDamage = gameData.birdDamage;
+    touchCount = gameData.touchCount;
+    birdHealth = gameData.birdHealth;
+    beeSpeed = gameData.beeSpeed;
+    beeDamage = gameData.beeDamage;
+    beeHealth = gameData.beeHealth;
+    frogSpeed = gameData.frogSpeed;
+    frogDamage = gameData.frogDamage;
+    frogHealth = gameData.frogHealth;
+    frogLevel = gameData.frogLevel;
+    currentFrogHealth = gameData.currentFrogHealth;
+    currentSnailHealth = gameData.currentSnailHealth;
+    currentBeeHealth = gameData.currentBeeHealth;
+    currentBirdHealth = gameData.currentBirdHealth;
+    charSwap = gameData.charSwap;
+    currentCharacter = gameData.currentCharacter;
+    isCharAttacking = gameData.isCharAttacking;
+    playerEXP = gameData.playerEXP;
+    repicked = gameData.repicked;
+    isDead = gameData.isDead;
+
+
+    isPaused = gameData.isPaused;
+    isWiped = gameData.isWiped;
+    isAttackingChar = gameData.isAttackingChar;
+    isGameStarted = gameData.isGameStarted;
+    cooldownActive = gameData.cooldownActive;
+    stored = gameData.stored;
+    isCharacterMenuOpen = gameData.isCharacterMenuOpen;
+    selectedCharacter = gameData.selectedCharacter;
+    characterStats = gameData.characterStats;
+    frogEXP = gameData.frogEXP;
+    snailEXP = gameData.snailEXP;
+    beeEXP = gameData.beeEXP;
+    birdEXP = gameData.birdEXP;
+    frogEXPToLevel = gameData.frogEXPToLevel;
+    snailEXPToLevel = gameData.snailEXPToLevel;
+    beeEXPToLevel = gameData.beeEXPToLevel;
+    birdEXPToLevel = gameData.birdEXPToLevel;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
