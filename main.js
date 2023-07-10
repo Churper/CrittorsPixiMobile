@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let expToLevel = 100;
   let currentRound;
   let foreground;
-  
+  let critterWalkTextures;
   if (!currentRound)
   {currentRound = 1;}
   let roundOver = false;
@@ -444,10 +444,11 @@ return;
     
     if (value) {
       pauseMenuContainer = new PIXI.Container();
-  
+      pauseMenuContainer.myCustomID = 'pauseMenuX';
+
       const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
       backgroundSprite.width = app.screen.width + 100;
-      backgroundSprite.height = app.screen.height * 0.3;
+      backgroundSprite.height = app.screen.height * 0.4;
       backgroundSprite.tint = 0xFFFFFF; // White color
       backgroundSprite.alpha = 0.8; // Semi-transparent background
       pauseMenuContainer.addChild(backgroundSprite);
@@ -458,6 +459,8 @@ return;
       pauseMenuContainer.addChild(border);
   
       const pauseText = 'Game Paused';
+      const roundText = 'Round: ' + currentRound; // Add current round information
+
       const textStyle = new PIXI.TextStyle({
         fontFamily: 'Marker Felt',
         fontSize: 60, // Increased font size to 60
@@ -475,8 +478,12 @@ return;
   
       const text = new PIXI.Text(pauseText, textStyle);
       text.anchor.set(0.5);
-      text.position.set(backgroundSprite.width / 2, backgroundSprite.height / 4);
+      text.position.set(backgroundSprite.width / 2, backgroundSprite.height / 6);
       pauseMenuContainer.addChild(text);
+      const text1 = new PIXI.Text('\n' + roundText, textStyle);
+text1.anchor.set(0.5);
+text1.position.set(backgroundSprite.width / 2, backgroundSprite.height / 1.5);
+pauseMenuContainer.addChild(text1);
   
       // Volume Slider
       const volumeSlider = new PIXI.Container();
@@ -1459,26 +1466,33 @@ reviveDialogContainer.addChild(text2);
 
 
         const deleteButton = event.target;
-        // Check if the click event target is the delete button
+
+        // Log the event target and its text
+        console.log(`Event target: ${deleteButton}`);
+        console.log(`Event target text: ${deleteButton.text}`);
+    
         if (deleteButton && deleteButton.text === '🗑️') {
-          // Handle delete game save functionality here
-          // Close the game or perform other necessary actions
-
-          return; // Skip the unpause logic
+            console.log('Delete button clicked');
+            return;
         }
-        if ( deleteButton.text === '🔵') {
-          // Handle delete game save functionality here
-          // Close the game or perform other necessary actions
-console.log("REEE");
-          return; // Skip the unpause logic
+        if (deleteButton.text === '🔵') {
+            console.log('Blue button clicked');
+            return;
         }
-
-        if ((deleteButton && deleteButton.text === '🔊') ||  (deleteButton && deleteButton.text === '🔈')){
-          // Handle delete game save functionality here
-          // Close the game or perform other necessary actions
-
-          return; // Skip the unpause logic
+        if ((deleteButton && deleteButton.text === '🔊') || (deleteButton && deleteButton.text === '🔈')) {
+            console.log('Sound button clicked');
+            return;
         }
+        if (deleteButton === backgroundSprite || deleteButton === pauseMenuContainer) {
+            console.log('Background or Pause menu clicked');
+            return;
+        }
+        if (deleteButton === pauseMenuContainer || deleteButton.myCustomID === 'pauseMenuX') {
+          console.log('Background or Pause menu clicked');
+          return;
+        }
+      
+        
 
         if (isPointerDown = true) {
           isPointerDown = false;
@@ -2077,7 +2091,7 @@ function spawnEnemies() {
   enemySpawnTimeout = setTimeout(() => {
     isSpawning = false; // Set isSpawning to false when the timeout completes
     spawnEnemies(); // Spawn the next enemy
-  }, interval) - currentlevel * 100;
+  }, interval) - currentRound * 100;
 }
 
   
