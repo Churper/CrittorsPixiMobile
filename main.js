@@ -422,14 +422,13 @@ let backgroundSprite;
     isPaused = value;
 
     if ((value && pauseMenuContainer) || (!value && isUnpausing) ) {
-      console.log("TWIT");
-      return;
+        console.log("TWIT");
+        return;
     }
     
-    if(app.stage.children.includes(reviveDialogContainer))
-    {
-console.log("TWIT");
-return;
+    if(app.stage.children.includes(reviveDialogContainer)) {
+        console.log("TWIT");
+        return;
     }
 
     const spawnTextElement = document.getElementById('spawn-text');
@@ -437,147 +436,148 @@ return;
     const visibility = computedStyle.getPropertyValue('visibility');
     
     if (visibility === 'visible') {
-      return
+        return
     } else {
-      // The element is currently hidden
+        // The element is currently hidden
     }
     
     if (value) {
-      pauseMenuContainer = new PIXI.Container();
-      pauseMenuContainer.myCustomID = 'pauseMenuX';
+        pauseMenuContainer = new PIXI.Container();
+        pauseMenuContainer.myCustomID = 'pauseMenuX';
 
-      const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-      backgroundSprite.width = app.screen.width + 100;
-      backgroundSprite.height = app.screen.height * 0.4;
-      backgroundSprite.tint = 0xFFFFFF; // White color
-      backgroundSprite.alpha = 0.8; // Semi-transparent background
-      pauseMenuContainer.addChild(backgroundSprite);
-  
-      const border = new PIXI.Graphics();
-      border.lineStyle(4, 0x8B4513); // Brown outline color
-      border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
-      pauseMenuContainer.addChild(border);
-  
-      const pauseText = 'Game Paused';
-      const roundText = 'Round: ' + currentRound; // Add current round information
+        const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        backgroundSprite.width = app.screen.width + 100;
+        backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
+        backgroundSprite.tint = 0xFFFFFF; // White color
+        backgroundSprite.alpha = 0.8; // Semi-transparent background
+        pauseMenuContainer.addChild(backgroundSprite);
 
-      const textStyle = new PIXI.TextStyle({
-        fontFamily: 'Marker Felt',
-        fontSize: 60, // Increased font size to 60
-        fill: '#FFFFFF', // White color for text fill
-        stroke: '#000000',
-        strokeThickness: 6,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowBlur: 4,
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 2,
-        wordWrap: true,
-        wordWrapWidth: backgroundSprite.width - 40,
-      });
-  
-      const text = new PIXI.Text(pauseText, textStyle);
-      text.anchor.set(0.5);
-      text.position.set(backgroundSprite.width / 2, backgroundSprite.height / 6);
-      pauseMenuContainer.addChild(text);
-      const text1 = new PIXI.Text('\n' + roundText, textStyle);
-text1.anchor.set(0.5);
-text1.position.set(backgroundSprite.width / 2, backgroundSprite.height / 1.5);
-pauseMenuContainer.addChild(text1);
-  
-      // Volume Slider
-      const volumeSlider = new PIXI.Container();
-      volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
-      pauseMenuContainer.addChild(volumeSlider);
-  
-      const sliderBackground = new PIXI.Graphics();
-      sliderBackground.beginFill(0x000000); // Black color for the rectangle background
-      sliderBackground.drawRect(-100, -10, 200, 20); // Set the same bounds as the sliding ball
-      sliderBackground.endFill();
-      volumeSlider.addChild(sliderBackground);
-  
-      const sliderBall = new PIXI.Text('🔵', { fontSize: 20 });
-      sliderBall.anchor.set(0.5);
-      sliderBall.position.set(0, 0);
-  
-      let isDragging = false;
-      let offsetX = 0;
-  
-      sliderBall.interactive = true;
-      sliderBall.buttonMode = true;
-  
-      sliderBall.on('pointerdown', (event) => {
-        isDragging = true;
-        offsetX = event.data.global.x - sliderBall.x;
-      });
-  
-      sliderBall.on('pointermove', (event) => {
-        if (isDragging) {
-          let newX = event.data.global.x - offsetX;
-          newX = Math.max(-100, Math.min(100, newX));
-          sliderBall.x = newX;
-          // Update volume based on slider position
-          // Add your volume control logic here
-        }
-      });
-  
-      sliderBall.on('pointerup', () => {
-        isDragging = false;
-      });
-  
-      sliderBall.on('pointerupoutside', () => {
-        isDragging = false;
-      });
-  
-      // Volume Button
-      const volumeButton = new PIXI.Text('🔊', { fontSize: 40 });
-      volumeButton.anchor.set(0.5);
-      volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
-      pauseMenuContainer.addChild(volumeButton);
-  
-      // Garbage Button
-      const garbageButton = new PIXI.Text('🗑️', { fontSize: 40 });
-      garbageButton.anchor.set(0.5);
-      garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
-      pauseMenuContainer.addChild(garbageButton);
-  
-      volumeButton.interactive = true;
-      volumeButton.buttonMode = true;
-      let isMuted = false;
-  
-      volumeButton.on('click', () => {
-        isMuted = !isMuted;
-        volumeButton.text = isMuted ? '🔈' : '🔊';
-        // Add your volume control logic here
-      });
-  
-      garbageButton.interactive = true;
-      garbageButton.buttonMode = true;
-      garbageButton.on('click', () => {
-        // Handle delete game save functionality here
-        // Close the game or perform other necessary actions
-        console.log("DELETED");
-        localStorage.removeItem('gameSave');
-      });
-  
-      let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
-      let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
-      pauseMenuContainer.position.set(pauseX, pauseY);
-  
-      app.stage.addChild(pauseMenuContainer);
-      volumeSlider.addChild(sliderBall);
-  
+        const border = new PIXI.Graphics();
+        border.lineStyle(4, 0x8B4513); // Brown outline color
+        border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
+        pauseMenuContainer.addChild(border);
+
+        const pauseText = 'Game Paused';
+        const roundText = 'Round: ' + currentRound; // Add current round information
+
+        const textStyle = new PIXI.TextStyle({
+            fontFamily: 'Marker Felt',
+            fontSize: 60, // Increased font size to 60
+            fill: '#FFFFFF', // White color for text fill
+            stroke: '#000000',
+            strokeThickness: 6,
+            dropShadow: true,
+            dropShadowColor: '#000000',
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 2,
+            wordWrap: true,
+            wordWrapWidth: backgroundSprite.width - 40,
+        });
+
+        const text = new PIXI.Text(pauseText, textStyle);
+        text.anchor.set(0.5);
+        text.position.set(backgroundSprite.width / 2, backgroundSprite.height / 6);
+        pauseMenuContainer.addChild(text);
+        const text1 = new PIXI.Text('\n' + roundText, textStyle);
+        text1.anchor.set(0.5);
+        text1.position.set(backgroundSprite.width / 2, backgroundSprite.height / 1.5);
+        pauseMenuContainer.addChild(text1);
+
+        // Volume Slider
+        const volumeSlider = new PIXI.Container();
+        volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
+        pauseMenuContainer.addChild(volumeSlider);
+
+        const sliderBackground = new PIXI.Graphics();
+        sliderBackground.beginFill(0x000000); // Black color for the rectangle background
+        sliderBackground.drawRect(-100, -10, 200, 20); // Set the same bounds as the sliding ball
+        sliderBackground.endFill();
+        volumeSlider.addChild(sliderBackground);
+
+        const sliderBall = new PIXI.Text('🔵', { fontSize: 20 });
+        sliderBall.anchor.set(0.5);
+        sliderBall.position.set(0, 0);
+
+        let isDragging = false;
+        let offsetX = 0;
+
+        sliderBall.interactive = true;
+        sliderBall.buttonMode = true;
+
+        sliderBall.on('pointerdown', (event) => {
+            isDragging = true;
+            offsetX = event.data.global.x - sliderBall.x;
+        });
+
+        sliderBall.on('pointermove', (event) => {
+            if (isDragging) {
+                let newX = event.data.global.x - offsetX;
+                newX = Math.max(-100, Math.min(100, newX));
+                sliderBall.x = newX;
+                // Update volume based on slider position
+                // Add your volume control logic here
+            }
+        });
+
+        sliderBall.on('pointerup', () => {
+            isDragging = false;
+        });
+
+        sliderBall.on('pointerupoutside', () => {
+            isDragging = false;
+        });
+
+        // Volume Button
+        const volumeButton = new PIXI.Text('🔊', { fontSize: 40 });
+        volumeButton.anchor.set(0.5);
+        volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
+        pauseMenuContainer.addChild(volumeButton);
+
+        // Garbage Button
+        const garbageButton = new PIXI.Text('🗑️', { fontSize: 40 });
+        garbageButton.anchor.set(0.5);
+        garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
+        pauseMenuContainer.addChild(garbageButton);
+
+        volumeButton.interactive = true;
+        volumeButton.buttonMode = true;
+        let isMuted = false;
+
+        volumeButton.on('click', () => {
+            isMuted = !isMuted;
+            volumeButton.text = isMuted ? '🔈' : '🔊';
+            // Add your volume control logic here
+        });
+
+        garbageButton.interactive = true;
+        garbageButton.buttonMode = true;
+        garbageButton.on('click', () => {
+            // Handle delete game save functionality here
+            // Close the game or perform other necessary actions
+            console.log("DELETED");
+            localStorage.removeItem('gameSave');
+        });
+
+        let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
+        let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
+        pauseMenuContainer.position.set(pauseX, pauseY);
+
+        app.stage.addChild(pauseMenuContainer);
+        volumeSlider.addChild(sliderBall);
+
     } else {
-      if (pauseMenuContainer) {
-        app.stage.removeChild(pauseMenuContainer);
-        pauseMenuContainer = null;
-      }
-  
-      isUnpausing = false;
-      isPaused = false; // Resume the game
-      spawnEnemies();
+        if (pauseMenuContainer) {
+            app.stage.removeChild(pauseMenuContainer);
+            pauseMenuContainer = null;
+        }
+
+        isUnpausing = false;
+        isPaused = false; // Resume the game
+        spawnEnemies();
     }
-  }
+}
+
   
   
 
