@@ -1673,8 +1673,15 @@ reviveDialogContainer.addChild(text2);
         castleHealth -= damage;
         if (castleHealth <= 0) {
           castleExplode();
-          setPlayerCurrentHealth(getPlayerHealth());
-          updatePlayerHealthBar(getPlayerHealth());
+          let newHP = getPlayerCurrentHealth() + 25;
+          if(newHP < getPlayerHealth()){
+          setPlayerCurrentHealth(newHP);
+          updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
+          }
+          else{
+            setPlayerCurrentHealth(getPlayerHealth());  
+          updatePlayerHealthBar(getPlayerHealth()/getPlayerHealth()*100);
+          }
           setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 25);
           updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()), critter);
 
@@ -1686,7 +1693,9 @@ reviveDialogContainer.addChild(text2);
       function castleExplode() {
 
 
+        playDeathAnimation(enemy, critter);
 
+        
         currentRound++;
         roundOver = true;
         setEnemiesInRange(0);
