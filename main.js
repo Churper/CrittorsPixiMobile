@@ -614,7 +614,7 @@ function createGarbageButton(backgroundSprite) {
   garbageButton.on('pointerdown', () => {
       // Handle delete game save functionality here
       // Close the game or perform other necessary actions
-      console.log("DELETED");
+      alert("DELETED");
       localStorage.removeItem('gameSave');
   });
 
