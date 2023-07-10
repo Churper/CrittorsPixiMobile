@@ -44,7 +44,7 @@ body {
 #pause-text {
   visibility: hidden;
   position: fixed;
-  top: 40%;
+  top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: "Marker Felt", cursive;
