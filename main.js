@@ -38,20 +38,20 @@ let choose = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
   let snailSpeed = 1;
-  let snailDamage = 20;
+  let snailDamage = 18;
   let snailHealth = 100;
   let snailLevel = 1;
   let beeLevel = 1;
   let birdLevel = 1;
   let birdSpeed = 1;
-  let birdDamage = 15;
+  let birdDamage = 8;
   let touchCount = 0;
   let birdHealth = 100;
   let beeSpeed = 1;
-  let beeDamage = 25;
+  let beeDamage = 18;
   let beeHealth = 100;
   let frogSpeed = 1;
-  let frogDamage = 20;
+  let frogDamage = 15;
   let frogHealth = 100;
   let frogLevel = 1;
   let currentFrogHealth = 100;
@@ -3236,9 +3236,9 @@ function spawnEnemies() {
         console.log('Attack upgrade');
         var divElement = document.getElementById("swords-level");
         stats.attack++;
-        stats.attack += 5; // Update the attack stat for the current character
+        stats.attack += 3; // Update the attack stat for the current character
         setCharacterDamage(currentCharacter, stats.attack);
-        setSnailDamage(getSnailDamage() + 5);
+       // setSnailDamage(getSnailDamage() + 5);
         // Update the display with the new attack level
         divElement.textContent = stats.attack.toString();
         setSelectLevel(getSelectLevel() - 1);
