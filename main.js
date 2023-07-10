@@ -1340,7 +1340,7 @@ reviveDialogContainer.addChild(text2);
       const frogWalkTextures1 = createAnimationTextures('frog_walk', 10, 351);
       const frogAttackTextures1 = createAnimationTextures('frog_attack', 12, 351);
       const critterAttackTextures = createAnimationTextures('critter_attack', 13, 266);
-      const critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
+     critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
       const snailWalkTextures = createAnimationTextures2('snail_walk', 20, 562, 3560, 2248);
       const snailAttackTextures = createAnimationTextures2('snail_attack', 20, 562, 2848, 3372);
       const pufferWalkTextures = createAnimationTextures2('puffer_walk', 15, 413, 3705, 1239);
