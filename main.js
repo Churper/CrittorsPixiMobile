@@ -1553,32 +1553,44 @@ reviveDialogContainer.addChild(text2);
                   attackSound.play();
                   if (getCurrentCharacter() === "character-bird") {
                     const birdProjectile = new PIXI.Sprite(
-                      PIXI.Loader.shared.resources["bird_egg"].texture
+                        PIXI.Loader.shared.resources["bird_egg"].texture
                     );
                     birdProjectile.position.set(
-                      critter.position.x,
-                      critter.position.y
+                        critter.position.x,
+                        critter.position.y
                     );
                     birdProjectile.name = "birdProjectile";
                     birdProjectile.scale.set(0.3);
                     app.stage.addChild(birdProjectile);
-
-                    const projectileSpeed = 3;
-
+                
+                    const projectileSpeed = 6;
+                    const maxDistance = 450; // You can change this to the maximum distance you want the egg to travel
+                    const startingX = birdProjectile.x;
+                    const gravity = 0.1; // This controls the strength of the "gravity"
+                    let verticalSpeed = -3; // This is the initial vertical speed. A negative value means the projectile will move up at first.
+                
                     function updateProjectile() {
-                      birdProjectile.x += projectileSpeed;
-
-                      if (birdProjectile.x > castle.position.x) {
-                        //app.ticker.remove(updateProjectile);
-                      }
-
-                      if (!app.stage.children.includes(birdProjectile)) {
-                        //app.ticker.remove(updateProjectile);
-                      }
+                        birdProjectile.x += projectileSpeed;
+                
+                        // Apply the "gravity" to the vertical speed
+                        verticalSpeed += gravity;
+                        // Apply the vertical speed to the projectile's position
+                        birdProjectile.y += verticalSpeed;
+                
+                        if (Math.abs(birdProjectile.x - startingX) > maxDistance) {
+                            // If the projectile has travelled more than the maximum distance, remove it
+                            app.stage.removeChild(birdProjectile);
+                            app.ticker.remove(updateProjectile);
+                        }
+                
+                        // If the birdProjectile has been removed for any other reason, stop the update
+                        if (!app.stage.children.includes(birdProjectile)) {
+                            app.ticker.remove(updateProjectile);
+                        }
                     }
-
+                
                     app.ticker.add(updateProjectile);
-                  }
+                }
 
                   if (critter.position.x > castle.position.x - castle.width / 1.1) {
                     console.log("takingDamage");
