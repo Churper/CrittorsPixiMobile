@@ -724,6 +724,9 @@ pauseMenuContainer.addChild(text1);
         console.log('Invalid character', characterType);
         return;
     }
+    if (!app.stage.children.includes(critter)) {
+      app.stage.addChild(critter);
+  }
   
     document.getElementById('spawn-text').style.visibility = 'hidden';
     choose = false;
@@ -3562,6 +3565,7 @@ function spawnEnemies() {
           updateHP.textContent = getFrogHealth().toString();
           updateDamage.textContent = getFrogDamage().toString();
           characterLevelElement.textContent = 'Lvl. ' + level;
+          isCharacterMenuOpen = false; // Flag to track if the character menu is open
 
           level = getBeeLevel();
           updateLightning.textContent = getBeeSpeed().toString();
@@ -3575,6 +3579,9 @@ function spawnEnemies() {
           console.log("LOADING",getPlayerCurrentHealth());
           addCoffee(gameData.coffee-gameData.coffee);
           //updateVelocity();
+          setSelectLevel(0);
+          roundover=false;
+          cooldownActive=false;
 
 
 
