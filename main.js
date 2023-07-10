@@ -1672,6 +1672,7 @@ reviveDialogContainer.addChild(text2);
       function castleTakeDamage(damage) {
         castleHealth -= damage;
         if (castleHealth <= 0) {
+          
           castleExplode();
           let newHP = getPlayerCurrentHealth() + 25;
           if(newHP < getPlayerHealth()){
@@ -1693,7 +1694,7 @@ reviveDialogContainer.addChild(text2);
       function castleExplode() {
 
 
-        playDeathAnimation(enemy, critter);
+    
 
         
         currentRound++;
