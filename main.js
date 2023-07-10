@@ -454,7 +454,6 @@ function createPauseMenuContainer() {
 
     // Volume Slider
     const volumeSlider = createVolumeSlider(backgroundSprite);
-    pauseMenuContainer.addChild(volumeSlider);
 
     // Volume Button
     const volumeButton = createVolumeButton(backgroundSprite);
@@ -462,13 +461,15 @@ function createPauseMenuContainer() {
 
     // Garbage Button
     const garbageButton = createGarbageButton(backgroundSprite);
-    pauseMenuContainer.addChild(garbageButton);
 
     let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
     let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
     pauseMenuContainer.position.set(pauseX, pauseY);
+    pauseMenuContainer.addChild(volumeSlider);
 
     app.stage.addChild(pauseMenuContainer);
+    pauseMenuContainer.addChild(garbageButton);
+
     volumeSlider.addChild(createSliderBall());
 
     return pauseMenuContainer;
@@ -586,7 +587,7 @@ function createSliderBall() {
 }
 
 function createVolumeButton(backgroundSprite) {
-  const volumeButton = new PIXI.Text('🔊', { fontSize: 40 });
+  const volumeButton = new PIXI.Text('🔊', { fontSize: 80 });
   volumeButton.anchor.set(0.5);
   volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
 
@@ -604,7 +605,7 @@ function createVolumeButton(backgroundSprite) {
 }
 
 function createGarbageButton(backgroundSprite) {
-  const garbageButton = new PIXI.Text('🗑️', { fontSize: 40 });
+  const garbageButton = new PIXI.Text('🗑️', { fontSize: 80 });
   garbageButton.anchor.set(0.5);
   garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
 
