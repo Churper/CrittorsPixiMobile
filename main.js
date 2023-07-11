@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     resolution: 1,
   });
   let pauseMenuContainer;
+  let flashing = false;
   let reviveDialogContainer;
   let gameData;
   document.body.appendChild(app.view);
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 10;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -158,30 +159,31 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Reset Timer
-function resetTimer() {
-  // Get the elements
-  const snail = document.getElementById('snail');
-  const progressBar = document.getElementById('progress-filled');
-
-  // Clone the elements
-  const snailClone = snail.cloneNode(true);
-  const progressBarClone = progressBar.cloneNode(true);
-
-  // Replace the elements with their clones
-  snail.parentNode.replaceChild(snailClone, snail);
-  progressBar.parentNode.replaceChild(progressBarClone, progressBar);
-
-  // Set the CSS variable
-  document.documentElement.style.setProperty('--progress-percentage', 'calc(4%)');
+  function resetTimer() {
+    // Get the elements
+    const snail = document.getElementById('snail');
+    const progressBar = document.getElementById('progress-filled');
   
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
+    // Clone the elements
+    const snailClone = snail.cloneNode(true);
+    const progressBarClone = progressBar.cloneNode(true);
+  
+    // Replace the elements with their clones
+    snail.parentNode.replaceChild(snailClone, snail);
+    progressBar.parentNode.replaceChild(progressBarClone, progressBar);
+  
+    // Set the CSS variable
+    document.documentElement.style.setProperty('--progress-percentage', 'calc(100% - 16px)'); // Adjust the value based on your progress bar width
+  
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  
+    pauseStart = null;
+    pausedDuration = 0;
   }
-
-  pauseStart = null;
-  pausedDuration = 0;
-}
+  
 
 
   // Check if timer has finished
@@ -190,6 +192,36 @@ function resetTimer() {
     percentage = percentage.slice(5, -2);
     return percentage >= 88; // full width
   }
+
+  var portrait = document.getElementById('character-portrait');
+  var isFlashing = false;
+  var intervalId;
+  
+
+
+  // Function to start the flashing effect
+  function startFlashing() {
+    if (!intervalId) {
+      intervalId = setInterval(function() {
+        portrait.classList.toggle("flash"); // Toggle the "flash" class
+      }, 1500); // Change the class every 1.5 seconds
+    }
+  }
+  
+  // Function to stop the flashing effect
+  function stopFlashing() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+      portrait.classList.remove("flash"); // Remove the "flash" class when flashing stops
+    }
+  }
+  
+  
+  
+  
+  
+
 
   // Revised setCurrentFrogHealth function
   function setCurrentFrogHealth(health) {
@@ -552,13 +584,15 @@ function resetTimer() {
 
   function setisPaused(value) {
     isPaused = value;
-
+    if (value) {
+      pauseTimer();
+    }
     if (shouldReturnEarly(value)) {
       return;
     }
 
     if (value) {
-      pauseTimer();
+    
       pauseMenuContainer = createPauseMenuContainer();
     } else {
       if (pauseMenuContainer) {
@@ -569,7 +603,10 @@ function resetTimer() {
       isUnpausing = false;
       isPaused = false; // Resume the game
       spawnEnemies();
+      if(getisDead() == false)
+      {
       startTimer();
+      }
     }
   }
 
@@ -756,6 +793,7 @@ function resetTimer() {
         setisPaused(!getisPaused());
         console.log("PAUSED");
       }
+      
     }
   });
 
@@ -802,9 +840,7 @@ function resetTimer() {
       return;
     }
 
-    if (roundOver) {
-      return;
-    }
+
 
     // Toggle the visibility of the character info boxes
     const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
@@ -859,6 +895,7 @@ function resetTimer() {
       createReviveDialog(characterType);
       return;
     }
+    stopFlashing();
 
 
     // Swap character portraits
@@ -1210,8 +1247,8 @@ function resetTimer() {
   function startGame() {
 
     window.addEventListener('blur', () => {
-
-      setisPaused(true);
+if(getPlayerCurrentHealth() > 0){
+      setisPaused(true);}
     });
 
     const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
@@ -1863,6 +1900,9 @@ function resetTimer() {
       initialClouds = clouds.position.x;
       let once = 0;
       app.ticker.add(() => {
+        if(isTimerFinished()){
+           pauseTimer();
+        }
         //console.log("HERXOROR:", getEnemiesInRange());
         if (reviveDialogContainer) {
           update();
@@ -1953,7 +1993,8 @@ function resetTimer() {
               }
               exploded = false;
               saveGame();
-
+              resetTimer();
+              startTimer();
               spawnEnemies();
 
             }
@@ -2034,6 +2075,7 @@ function resetTimer() {
             roundOver = false;
             // setisPaused(false);
             setIsDead(false);
+            startTimer();
 
           }
           return;
@@ -2091,6 +2133,7 @@ function resetTimer() {
           document.getElementById('spawn-text').style.visibility = 'hidden';
           updateVelocity();
           setCharSwap(false);
+          stopFlashing();
           app.stage.addChild(critter);
 
           return;
@@ -2209,7 +2252,8 @@ function resetTimer() {
 
 
       spawnEnemies();
-
+      resetTimer();
+      startTimer();
 
 
     }
@@ -2372,12 +2416,12 @@ function resetTimer() {
 
 
         if (getisDead()) {
-
+         
           resett = true;
 
         }
 
-
+        
         checkProjectileCollisions(critter, enemy);
         if (getisDead()) {
           enemy.textures = critterWalkTextures;
@@ -2573,6 +2617,8 @@ function resetTimer() {
   }
 
   function playGhostFly() {
+   
+      pauseTimer();
     setEnemiesInRange(0);
     setIsDead(true);
     frogGhostPlayer.alpha = 0.5;
@@ -2659,7 +2705,6 @@ function resetTimer() {
       if (roundOver) {
         enemy.isAttacking = false;
         setEnemiesInRange(0);
-
         enemy.removeInRange = false;
         console.log("notstuck");
         return;
@@ -2703,6 +2748,8 @@ function resetTimer() {
                   }
                 }
                 playGhostFly();
+                startFlashing();
+
                 for (let i = 0; i < getEnemies().length; i++) {
                   let enemy = getEnemies()[i];
                   // console.log(i);
@@ -3068,6 +3115,8 @@ function resetTimer() {
   }
 
   function playSpawnAnimation(critter, critterSpawn) {
+    stopFlashing();
+
     critterSpawn.position.set(critter.position.x, critter.position.y);
     app.stage.addChild(critterSpawn);
 
@@ -3477,16 +3526,18 @@ function resetTimer() {
   function handleVisibilityChange() {
     if (document.hidden || document.webkitHidden) {
       // Document is hidden, perform actions here (e.g., pause the game)
+      if(getPlayerCurrentHealth() > 0) {
       setisPaused(true);
+      }
     } else {
+      if(getPlayerCurrentHealth() > 0) {
       // Document is visible again, perform actions here (e.g., resume the game)
-      setisPaused(false);
+      setisPaused(false);}
     }
   }
 
   function playRoundText(round) {
-    resetTimer();
-    startTimer();
+  
     // Get the element with id "Round-text"
     var roundText = document.getElementById("round-text");
 
@@ -3638,7 +3689,7 @@ function resetTimer() {
     if (savedData) {
 
       const gameData = JSON.parse(savedData);
-      currentRound = gameData.currentRound;
+      currentRound = 8;
 
       // Load the saved values into your variables
       setCurrentFrogHealth(gameData.currentFrogHealth);

@@ -142,24 +142,7 @@ body {
 }
 
 
-#character-portrait {
 
-  width: 46px;
-  height: 46px;
-  background-image: url("https://i.imgur.com/yzzwAH6.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  position: absolute;
-  left: -44px;
-  top: 0px;
-  user-select: none;
-  filter: sepia(0%);
-  -webkit-touch-callout: none;
-  /* Disable callout on iOS devices */
-  outline: none;
-
-}
 
 .cooldown-overlay {
   display: none;
@@ -266,10 +249,7 @@ body {
 
 
 
-
-
 #character-portrait {
-
   width: 46px;
   height: 46px;
   background-image: url("https://i.imgur.com/yzzwAH6.png");
@@ -281,9 +261,54 @@ body {
   top: 0px;
   user-select: none;
   filter: sepia(0%);
+  -webkit-touch-callout: none;
+  /* Disable callout on iOS devices */
+  outline: none;
   cursor: pointer;
 
 }
+@keyframes pulsate {
+  0% {
+    border-color: transparent;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 1);
+    filter: none; /* Remove the greyscale effect */
+  }
+  30% {
+    border-color: rgba(255, 0, 0, 1);
+    box-shadow: 0 0 20px 10px rgba(255, 0, 0, 1);
+    filter: none; /* Remove the greyscale effect */
+  }
+  50% {
+    border-color: transparent;
+    box-shadow: 0 0 0 0 rgb(0, 127, 255);
+    filter: none; /* Remove the greyscale effect */
+  }
+  80% {
+    border-color: rgb(0, 127, 255);
+    box-shadow: 0 0 20px 10px rgb(0, 127, 255);
+    filter: none; /* Remove the greyscale effect */
+  }
+  100% {
+    border-color: transparent;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 1);
+    filter: none; /* Remove the greyscale effect */
+  }
+}
+
+.flash {
+  animation: pulsate 1s infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 #character-portrait.active {
   filter: sepia(100%);
@@ -603,6 +628,8 @@ body {
   background-size: cover;
   animation: snail-movement 100s linear infinite, snail-animation 1s steps(2) infinite;
   z-index: 4;
+  animation-play-state: paused;  /* initially paused */
+
 }
 
 @keyframes snail-movement {
@@ -638,6 +665,8 @@ body {
   top: 40px;
   left: 80px;
   width: 0;
+  animation-play-state: paused;  /* initially paused */
+
   height: 20px; /* Adjust the height of the progress bar as needed */
   background-color: rgba(0, 0, 0, 0.411); /* Use the desired opaque color */
   z-index: 3;
