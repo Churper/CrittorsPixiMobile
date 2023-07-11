@@ -24,16 +24,14 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentRound;
   let foreground;
   let critterWalkTextures;
-  if (!currentRound)
-  {currentRound = 1;}
+  if (!currentRound) { currentRound = 1; }
   let roundOver = false;
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
   let speed = 1;
-let choose = false;
-  if (speed ==0)
-  {
+  let choose = false;
+  if (speed == 0) {
     speed = 1;
   }
   let backgroundSprite;
@@ -122,34 +120,34 @@ let choose = false;
 
   let pauseStart = null;
   let pausedDuration = 0;
-  
+
   // Start Timer
   function startTimer() {
     document.getElementById('snail').style.animationPlayState = 'running';
-document.getElementById('progress-filled').style.animationPlayState = 'running';
+    document.getElementById('progress-filled').style.animationPlayState = 'running';
     if (timer) {
       clearInterval(timer);
     }
-  
+
     let start = pauseStart ? pauseStart - pausedDuration : Date.now();
     timer = setInterval(() => {
       let diff = Date.now() - start;
       let percentage = Math.min(diff / 1000, 100); // 100 seconds
       document.documentElement.style.setProperty('--progress-percentage', `calc(${percentage}% * 84 / 100 + 4%)`);
-  
+
       if (percentage === 100) {
         clearInterval(timer);
         timer = null;
       }
     }, 10);
-  
+
     pauseStart = null;
   }
-  
+
   // Pause Timer
   function pauseTimer() {
     document.getElementById('snail').style.animationPlayState = 'paused';
-document.getElementById('progress-filled').style.animationPlayState = 'paused';
+    document.getElementById('progress-filled').style.animationPlayState = 'paused';
 
     if (timer) {
       clearInterval(timer);
@@ -158,35 +156,49 @@ document.getElementById('progress-filled').style.animationPlayState = 'paused';
       pausedDuration = pauseStart - Date.now() + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage').slice(5, -2)) / 84 * 1000 * 1000;
     }
   }
-  
+
   // Reset Timer
-  function resetTimer() {
-    document.documentElement.style.setProperty('--progress-percentage', 'calc(4%)');
-    
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
+function resetTimer() {
+  // Get the elements
+  const snail = document.getElementById('snail');
+  const progressBar = document.getElementById('progress-filled');
+
+  // Clone the elements
+  const snailClone = snail.cloneNode(true);
+  const progressBarClone = progressBar.cloneNode(true);
+
+  // Replace the elements with their clones
+  snail.parentNode.replaceChild(snailClone, snail);
+  progressBar.parentNode.replaceChild(progressBarClone, progressBar);
+
+  // Set the CSS variable
+  document.documentElement.style.setProperty('--progress-percentage', 'calc(4%)');
   
-    pauseStart = null;
-    pausedDuration = 0;
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
   }
-  
+
+  pauseStart = null;
+  pausedDuration = 0;
+}
+
+
   // Check if timer has finished
   function isTimerFinished() {
     let percentage = getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage');
     percentage = percentage.slice(5, -2);
     return percentage >= 88; // full width
   }
-  
+
   // Revised setCurrentFrogHealth function
   function setCurrentFrogHealth(health) {
     currentFrogHealth = health;
     const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
     const frogBox = document.querySelector('.upgrade-box.character-frog');
-  
+
     frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentFrogHealth / getFrogHealth())) * 100}%`);
-  
+
     if (currentFrogHealth <= 0) {
       frogBox.style.backgroundColor = 'grey';
       frogBox.style.pointerEvents = ''; // Reset pointer events
@@ -195,13 +207,13 @@ document.getElementById('progress-filled').style.animationPlayState = 'paused';
       frogBox.style.pointerEvents = ''; // Reset pointer events
     }
   }
-  
 
 
-  
-  
-  
-  
+
+
+
+
+
 
   function setCurrentBeeHealth(health) {
     currentBeeHealth = health;
@@ -419,7 +431,7 @@ document.getElementById('progress-filled').style.animationPlayState = 'paused';
         return;
     }
   }
- 
+
 
 
   function getPlayerHealth() {
@@ -484,7 +496,7 @@ document.getElementById('progress-filled').style.animationPlayState = 'paused';
 
   function shouldReturnEarly(value) {
     if ((value && pauseMenuContainer) || (!value && isUnpausing) || app.stage.children.includes(reviveDialogContainer)) {
-        return true;
+      return true;
     }
 
     const spawnTextElement = document.getElementById('spawn-text');
@@ -492,10 +504,10 @@ document.getElementById('progress-filled').style.animationPlayState = 'paused';
     const visibility = computedStyle.getPropertyValue('visibility');
 
     return visibility === 'visible';
-}
+  }
 
 
-function createPauseMenuContainer() {
+  function createPauseMenuContainer() {
     const pauseMenuContainer = new PIXI.Container();
     pauseMenuContainer.myCustomID = 'pauseMenuX';
 
@@ -536,50 +548,50 @@ function createPauseMenuContainer() {
     volumeSlider.addChild(createSliderBall());
 
     return pauseMenuContainer;
-}
+  }
 
-function setisPaused(value) {
+  function setisPaused(value) {
     isPaused = value;
 
     if (shouldReturnEarly(value)) {
-        return;
+      return;
     }
 
     if (value) {
       pauseTimer();
-        pauseMenuContainer = createPauseMenuContainer();
+      pauseMenuContainer = createPauseMenuContainer();
     } else {
-        if (pauseMenuContainer) {
-            app.stage.removeChild(pauseMenuContainer);
-            pauseMenuContainer = null;
-        }
+      if (pauseMenuContainer) {
+        app.stage.removeChild(pauseMenuContainer);
+        pauseMenuContainer = null;
+      }
 
-        isUnpausing = false;
-        isPaused = false; // Resume the game
-        spawnEnemies();
-        startTimer();
+      isUnpausing = false;
+      isPaused = false; // Resume the game
+      spawnEnemies();
+      startTimer();
     }
-}
+  }
 
-// The remaining helper functions (createBackgroundSprite, createBorder, getTextStyle, createText, createVolumeSlider, createVolumeButton, createGarbageButton, createSliderBall) will need to be implemented.
-function createBackgroundSprite() {
-  const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-  backgroundSprite.width = app.screen.width + 100;
-  backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
-  backgroundSprite.tint = 0xFFFFFF; // White color
-  backgroundSprite.alpha = 0.8; // Semi-transparent background
-  return backgroundSprite;
-}
+  // The remaining helper functions (createBackgroundSprite, createBorder, getTextStyle, createText, createVolumeSlider, createVolumeButton, createGarbageButton, createSliderBall) will need to be implemented.
+  function createBackgroundSprite() {
+    const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+    backgroundSprite.width = app.screen.width + 100;
+    backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
+    backgroundSprite.tint = 0xFFFFFF; // White color
+    backgroundSprite.alpha = 0.8; // Semi-transparent background
+    return backgroundSprite;
+  }
 
-function createBorder(backgroundSprite) {
-  const border = new PIXI.Graphics();
-  border.lineStyle(4, 0x8B4513); // Brown outline color
-  border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
-  return border;
-}
+  function createBorder(backgroundSprite) {
+    const border = new PIXI.Graphics();
+    border.lineStyle(4, 0x8B4513); // Brown outline color
+    border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
+    return border;
+  }
 
-function getTextStyle(backgroundSpriteWidth) {
-  return new PIXI.TextStyle({
+  function getTextStyle(backgroundSpriteWidth) {
+    return new PIXI.TextStyle({
       fontFamily: 'Marker Felt',
       fontSize: 60, // Increased font size to 60
       fill: '#FFFFFF', // White color for text fill
@@ -592,105 +604,105 @@ function getTextStyle(backgroundSpriteWidth) {
       dropShadowDistance: 2,
       wordWrap: true,
       wordWrapWidth: backgroundSpriteWidth - 40,
-  });
-}
+    });
+  }
 
-function createText(textContent, textStyle, backgroundSprite, isRoundText = false) {
-  const text = new PIXI.Text(textContent, textStyle);
-  text.anchor.set(0.5);
-  const yPos = isRoundText ? backgroundSprite.height / 1.5 : backgroundSprite.height / 6;
-  text.position.set(backgroundSprite.width / 2, yPos);
-  return text;
-}
+  function createText(textContent, textStyle, backgroundSprite, isRoundText = false) {
+    const text = new PIXI.Text(textContent, textStyle);
+    text.anchor.set(0.5);
+    const yPos = isRoundText ? backgroundSprite.height / 1.5 : backgroundSprite.height / 6;
+    text.position.set(backgroundSprite.width / 2, yPos);
+    return text;
+  }
 
-function createVolumeSlider(backgroundSprite) {
-  const volumeSlider = new PIXI.Container();
-  volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
-  const sliderBackground = new PIXI.Graphics();
-  sliderBackground.beginFill(0x000000); // Black color for the rectangle background
-  sliderBackground.drawRect(-100, -10, 200, 20); // Set the same bounds as the sliding ball
-  sliderBackground.endFill();
-  volumeSlider.addChild(sliderBackground);
-  return volumeSlider;
-}
+  function createVolumeSlider(backgroundSprite) {
+    const volumeSlider = new PIXI.Container();
+    volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
+    const sliderBackground = new PIXI.Graphics();
+    sliderBackground.beginFill(0x000000); // Black color for the rectangle background
+    sliderBackground.drawRect(-100, -10, 200, 20); // Set the same bounds as the sliding ball
+    sliderBackground.endFill();
+    volumeSlider.addChild(sliderBackground);
+    return volumeSlider;
+  }
 
-function createSliderBall() {
-  const sliderBall = new PIXI.Text('🔵', { fontSize: 20 });
-  sliderBall.anchor.set(0.5);
-  sliderBall.position.set(0, 0);
+  function createSliderBall() {
+    const sliderBall = new PIXI.Text('🔵', { fontSize: 20 });
+    sliderBall.anchor.set(0.5);
+    sliderBall.position.set(0, 0);
 
-  let isDragging = false;
-  let offsetX = 0;
+    let isDragging = false;
+    let offsetX = 0;
 
-  sliderBall.interactive = true;
-  sliderBall.buttonMode = true;
+    sliderBall.interactive = true;
+    sliderBall.buttonMode = true;
 
-  sliderBall.on('pointerdown', (event) => {
+    sliderBall.on('pointerdown', (event) => {
       isDragging = true;
       offsetX = event.data.global.x - sliderBall.x;
-  });
+    });
 
-  sliderBall.on('pointermove', (event) => {
+    sliderBall.on('pointermove', (event) => {
       if (isDragging) {
-          let newX = event.data.global.x - offsetX;
-          newX = Math.max(-100, Math.min(100, newX));
-          sliderBall.x = newX;
-          // Update volume based on slider position
-          // Add your volume control logic here
+        let newX = event.data.global.x - offsetX;
+        newX = Math.max(-100, Math.min(100, newX));
+        sliderBall.x = newX;
+        // Update volume based on slider position
+        // Add your volume control logic here
       }
-  });
+    });
 
-  sliderBall.on('pointerup', () => {
+    sliderBall.on('pointerup', () => {
       isDragging = false;
-  });
+    });
 
-  sliderBall.on('pointerupoutside', () => {
+    sliderBall.on('pointerupoutside', () => {
       isDragging = false;
-  });
+    });
 
-  return sliderBall;
-}
+    return sliderBall;
+  }
 
-function createVolumeButton(backgroundSprite) {
-  const volumeButton = new PIXI.Text('🔊', { fontSize: 80 });
-  volumeButton.anchor.set(0.5);
-  volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
+  function createVolumeButton(backgroundSprite) {
+    const volumeButton = new PIXI.Text('🔊', { fontSize: 80 });
+    volumeButton.anchor.set(0.5);
+    volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
 
-  volumeButton.interactive = true;
-  volumeButton.buttonMode = true;
-  let isMuted = false;
+    volumeButton.interactive = true;
+    volumeButton.buttonMode = true;
+    let isMuted = false;
 
-  volumeButton.on('click', () => {
+    volumeButton.on('click', () => {
       isMuted = !isMuted;
       volumeButton.text = isMuted ? '🔈' : '🔊';
       // Add your volume control logic here
-  });
+    });
 
-  return volumeButton;
-}
+    return volumeButton;
+  }
 
-function createGarbageButton(backgroundSprite) {
-  const garbageButton = new PIXI.Text('🗑️', { fontSize: 80 });
-  garbageButton.anchor.set(0.5);
-  garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
+  function createGarbageButton(backgroundSprite) {
+    const garbageButton = new PIXI.Text('🗑️', { fontSize: 80 });
+    garbageButton.anchor.set(0.5);
+    garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
 
-  garbageButton.interactive = true;
-  garbageButton.buttonMode = true;
+    garbageButton.interactive = true;
+    garbageButton.buttonMode = true;
 
-  garbageButton.on('pointerdown', () => {
+    garbageButton.on('pointerdown', () => {
       // Handle delete game save functionality here
       // Close the game or perform other necessary actions
       alert("DELETED");
       localStorage.removeItem('gameSave');
-  });
+    });
 
-  return garbageButton;
-}
+    return garbageButton;
+  }
 
-  
-  
 
-  
+
+
+
   function update() {
     // Calculate the center of the screen regardless of the stage position
     if (reviveDialogContainer) {
@@ -698,16 +710,16 @@ function createGarbageButton(backgroundSprite) {
       let dialogY = -app.stage.position.y + (app.screen.height / 2) - (reviveDialogContainer.height / 2);
       reviveDialogContainer.position.set(dialogX, dialogY);
     }
-  
+
     if (pauseMenuContainer) {
       let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
       let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
       pauseMenuContainer.position.set(pauseX, pauseY);
     }
   }
-  
-  
-  
+
+
+
 
   function getIsWiped() {
     return isWiped;
@@ -739,10 +751,10 @@ function createGarbageButton(backgroundSprite) {
   });
 
   pauseButton.addEventListener("click", function () {
-    if( getisDead()== false){
-      if(getPlayerCurrentHealth() > 0){
-    setisPaused(!getisPaused());
-    console.log("PAUSED");
+    if (getisDead() == false) {
+      if (getPlayerCurrentHealth() > 0) {
+        setisPaused(!getisPaused());
+        console.log("PAUSED");
       }
     }
   });
@@ -819,7 +831,7 @@ function createGarbageButton(backgroundSprite) {
 
   function handleCharacterClick(characterType) {
     let characterHealth;
-  
+
     switch (characterType) {
       case 'character-snail':
         characterHealth = currentSnailHealth;
@@ -838,9 +850,9 @@ function createGarbageButton(backgroundSprite) {
         return;
     }
 
-      app.stage.addChild(critter);
-  
-  
+    app.stage.addChild(critter);
+
+
     document.getElementById('spawn-text').style.visibility = 'hidden';
     choose = false;
     if (characterHealth <= 0) {
@@ -903,9 +915,9 @@ function createGarbageButton(backgroundSprite) {
           console.log('Invalid character', characterType);
           return;
       }
-    if(getPlayerCurrentHealth() >= 0){
-      setisPaused(false);
-    }
+      if (getPlayerCurrentHealth() >= 0) {
+        setisPaused(false);
+      }
       startCooldown();
       updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
       characterLevelElement.textContent = 'Lvl. ' + level;
@@ -932,56 +944,56 @@ function createGarbageButton(backgroundSprite) {
   function createReviveDialog(characterType) {
     if (reviveDialogContainer && app.stage.children.includes(reviveDialogContainer)) {
       return;
-  }
-  
-   reviveDialogContainer = new PIXI.Container();
-  
+    }
+
+    reviveDialogContainer = new PIXI.Container();
+
     // Create a semi-transparent black background sprite for the dialog box
-   backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+    backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     backgroundSprite.width = app.screen.width * 0.6; // 50% wider
     backgroundSprite.height = 400; // 100% taller
     backgroundSprite.tint = 0x000000; // Black color
     backgroundSprite.alpha = 0.5; // Make it semi-transparent
     reviveDialogContainer.addChild(backgroundSprite);
-  
+
     // Create a brown border around the background
     const border = new PIXI.Graphics();
     border.lineStyle(4, 0x8B4513); // Brown color with 4px thickness
     border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
     reviveDialogContainer.addChild(border);
-  
+
     // Create the text for the dialog box
     // Create the text for the dialog box
- // Create the text for the dialog box
-const characterName = getCharacterName(characterType);
-const reviveText1 = 'Would you like to spend';
-const reviveText2 = `50     to revive ${characterName}?`;
+    // Create the text for the dialog box
+    const characterName = getCharacterName(characterType);
+    const reviveText1 = 'Would you like to spend';
+    const reviveText2 = `50     to revive ${characterName}?`;
 
-const textStyle = new PIXI.TextStyle({
-  fontFamily: 'Marker Felt',
-  fontSize: 48,
-  fill: '#FFFF00', // Yellow color
-  stroke: '#000000', // Black outline color
-  strokeThickness: 6, // Outline thickness
-  dropShadow: true,
-  dropShadowColor: '#000000', // Shadow color
-  dropShadowBlur: 4, // Shadow blur
-  dropShadowAngle: Math.PI / 6, // Shadow angle
-  dropShadowDistance: 2, // Shadow distance
-  wordWrap: true, // Enable word wrapping
-  wordWrapWidth: backgroundSprite.width - 40, // Set the word wrap width
-});
+    const textStyle = new PIXI.TextStyle({
+      fontFamily: 'Marker Felt',
+      fontSize: 48,
+      fill: '#FFFF00', // Yellow color
+      stroke: '#000000', // Black outline color
+      strokeThickness: 6, // Outline thickness
+      dropShadow: true,
+      dropShadowColor: '#000000', // Shadow color
+      dropShadowBlur: 4, // Shadow blur
+      dropShadowAngle: Math.PI / 6, // Shadow angle
+      dropShadowDistance: 2, // Shadow distance
+      wordWrap: true, // Enable word wrapping
+      wordWrapWidth: backgroundSprite.width - 40, // Set the word wrap width
+    });
 
-const text = new PIXI.Text(reviveText1, textStyle);
-text.anchor.set(0.5);
-text.position.set(backgroundSprite.width / 2, backgroundSprite.height * 0.1);
-reviveDialogContainer.addChild(text);
+    const text = new PIXI.Text(reviveText1, textStyle);
+    text.anchor.set(0.5);
+    text.position.set(backgroundSprite.width / 2, backgroundSprite.height * 0.1);
+    reviveDialogContainer.addChild(text);
 
-// Second part of the text
-const text2 = new PIXI.Text(reviveText2, textStyle);
-text2.anchor.set(0.5);
-text2.position.set(backgroundSprite.width / 2, text.position.y + text.height + 40); // Position below the first text with vertical spacing
-reviveDialogContainer.addChild(text2);
+    // Second part of the text
+    const text2 = new PIXI.Text(reviveText2, textStyle);
+    text2.anchor.set(0.5);
+    text2.position.set(backgroundSprite.width / 2, text.position.y + text.height + 40); // Position below the first text with vertical spacing
+    reviveDialogContainer.addChild(text2);
 
 
     // Add coffee bean image
@@ -1007,13 +1019,13 @@ reviveDialogContainer.addChild(text2);
       dropShadowBlur: 4, // Shadow blur
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
-     
+
     });
     const yesButton = new PIXI.Text('☑', yesButtonStyle);
     yesButton.anchor.set(0.5);
     yesButton.position.set(backgroundSprite.width * 0.35, backgroundSprite.height * 0.75);
     reviveDialogContainer.addChild(yesButton);
-  
+
     // Create the 'No' button with emoji and red tint
     const noButtonStyle = new PIXI.TextStyle({
       fontSize: 180, // Bigger size
@@ -1036,7 +1048,7 @@ reviveDialogContainer.addChild(text2);
     let dialogX = (app.screen.width / 2) - (backgroundSprite.width / 2);
     let dialogY = (app.screen.height / 2) - (backgroundSprite.height / 2);
     reviveDialogContainer.position.set(dialogX, dialogY);
-  
+
     // Add the dialog box to the PIXI stage
     app.stage.addChild(reviveDialogContainer);
     setisPaused(true);
@@ -1051,17 +1063,17 @@ reviveDialogContainer.addChild(text2);
         // Perform the revive logic
         if (characterType === 'character-snail') {
           setCurrentSnailHealth(getSnailHealth());
-     
-         
+
+
         } else if (characterType === 'character-bird') {
           setCurrentBirdHealth(getBirdHealth());
-      
+
         } else if (characterType === 'character-frog') {
           setCurrentFrogHealth(getFrogHealth());
-     
+
         } else if (characterType === 'character-bee') {
           setCurrentBeeHealth(getBeeHealth());
-         
+
         }
         addCoffee(-50);
         // Remove the dialog box from the PIXI stage
@@ -1077,36 +1089,34 @@ reviveDialogContainer.addChild(text2);
       }
     });
 
-   noButton.on('pointerdown', () => {
+    noButton.on('pointerdown', () => {
       // Check if the player has enough coins to revive the character
-        // Remove the dialog box from the PIXI stage
-        app.stage.removeChild(reviveDialogContainer);
-        setisPaused(false);
-     
+      // Remove the dialog box from the PIXI stage
+      app.stage.removeChild(reviveDialogContainer);
+      setisPaused(false);
+
     });
   }
 
   function update() {
     // Calculate the center of the screen regardless of the stage position
-    if(reviveDialogContainer)
-    {
-    let dialogX = -app.stage.position.x + (app.screen.width / 2) - (reviveDialogContainer.width / 2);
-    let dialogY = -app.stage.position.y + (app.screen.height / 2) - (reviveDialogContainer.height / 2);
-    reviveDialogContainer.position.set(dialogX, dialogY);
+    if (reviveDialogContainer) {
+      let dialogX = -app.stage.position.x + (app.screen.width / 2) - (reviveDialogContainer.width / 2);
+      let dialogY = -app.stage.position.y + (app.screen.height / 2) - (reviveDialogContainer.height / 2);
+      reviveDialogContainer.position.set(dialogX, dialogY);
 
     }
-    if(pauseMenuContainer)
-    {
-    let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
-    let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
-    pauseMenuContainer.position.set(pauseX, pauseY);
+    if (pauseMenuContainer) {
+      let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
+      let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
+      pauseMenuContainer.position.set(pauseX, pauseY);
 
     }
 
-}
+  }
 
   function getCharacterName(characterType) {
-    switch (characterType) { 
+    switch (characterType) {
       case 'character-snail':
         return 'Snail';
       case 'character-bird':
@@ -1218,7 +1228,7 @@ reviveDialogContainer.addChild(text2);
     sound.src = "./theme.ogg";
     sound.volume = .02;
     sound.play();
-  
+
 
     // Game elements and logic 
     let castleMaxHealth = 100;
@@ -1244,47 +1254,47 @@ reviveDialogContainer.addChild(text2);
     snailHPIndicator.style.setProperty('--current-health-snail', currentSnailHealth);
     snailHPIndicator.style.setProperty('--max-health-snail', getSnailHealth());
     snailHPIndicator.style.setProperty('--hp-indicator-height', snailHeightPercentage + '%');
-  
+
     birdHPIndicator.style.setProperty('--current-health-bird', currentBirdHealth);
     birdHPIndicator.style.setProperty('--max-health-bird', getBirdHealth());
     birdHPIndicator.style.setProperty('--hp-indicator-height', birdHeightPercentage + '%');
-  
+
     beeHPIndicator.style.setProperty('--current-health-bee', currentBeeHealth);
     beeHPIndicator.style.setProperty('--max-health-bee', getBeeHealth());
     beeHPIndicator.style.setProperty('--hp-indicator-height', beeHeightPercentage + '%');
-  
+
     frogHPIndicator.style.setProperty('--current-health-frog', currentFrogHealth);
     frogHPIndicator.style.setProperty('--max-health-frog', getFrogHealth());
     frogHPIndicator.style.setProperty('--hp-indicator-height', frogHeightPercentage + '%');
-  
+
     var snailEXPIndicator = document.querySelector('.upgrade-box.character-snail .exp-indicator');
     var birdEXPIndicator = document.querySelector('.upgrade-box.character-bird .exp-indicator');
     var beeEXPIndicator = document.querySelector('.upgrade-box.character-bee .exp-indicator');
     var frogEXPIndicator = document.querySelector('.upgrade-box.character-frog .exp-indicator');
-  
+
     // Calculate the height percentage for each character
     var snailEXPHeightPercentage = (1 - getCharEXP('character-snail') / getEXPtoLevel('character-snail')) * 100;
     var birdEXPHeightPercentage = (1 - getCharEXP('character-bird') / getEXPtoLevel('character-bird')) * 100;
     var beeEXPHeightPercentage = (1 - getCharEXP('character-bee') / getEXPtoLevel('character-bee')) * 100;
     var frogEXPHeightPercentage = (1 - getCharEXP('character-frog') / getEXPtoLevel('character-frog')) * 100;
-  
+
     // Update the custom properties and height for each character
     snailEXPIndicator.style.setProperty('--current-exp-snail', getCharEXP('character-snail'));
     snailEXPIndicator.style.setProperty('--max-exp-snail', getEXPtoLevel('character-snail'));
     snailEXPIndicator.style.setProperty('--exp-indicator-height', snailEXPHeightPercentage + '%');
-  
+
     birdEXPIndicator.style.setProperty('--current-exp-bird', getCharEXP('character-bird'));
     birdEXPIndicator.style.setProperty('--max-exp-bird', getEXPtoLevel('character-bird'));
     birdEXPIndicator.style.setProperty('--exp-indicator-height', birdEXPHeightPercentage + '%');
-  
+
     beeEXPIndicator.style.setProperty('--current-exp-bee', getCharEXP('character-bee'));
     beeEXPIndicator.style.setProperty('--max-exp-bee', getEXPtoLevel('character-bee'));
     beeEXPIndicator.style.setProperty('--exp-indicator-height', beeEXPHeightPercentage + '%');
-  
+
     frogEXPIndicator.style.setProperty('--current-exp-frog', getCharEXP('character-frog'));
     frogEXPIndicator.style.setProperty('--max-exp-frog', getEXPtoLevel('character-frog'));
     frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
-  
+
     PIXI.Loader.shared.add([
       { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
       { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
@@ -1350,7 +1360,7 @@ reviveDialogContainer.addChild(text2);
 
     function setup() {
 
-   
+
 
 
       // Add the timer animation to the stage
@@ -1379,7 +1389,7 @@ reviveDialogContainer.addChild(text2);
       frogGhostPlayer.anchor.set(0, 0);
       frogGhostPlayer.scale.set(0.28);
 
-     foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
+      foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
       foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
       foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1.3;
       foreground.anchor.set(0, 1);
@@ -1459,7 +1469,7 @@ reviveDialogContainer.addChild(text2);
       const frogWalkTextures1 = createAnimationTextures('frog_walk', 10, 351);
       const frogAttackTextures1 = createAnimationTextures('frog_attack', 12, 351);
       const critterAttackTextures = createAnimationTextures('critter_attack', 13, 266);
-     critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
+      critterWalkTextures = createAnimationTextures('critter_walk', 12, 266);
       const snailWalkTextures = createAnimationTextures2('snail_walk', 20, 562, 3560, 2248);
       const snailAttackTextures = createAnimationTextures2('snail_attack', 20, 562, 2848, 3372);
       const pufferWalkTextures = createAnimationTextures2('puffer_walk', 15, 413, 3705, 1239);
@@ -1589,29 +1599,29 @@ reviveDialogContainer.addChild(text2);
         // Log the event target and its text
         console.log(`Event target: ${deleteButton}`);
         console.log(`Event target text: ${deleteButton.text}`);
-    
+
         if (deleteButton && deleteButton.text === '🗑️') {
-            console.log('Delete button clicked');
-            return;
+          console.log('Delete button clicked');
+          return;
         }
         if (deleteButton.text === '🔵') {
-            console.log('Blue button clicked');
-            return;
+          console.log('Blue button clicked');
+          return;
         }
         if ((deleteButton && deleteButton.text === '🔊') || (deleteButton && deleteButton.text === '🔈')) {
-            console.log('Sound button clicked');
-            return;
+          console.log('Sound button clicked');
+          return;
         }
         if (deleteButton === backgroundSprite || deleteButton === pauseMenuContainer) {
-            console.log('Background or Pause menu clicked');
-            return;
+          console.log('Background or Pause menu clicked');
+          return;
         }
         if (deleteButton === pauseMenuContainer || deleteButton.myCustomID === 'pauseMenuX') {
           console.log('Background or Pause menu clicked');
           return;
         }
-      
-        
+
+
 
         if (isPointerDown = true) {
           isPointerDown = false;
@@ -1672,44 +1682,44 @@ reviveDialogContainer.addChild(text2);
                   attackSound.play();
                   if (getCurrentCharacter() === "character-bird") {
                     const birdProjectile = new PIXI.Sprite(
-                        PIXI.Loader.shared.resources["bird_egg"].texture
+                      PIXI.Loader.shared.resources["bird_egg"].texture
                     );
                     birdProjectile.position.set(
-                        critter.position.x,
-                        critter.position.y
+                      critter.position.x,
+                      critter.position.y
                     );
                     birdProjectile.name = "birdProjectile";
                     birdProjectile.scale.set(0.3);
                     app.stage.addChild(birdProjectile);
-                
+
                     const projectileSpeed = 6;
                     const maxDistance = 450; // You can change this to the maximum distance you want the egg to travel
                     const startingX = birdProjectile.x;
                     const gravity = 0.1; // This controls the strength of the "gravity"
                     let verticalSpeed = -3; // This is the initial vertical speed. A negative value means the projectile will move up at first.
-                
+
                     function updateProjectile() {
-                        birdProjectile.x += projectileSpeed;
-                
-                        // Apply the "gravity" to the vertical speed
-                        verticalSpeed += gravity;
-                        // Apply the vertical speed to the projectile's position
-                        birdProjectile.y += verticalSpeed;
-                
-                        if (Math.abs(birdProjectile.x - startingX) > maxDistance) {
-                            // If the projectile has travelled more than the maximum distance, remove it
-                            app.stage.removeChild(birdProjectile);
-                            app.ticker.remove(updateProjectile);
-                        }
-                
-                        // If the birdProjectile has been removed for any other reason, stop the update
-                        if (!app.stage.children.includes(birdProjectile)) {
-                            app.ticker.remove(updateProjectile);
-                        }
+                      birdProjectile.x += projectileSpeed;
+
+                      // Apply the "gravity" to the vertical speed
+                      verticalSpeed += gravity;
+                      // Apply the vertical speed to the projectile's position
+                      birdProjectile.y += verticalSpeed;
+
+                      if (Math.abs(birdProjectile.x - startingX) > maxDistance) {
+                        // If the projectile has travelled more than the maximum distance, remove it
+                        app.stage.removeChild(birdProjectile);
+                        app.ticker.remove(updateProjectile);
+                      }
+
+                      // If the birdProjectile has been removed for any other reason, stop the update
+                      if (!app.stage.children.includes(birdProjectile)) {
+                        app.ticker.remove(updateProjectile);
+                      }
                     }
-                
+
                     app.ticker.add(updateProjectile);
-                }
+                  }
 
                   if (critter.position.x > castle.position.x - castle.width / 1.1) {
                     console.log("takingDamage");
@@ -1803,16 +1813,16 @@ reviveDialogContainer.addChild(text2);
       function castleTakeDamage(damage) {
         castleHealth -= damage;
         if (castleHealth <= 0) {
-          
+
           castleExplode();
           let newHP = getPlayerCurrentHealth() + 25;
-          if(newHP < getPlayerHealth()){
-          setPlayerCurrentHealth(newHP);
-          updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
+          if (newHP < getPlayerHealth()) {
+            setPlayerCurrentHealth(newHP);
+            updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
           }
-          else{
-            setPlayerCurrentHealth(getPlayerHealth());  
-          updatePlayerHealthBar(getPlayerHealth()/getPlayerHealth()*100);
+          else {
+            setPlayerCurrentHealth(getPlayerHealth());
+            updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
           }
           setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 25);
           updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()), critter);
@@ -1825,9 +1835,9 @@ reviveDialogContainer.addChild(text2);
       function castleExplode() {
 
 
-    
 
-        
+
+
         currentRound++;
         roundOver = true;
         setEnemiesInRange(0);
@@ -1837,7 +1847,7 @@ reviveDialogContainer.addChild(text2);
         isAttacking = false;
         isCombat = false;
         exploded = true;
-       
+
 
       }
 
@@ -1856,10 +1866,10 @@ reviveDialogContainer.addChild(text2);
         //console.log("HERXOROR:", getEnemiesInRange());
         if (reviveDialogContainer) {
           update();
-      }
-      if (pauseMenuContainer) {
-        update();
-    }
+        }
+        if (pauseMenuContainer) {
+          update();
+        }
         if (getisPaused()) {
 
 
@@ -1943,13 +1953,13 @@ reviveDialogContainer.addChild(text2);
               }
               exploded = false;
               saveGame();
-            
+
               spawnEnemies();
-             
+
             }
 
             playRoundText(currentRound);
-            
+
 
             castle.tint = originalTint;
             setCharAttackAnimating(false);
@@ -2091,7 +2101,7 @@ reviveDialogContainer.addChild(text2);
           //  console.log("attacking char",isAttackingChar);
           if (!getisDead()) {
             //  console.log("not getisdead");
-            console.log("getenemiesinrange", getisPaused(),getisDead(),getEnemiesInRange());
+            console.log("getenemiesinrange", getisPaused(), getisDead(), getEnemiesInRange());
             if (!isCombat) {
               //   console.log("not iscombat");
               if (!isPointerDown) {
@@ -2100,12 +2110,12 @@ reviveDialogContainer.addChild(text2);
 
                   if (getCurrentCharacter() != "character-snail") {
                     critter.position.x += velocity.x;
-                
+
                   }
                   else {
                     if (critter.currentFrame > critter.totalFrames / 2) {
                       critter.position.x += velocity.x * 2;
-                 
+
                     }
                   }
                   if ((critter.textures != frogWalkTextures)) {
@@ -2198,8 +2208,8 @@ reviveDialogContainer.addChild(text2);
       ];
 
 
-     spawnEnemies();
-     
+      spawnEnemies();
+
 
 
     }
@@ -2209,34 +2219,34 @@ reviveDialogContainer.addChild(text2);
   let interval = 15000; // Initial interval value
   let enemySpawnTimeout; // Variable to store the enemy spawn timeout ID
   let isSpawning = false; // Flag to track if an enemy is currently being spawned
-  
 
-function spawnEnemies() {
-  if (isSpawning || getisDead() || getisPaused()) {
-    return; // If already spawning or game is paused or player is dead, exit the function
+
+  function spawnEnemies() {
+    if (isSpawning || getisDead() || getisPaused()) {
+      return; // If already spawning or game is paused or player is dead, exit the function
+    }
+
+    isSpawning = true; // Set isSpawning to true to indicate that a spawn ticker is running
+
+    const randomIndex = Math.floor(Math.random() * enemyTypes.length);
+    const selectedEnemy = enemyTypes[randomIndex];
+
+    spawnEnemy(
+      critter,
+      selectedEnemy.attackTextures,
+      selectedEnemy.walkTextures,
+      selectedEnemy.name
+    );
+
+    timeOfLastSpawn = Date.now(); // Update the time of last spawn
+
+    enemySpawnTimeout = setTimeout(() => {
+      isSpawning = false; // Set isSpawning to false when the timeout completes
+      spawnEnemies(); // Spawn the next enemy
+    }, interval) - currentRound * 100;
   }
 
-  isSpawning = true; // Set isSpawning to true to indicate that a spawn ticker is running
 
-  const randomIndex = Math.floor(Math.random() * enemyTypes.length);
-  const selectedEnemy = enemyTypes[randomIndex];
-
-  spawnEnemy(
-    critter,
-    selectedEnemy.attackTextures,
-    selectedEnemy.walkTextures,
-    selectedEnemy.name
-  );
-
-  timeOfLastSpawn = Date.now(); // Update the time of last spawn
-
-  enemySpawnTimeout = setTimeout(() => {
-    isSpawning = false; // Set isSpawning to false when the timeout completes
-    spawnEnemies(); // Spawn the next enemy
-  }, interval) - currentRound * 100;
-}
-
-  
 
 
 
@@ -2369,21 +2379,22 @@ function spawnEnemies() {
 
 
         checkProjectileCollisions(critter, enemy);
-if(getisDead()){
-enemy.textures = critterWalkTextures;
-enemy.loop = true;
-enemy.play();
-return;
-}
+        if (getisDead()) {
+          enemy.textures = critterWalkTextures;
+          enemy.loop = true;
+          enemy.play();
+          return;
+        }
 
-        if (enemy.isAlive && (enemy.position.x - critter.position.x > 100) ) {
+        if (enemy.isAlive && (enemy.position.x - critter.position.x > 100)) {
           if (enemy.position.x > 250) {
             if (enemy.textures !== critterWalkTextures) {
-              if(getEnemiesInRange() ==0){
-              enemy.textures = critterWalkTextures;
-              enemy.loop = true;
+              if (getEnemiesInRange() == 0) {
+                enemy.textures = critterWalkTextures;
+                enemy.loop = true;
 
-              enemy.play();}
+                enemy.play();
+              }
             }
             enemy.position.x += enemy.vx;
           }
@@ -2421,7 +2432,7 @@ return;
             setEnemiesInRange(getEnemiesInRange() + 1);
             return;
           }
-          if (!getisDead() && !isAttacking && enemy.isAlive ) {
+          if (!getisDead() && !isAttacking && enemy.isAlive) {
             if (!isCombat) {
               enemyPortrait = document.getElementById('enemy-portrait');
               updateEnemyGrayscale(100);
@@ -2605,25 +2616,25 @@ return;
 
         // Stop the frog's movement temporarily until character is selected
         clearInterval(moveInterval);
-if(leveling = false){
-        // Check if character is selected
-        if (selectedCharacter !== "") {
-          // Hide the character info boxes
-          const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
-          characterBoxes.forEach((box) => {
-            if (box.classList.contains(selectedCharacter)) {
-              box.style.visibility = 'hidden';
-            } else {
-              box.style.visibility = 'visible';
-            }
-          });
-          isCharacterMenuOpen = true;
-        
-      }
-      
-         
+        if (leveling = false) {
+          // Check if character is selected
+          if (selectedCharacter !== "") {
+            // Hide the character info boxes
+            const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
+            characterBoxes.forEach((box) => {
+              if (box.classList.contains(selectedCharacter)) {
+                box.style.visibility = 'hidden';
+              } else {
+                box.style.visibility = 'visible';
+              }
+            });
+            isCharacterMenuOpen = true;
 
-        } 
+          }
+
+
+
+        }
         app.stage.removeChild(frogGhostPlayer);
         roundOver = true;
 
@@ -2695,7 +2706,7 @@ if(leveling = false){
                 for (let i = 0; i < getEnemies().length; i++) {
                   let enemy = getEnemies()[i];
                   // console.log(i);
-                 enemy.textures = critterWalkTextures
+                  enemy.textures = critterWalkTextures
                   // Destroy the enemy object to free up memory
                 }
                 //enemy.play();
@@ -3363,7 +3374,7 @@ if(leveling = false){
         stats.attack++;
         stats.attack += 3; // Update the attack stat for the current character
         setCharacterDamage(currentCharacter, stats.attack);
-       // setSnailDamage(getSnailDamage() + 5);
+        // setSnailDamage(getSnailDamage() + 5);
         // Update the display with the new attack level
         divElement.textContent = stats.attack.toString();
         setSelectLevel(getSelectLevel() - 1);
@@ -3378,10 +3389,9 @@ if(leveling = false){
         console.log("YYcurrentCharacter", currentCharacter);
         console.log("YYN", getPlayerHealth() + 20);
         console.log("YYS", getPlayerCurrentHealth());
-        if(!getisDead()){
-          if(getPlayerCurrentHealth() >0)
-          {
-          setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
+        if (!getisDead()) {
+          if (getPlayerCurrentHealth() > 0) {
+            setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
           }
         }
         setCharacterHealth(currentCharacter, getPlayerHealth() + 20);
@@ -3626,7 +3636,7 @@ if(leveling = false){
   function loadGame() {
     const savedData = localStorage.getItem('gameSave');
     if (savedData) {
-      
+
       const gameData = JSON.parse(savedData);
       currentRound = gameData.currentRound;
 
@@ -3643,9 +3653,9 @@ if(leveling = false){
       setEXPtoLevel("character-snail", gameData.snailEXPToLevel);
       setEXPtoLevel("character-bee", gameData.beeEXPToLevel);
       setEXPtoLevel("character-bird", gameData.birdEXPToLevel);
-   
-    
-    
+
+
+
       expToLevel = gameData.expToLevel;
 
       coffee = gameData.coffee;
@@ -3674,45 +3684,45 @@ if(leveling = false){
       characterStats = gameData.characterStats;
       repicked = gameData.repicked;
       characterLevelElement = document.getElementById("character-level");
-       updateLightning = document.getElementById("lightning-level");
-       updateHP = document.getElementById("heart-level");
-       updateDamage = document.getElementById("swords-level");
+      updateLightning = document.getElementById("lightning-level");
+      updateHP = document.getElementById("heart-level");
+      updateDamage = document.getElementById("swords-level");
       let level;
 
-          level = getSnailLevel();
-         
-          updateLightning.textContent = getSnailSpeed().toString();
-          updateHP.textContent = getSnailHealth().toString();
-          updateDamage.textContent = getSnailDamage().toString();
+      level = getSnailLevel();
 
-          level = getBirdLevel();
-          console.log("DIRTY",level);
-          updateLightning.textContent = getBirdSpeed().toString();
-          updateHP.textContent = getBirdHealth().toString();
-          updateDamage.textContent = getBirdDamage().toString();
+      updateLightning.textContent = getSnailSpeed().toString();
+      updateHP.textContent = getSnailHealth().toString();
+      updateDamage.textContent = getSnailDamage().toString();
 
-          level = getFrogLevel();
-          updateLightning.textContent = getFrogSpeed().toString();
-          updateHP.textContent = getFrogHealth().toString();
-          updateDamage.textContent = getFrogDamage().toString();
-          characterLevelElement.textContent = 'Lvl. ' + level;
-          isCharacterMenuOpen = false; // Flag to track if the character menu is open
+      level = getBirdLevel();
+      console.log("DIRTY", level);
+      updateLightning.textContent = getBirdSpeed().toString();
+      updateHP.textContent = getBirdHealth().toString();
+      updateDamage.textContent = getBirdDamage().toString();
 
-          level = getBeeLevel();
-          updateLightning.textContent = getBeeSpeed().toString();
-          updateHP.textContent = getBeeHealth().toString();
-          updateDamage.textContent = getBeeDamage().toString();
-          updateEXPIndicatorText("character-bird", gameData.birdLevel);
-          updateEXPIndicatorText("character-snail", gameData.snailLevel);
-          updateEXPIndicatorText("character-frog", gameData.frogLevel);
-          updateEXPIndicatorText("character-bee", gameData.beeLevel);
-          //updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
-          console.log("LOADING",getPlayerCurrentHealth());
-          addCoffee(gameData.coffee-gameData.coffee);
-          //updateVelocity();
-          setSelectLevel(0);
-          roundover=false;
-          cooldownActive=false;
+      level = getFrogLevel();
+      updateLightning.textContent = getFrogSpeed().toString();
+      updateHP.textContent = getFrogHealth().toString();
+      updateDamage.textContent = getFrogDamage().toString();
+      characterLevelElement.textContent = 'Lvl. ' + level;
+      isCharacterMenuOpen = false; // Flag to track if the character menu is open
+
+      level = getBeeLevel();
+      updateLightning.textContent = getBeeSpeed().toString();
+      updateHP.textContent = getBeeHealth().toString();
+      updateDamage.textContent = getBeeDamage().toString();
+      updateEXPIndicatorText("character-bird", gameData.birdLevel);
+      updateEXPIndicatorText("character-snail", gameData.snailLevel);
+      updateEXPIndicatorText("character-frog", gameData.frogLevel);
+      updateEXPIndicatorText("character-bee", gameData.beeLevel);
+      //updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
+      console.log("LOADING", getPlayerCurrentHealth());
+      addCoffee(gameData.coffee - gameData.coffee);
+      //updateVelocity();
+      setSelectLevel(0);
+      roundover = false;
+      cooldownActive = false;
 
 
 
