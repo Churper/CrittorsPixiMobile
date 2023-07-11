@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+  let leveling = false;
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: Math.max(window.innerHeight),
@@ -1952,6 +1953,8 @@ reviveDialogContainer.addChild(text2);
             }
             roundOver = false;
             // setisPaused(false);
+            setIsDead(false);
+
           }
           return;
         }
@@ -2018,7 +2021,7 @@ reviveDialogContainer.addChild(text2);
           //  console.log("attacking char",isAttackingChar);
           if (!getisDead()) {
             //  console.log("not getisdead");
-            console.log("getenemiesinrange", getisPaused(),getisDead());
+            console.log("getenemiesinrange", getisPaused(),getisDead(),getEnemiesInRange());
             if (!isCombat) {
               //   console.log("not iscombat");
               if (!isPointerDown) {
@@ -2296,9 +2299,14 @@ function spawnEnemies() {
 
 
         checkProjectileCollisions(critter, enemy);
+if(getisDead()){
+enemy.textures = critterWalkTextures;
+enemy.loop = true;
+enemy.play();
+return;
+}
 
-
-        if (enemy.isAlive && (enemy.position.x - critter.position.x > 100) || getisDead()) {
+        if (enemy.isAlive && (enemy.position.x - critter.position.x > 100) ) {
           if (enemy.position.x > 250) {
             if (enemy.textures !== critterWalkTextures) {
               if(getEnemiesInRange() ==0){
@@ -2527,7 +2535,7 @@ function spawnEnemies() {
 
         // Stop the frog's movement temporarily until character is selected
         clearInterval(moveInterval);
-
+if(leveling = false){
         // Check if character is selected
         if (selectedCharacter !== "") {
           // Hide the character info boxes
@@ -2540,18 +2548,17 @@ function spawnEnemies() {
             }
           });
           isCharacterMenuOpen = true;
-          setIsDead(false);
-          app.stage.removeChild(frogGhostPlayer);
-          roundOver = true;
+        
+      }
+      
+         
 
-          // Continue with the game logic here
-          // ...
+        } 
+        app.stage.removeChild(frogGhostPlayer);
+        roundOver = true;
 
-        } else {
-          // Character not selected, wait for player to pick a character box
-          // Show any necessary UI or display a message to prompt the player
-          // Once the player selects a character, call startGame() again to resume the game
-        }
+        // Continue with the game logic here
+        // ...
       }
     }, 16); // (16ms = 60fps)
   }
@@ -3300,8 +3307,11 @@ function spawnEnemies() {
         console.log("YYcurrentCharacter", currentCharacter);
         console.log("YYN", getPlayerHealth() + 20);
         console.log("YYS", getPlayerCurrentHealth());
+        if(!getisDead()){
+          setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
+
+        }
         setCharacterHealth(currentCharacter, getPlayerHealth() + 20);
-        setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
         updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
 
         divElement.textContent = stats.health.toString();
@@ -3326,6 +3336,7 @@ function spawnEnemies() {
   }
 
   function levelUp(critter) {
+    leveling = true;
     const characterLevelElement = document.getElementById("character-level");
 
     // Function to update the character's level
@@ -3377,6 +3388,7 @@ function spawnEnemies() {
     animateUpgradeBoxes(critter);
     levelSound.volume = .2;
     levelSound.play();
+    leveling = false;
   }
 
   function handleVisibilityChange() {
