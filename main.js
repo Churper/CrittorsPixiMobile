@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   let leveling = false;
+  let timer = null;
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: Math.max(window.innerHeight),
@@ -118,22 +119,83 @@ let choose = false;
     // Add stats for other characters here
   };
 
-// Revised setCurrentFrogHealth function
-function setCurrentFrogHealth(health) {
-  currentFrogHealth = health;
-  const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
-  const frogBox = document.querySelector('.upgrade-box.character-frog');
 
-  frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentFrogHealth / getFrogHealth())) * 100}%`);
-
-  if (currentFrogHealth <= 0) {
-    frogBox.style.backgroundColor = 'grey';
-    frogBox.style.pointerEvents = ''; // Reset pointer events
-  } else {
-    frogBox.style.backgroundColor = ''; // Reset to default color
-    frogBox.style.pointerEvents = ''; // Reset pointer events
+  let pauseStart = null;
+  let pausedDuration = 0;
+  
+  // Start Timer
+  function startTimer() {
+    document.getElementById('snail').style.animationPlayState = 'running';
+document.getElementById('progress-filled').style.animationPlayState = 'running';
+    if (timer) {
+      clearInterval(timer);
+    }
+  
+    let start = pauseStart ? pauseStart - pausedDuration : Date.now();
+    timer = setInterval(() => {
+      let diff = Date.now() - start;
+      let percentage = Math.min(diff / 1000, 100); // 100 seconds
+      document.documentElement.style.setProperty('--progress-percentage', `calc(${percentage}% * 84 / 100 + 4%)`);
+  
+      if (percentage === 100) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }, 10);
+  
+    pauseStart = null;
   }
-}
+  
+  // Pause Timer
+  function pauseTimer() {
+    document.getElementById('snail').style.animationPlayState = 'paused';
+document.getElementById('progress-filled').style.animationPlayState = 'paused';
+
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+      pauseStart = Date.now();
+      pausedDuration = pauseStart - Date.now() + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage').slice(5, -2)) / 84 * 1000 * 1000;
+    }
+  }
+  
+  // Reset Timer
+  function resetTimer() {
+    document.documentElement.style.setProperty('--progress-percentage', 'calc(4%)');
+    
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  
+    pauseStart = null;
+    pausedDuration = 0;
+  }
+  
+  // Check if timer has finished
+  function isTimerFinished() {
+    let percentage = getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage');
+    percentage = percentage.slice(5, -2);
+    return percentage >= 88; // full width
+  }
+  
+  // Revised setCurrentFrogHealth function
+  function setCurrentFrogHealth(health) {
+    currentFrogHealth = health;
+    const frogHpIndicator = document.querySelector('.upgrade-box.character-frog .hp-indicator');
+    const frogBox = document.querySelector('.upgrade-box.character-frog');
+  
+    frogHpIndicator.style.setProperty('--hp-indicator-height', `${(1 - (currentFrogHealth / getFrogHealth())) * 100}%`);
+  
+    if (currentFrogHealth <= 0) {
+      frogBox.style.backgroundColor = 'grey';
+      frogBox.style.pointerEvents = ''; // Reset pointer events
+    } else {
+      frogBox.style.backgroundColor = ''; // Reset to default color
+      frogBox.style.pointerEvents = ''; // Reset pointer events
+    }
+  }
+  
 
 
   
@@ -484,6 +546,7 @@ function setisPaused(value) {
     }
 
     if (value) {
+      pauseTimer();
         pauseMenuContainer = createPauseMenuContainer();
     } else {
         if (pauseMenuContainer) {
@@ -494,6 +557,7 @@ function setisPaused(value) {
         isUnpausing = false;
         isPaused = false; // Resume the game
         spawnEnemies();
+        startTimer();
     }
 }
 
@@ -675,8 +739,12 @@ function createGarbageButton(backgroundSprite) {
   });
 
   pauseButton.addEventListener("click", function () {
+    if( getisDead()== false){
+      if(getPlayerCurrentHealth() > 0){
     setisPaused(!getisPaused());
     console.log("PAUSED");
+      }
+    }
   });
 
 
@@ -769,9 +837,9 @@ function createGarbageButton(backgroundSprite) {
         console.log('Invalid character', characterType);
         return;
     }
-    if (!app.stage.children.includes(critter)) {
+
       app.stage.addChild(critter);
-  }
+  
   
     document.getElementById('spawn-text').style.visibility = 'hidden';
     choose = false;
@@ -835,7 +903,9 @@ function createGarbageButton(backgroundSprite) {
           console.log('Invalid character', characterType);
           return;
       }
+    if(getPlayerCurrentHealth() >= 0){
       setisPaused(false);
+    }
       startCooldown();
       updatePlayerHealthBar((getPlayerCurrentHealth() / getPlayerHealth() * 100));
       characterLevelElement.textContent = 'Lvl. ' + level;
@@ -1148,6 +1218,7 @@ reviveDialogContainer.addChild(text2);
     sound.src = "./theme.ogg";
     sound.volume = .02;
     sound.play();
+  
 
     // Game elements and logic 
     let castleMaxHealth = 100;
@@ -1878,8 +1949,7 @@ reviveDialogContainer.addChild(text2);
             }
 
             playRoundText(currentRound);
-
-
+            
 
             castle.tint = originalTint;
             setCharAttackAnimating(false);
@@ -2720,6 +2790,7 @@ if(leveling = false){
       critter.play();
       app.stage.addChild(critter);
       playRoundText(currentRound);
+
       // Loop through the enemies array and remove each enemy
       for (let i = 0; i < getEnemies().length; i++) {
         let enemy = getEnemies()[i];
@@ -3308,8 +3379,10 @@ if(leveling = false){
         console.log("YYN", getPlayerHealth() + 20);
         console.log("YYS", getPlayerCurrentHealth());
         if(!getisDead()){
+          if(getPlayerCurrentHealth() >0)
+          {
           setPlayerCurrentHealth(getPlayerCurrentHealth() + 20);
-
+          }
         }
         setCharacterHealth(currentCharacter, getPlayerHealth() + 20);
         updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
@@ -3402,6 +3475,8 @@ if(leveling = false){
   }
 
   function playRoundText(round) {
+    resetTimer();
+    startTimer();
     // Get the element with id "Round-text"
     var roundText = document.getElementById("round-text");
 
