@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 10;
+  let speed = 1;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -41,20 +41,20 @@ document.addEventListener('DOMContentLoaded', function () {
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
   let snailSpeed = 1;
-  let snailDamage = 18;
+  let snailDamage = 24;
   let snailHealth = 100;
   let snailLevel = 1;
   let beeLevel = 1;
   let birdLevel = 1;
   let birdSpeed = 1;
-  let birdDamage = 12;
+  let birdDamage = 10;
   let touchCount = 0;
   let birdHealth = 100;
   let beeSpeed = 1;
-  let beeDamage = 18;
+  let beeDamage = 20;
   let beeHealth = 100;
   let frogSpeed = 1;
-  let frogDamage = 15;
+  let frogDamage = 20;
   let frogHealth = 100;
   let frogLevel = 1;
   let currentFrogHealth = 100;
@@ -117,107 +117,134 @@ document.addEventListener('DOMContentLoaded', function () {
     'character-bee': { speed: getBeeSpeed(), attack: getBeeDamage(), health: getBeeHealth() },
     // Add stats for other characters here
   };
-
-
-  let pauseStart = null;
-  let pausedDuration = 0;
-
+  let pauseTime = null;
+  let startTime = null;
+  let isPaused1 = false;
+  let timerFinished = false;
+  let totalPausedTime = 0;
+  let resetStartTime = null;
   // Start Timer
   function startTimer() {
-    document.getElementById('snail').style.animationPlayState = 'running';
-    document.getElementById('progress-filled').style.animationPlayState = 'running';
+    if (timerFinished) return;
+
+    const snail = document.getElementById('snail');
+    const progressFilled = document.getElementById('progress-filled');
+
+    if (isPaused1) {
+      // Resume from the paused time
+      const currentTime = Date.now();
+      const pausedDuration = currentTime - pauseTime;
+      totalPausedTime += pausedDuration;
+      startTime = resetStartTime + totalPausedTime;
+      isPaused1 = false;
+    } else if (!timer) {
+      // Start from the beginning
+      resetStartTime = Date.now();
+      startTime = resetStartTime;
+      totalPausedTime = 0;
+    }
+
     if (timer) {
       clearInterval(timer);
     }
 
-    let start = pauseStart ? pauseStart - pausedDuration : Date.now();
-    timer = setInterval(() => {
-      let diff = Date.now() - start;
-      let percentage = Math.min(diff / 1000, 100); // 100 seconds
-      document.documentElement.style.setProperty('--progress-percentage', `calc(${percentage}% * 84 / 100 + 4%)`);
+    // Cause a reflow by accessing offsetWidth
+    void snail.offsetWidth;
+    void progressFilled.offsetWidth;
 
-      if (percentage === 100) {
+    // Set the animations
+    snail.style.animation = 'snail-movement 100s linear, snail-animation 1s steps(2) infinite';
+    progressFilled.style.animation = 'progress-fill 100s linear';
+
+    snail.style.animationPlayState = 'running';
+    progressFilled.style.animationPlayState = 'running';
+
+    timer = setInterval(() => {
+      const diff = Date.now() - startTime;
+      const percentage = Math.min(diff / 1000 / 100, 1); // 100 seconds
+
+      if (percentage === 1) {
         clearInterval(timer);
         timer = null;
+        timerFinished = true;
+        snail.style.animation = 'none';
+        progressFilled.style.animation = 'none';
+        snail.style.left = 'calc(88%)';
+        progressFilled.style.width = '84%';
       }
     }, 10);
-
-    pauseStart = null;
   }
 
   // Pause Timer
   function pauseTimer() {
-    document.getElementById('snail').style.animationPlayState = 'paused';
-    document.getElementById('progress-filled').style.animationPlayState = 'paused';
+    const snail = document.getElementById('snail');
+    const progressFilled = document.getElementById('progress-filled');
+
+    snail.style.animationPlayState = 'paused';
+    progressFilled.style.animationPlayState = 'paused';
+
+    pauseTime = Date.now();
+    isPaused1 = true;
 
     if (timer) {
       clearInterval(timer);
       timer = null;
-      pauseStart = Date.now();
-      pausedDuration = pauseStart - Date.now() + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage').slice(5, -2)) / 84 * 1000 * 1000;
     }
   }
 
   // Reset Timer
   function resetTimer() {
-    // Get the elements
     const snail = document.getElementById('snail');
-    const progressBar = document.getElementById('progress-filled');
-  
-    // Clone the elements
-    const snailClone = snail.cloneNode(true);
-    const progressBarClone = progressBar.cloneNode(true);
-  
-    // Replace the elements with their clones
-    snail.parentNode.replaceChild(snailClone, snail);
-    progressBar.parentNode.replaceChild(progressBarClone, progressBar);
-  
-    // Set the CSS variable
-    document.documentElement.style.setProperty('--progress-percentage', 'calc(100% - 16px)'); // Adjust the value based on your progress bar width
-  
+    const progressFilled = document.getElementById('progress-filled');
+
+    snail.style.animation = 'none';
+    progressFilled.style.animation = 'none';
+
+    snail.style.left = 'calc(4%)';
+    progressFilled.style.width = '0%';
+
     if (timer) {
       clearInterval(timer);
       timer = null;
     }
-  
-    pauseStart = null;
-    pausedDuration = 0;
-  }
-  
 
+    isPaused1 = false;
+    pauseTime = null;
+    startTime = null;
+    resetStartTime = null;
+    timerFinished = false;
+    totalPausedTime = 0;
+  }
 
   // Check if timer has finished
   function isTimerFinished() {
-    let percentage = getComputedStyle(document.documentElement).getPropertyValue('--progress-percentage');
-    percentage = percentage.slice(5, -2);
-    return percentage >= 88; // full width
+    return timerFinished;
   }
+
 
   var portrait = document.getElementById('character-portrait');
   var isFlashing = false;
   var intervalId;
-  
-
 
   // Function to start the flashing effect
   function startFlashing() {
-    if (!intervalId) {
-      intervalId = setInterval(function() {
+    if (!isFlashing) {
+      isFlashing = true;
+      intervalId = setInterval(function () {
         portrait.classList.toggle("flash"); // Toggle the "flash" class
       }, 1500); // Change the class every 1.5 seconds
     }
   }
-  
+
   // Function to stop the flashing effect
   function stopFlashing() {
-    if (intervalId) {
+    if (isFlashing) {
+      isFlashing = false;
       clearInterval(intervalId);
-      intervalId = null;
       portrait.classList.remove("flash"); // Remove the "flash" class when flashing stops
     }
   }
-  
-  
+
   
   
   
@@ -528,7 +555,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function shouldReturnEarly(value) {
     if ((value && pauseMenuContainer) || (!value && isUnpausing) || app.stage.children.includes(reviveDialogContainer)) {
+      console.log('returning early');
       return true;
+ 
     }
 
     const spawnTextElement = document.getElementById('spawn-text');
@@ -603,10 +632,7 @@ document.addEventListener('DOMContentLoaded', function () {
       isUnpausing = false;
       isPaused = false; // Resume the game
       spawnEnemies();
-      if(getisDead() == false)
-      {
       startTimer();
-      }
     }
   }
 
@@ -1970,6 +1996,7 @@ if(getPlayerCurrentHealth() > 0){
             }
 
             if (exploded) {
+           
               mountain1.tint = getRandomColor();
               mountain2.tint = getRandomColor();
               mountain3.tint = getRandomColor3();
@@ -1993,10 +2020,11 @@ if(getPlayerCurrentHealth() > 0){
               }
               exploded = false;
               saveGame();
+             
+              spawnEnemies();
               resetTimer();
               startTimer();
-              spawnEnemies();
-
+              console.log("REEEE");
             }
 
             playRoundText(currentRound);
@@ -2075,7 +2103,6 @@ if(getPlayerCurrentHealth() > 0){
             roundOver = false;
             // setisPaused(false);
             setIsDead(false);
-            startTimer();
 
           }
           return;
@@ -2235,9 +2262,51 @@ if(getPlayerCurrentHealth() > 0){
       console.log("STORED", stored);
       critter.position.set(app.screen.width / 20, app.screen.height - foreground.height / 2.2 - critter.height * .22);
       updateEXP(0, expToLevel);
-      updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
+      updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
       // Start the timer animation
+      if(getPlayerCurrentHealth() <= 0){
+    
 
+setisPaused(true);
+
+
+
+
+
+
+
+    // Toggle the visibility of the character info boxes
+    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
+
+    if (isCharacterMenuOpen) {
+      characterBoxes.forEach((box) => {
+        box.style.visibility = 'hidden';
+      });
+      isCharacterMenuOpen = false;
+    } else {
+      characterBoxes.forEach((box) => {
+        if (selectedCharacter !== "" && box.classList.contains(selectedCharacter)) {
+          box.style.visibility = 'hidden';
+        } else {
+          box.style.visibility = 'visible';
+        }
+      });
+      isCharacterMenuOpen = true;
+    }
+
+    // Start the cooldown
+
+
+
+
+
+
+
+
+
+
+
+      }
       app.stage.addChild(background, mountain4, mountain1, mountain2, mountain3, foreground, castle, critter, clouds, clouds2, hpBarBackground, hpBar, enemyDeath, castlePlayer);
 
       enemyTypes = [
@@ -2252,8 +2321,7 @@ if(getPlayerCurrentHealth() > 0){
 
 
       spawnEnemies();
-      resetTimer();
-      startTimer();
+   
 
 
     }
@@ -2268,6 +2336,10 @@ if(getPlayerCurrentHealth() > 0){
   function spawnEnemies() {
     if (isSpawning || getisDead() || getisPaused()) {
       return; // If already spawning or game is paused or player is dead, exit the function
+    }
+
+    if(isTimerFinished()){
+      return
     }
 
     isSpawning = true; // Set isSpawning to true to indicate that a spawn ticker is running
@@ -3241,7 +3313,8 @@ if(getPlayerCurrentHealth() > 0){
 
     if (!isGameStarted) {
       isGameStarted = true;
-
+      resetTimer();
+      startTimer();
       startGame();
     }
   }
@@ -3689,7 +3762,7 @@ if(getPlayerCurrentHealth() > 0){
     if (savedData) {
 
       const gameData = JSON.parse(savedData);
-      currentRound = 8;
+      currentRound = gameData.currentRound;
 
       // Load the saved values into your variables
       setCurrentFrogHealth(gameData.currentFrogHealth);
@@ -3755,7 +3828,8 @@ if(getPlayerCurrentHealth() > 0){
       level = getFrogLevel();
       updateLightning.textContent = getFrogSpeed().toString();
       updateHP.textContent = getFrogHealth().toString();
-      updateDamage.textContent = getFrogDamage().toString();
+      console.log("LOADER",getCharacterDamage('character-frog').toString());
+      updateDamage.textContent = getCharacterDamage('character-frog').toString();
       characterLevelElement.textContent = 'Lvl. ' + level;
       isCharacterMenuOpen = false; // Flag to track if the character menu is open
 

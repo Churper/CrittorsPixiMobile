@@ -617,7 +617,6 @@ body {
     transform: translateY(-10px);
   }
 }
-
 #snail {
   position: absolute;
   top: 12px;
@@ -626,9 +625,7 @@ body {
   height: 60px;
   background-image: url('https://i.imgur.com/shRbAl5.png');
   background-size: cover;
-  animation: snail-movement 100s linear infinite, snail-animation 1s steps(2) infinite;
   z-index: 4;
-  animation-play-state: paused;  /* initially paused */
 
 }
 
@@ -665,12 +662,11 @@ body {
   top: 40px;
   left: 80px;
   width: 0;
-  animation-play-state: paused;  /* initially paused */
 
   height: 20px; /* Adjust the height of the progress bar as needed */
   background-color: rgba(0, 0, 0, 0.411); /* Use the desired opaque color */
   z-index: 3;
-  animation: progress-fill 100s linear infinite;
+
 }
 
 @keyframes progress-fill {
