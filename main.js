@@ -2467,7 +2467,7 @@ setisPaused(true);
     enemy.zIndex = enemy.position.y + 10000;
     enemy.animationSpeed = 0.25;
     if (enemyName == "pig") {
-      enemy.animationSpeed = 0.2;
+      enemy.animationSpeed = 0.23;
 
     }
     enemy.loop = true;
