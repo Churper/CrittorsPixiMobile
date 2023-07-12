@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 10;
+  let speed = 1;
   let choose = false;
   if (speed == 0) {
     speed = 1;
