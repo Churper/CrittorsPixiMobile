@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 10;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -1365,14 +1365,14 @@ if(getPlayerCurrentHealth() > 0){
       { name: 'pig_portrait', url: 'https://i.imgur.com/ZxaI7rG.png' },
       { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
       { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
-      { name: 'pig_walk', url: 'https://i.imgur.com/sLNMWY4.png' },
+      { name: 'pig_walk', url: 'https://i.imgur.com/141LQoZ.png' },
       { name: 'pig_attack', url: 'https://i.imgur.com/O0FXcIH.png' },
       { name: 'ele_walk', url: 'https://i.imgur.com/HAbxzx2.png' },
       { name: 'ele_attack', url: 'https://i.imgur.com/zqpWWPI.png' },
-      { name: 'scorp_walk', url: 'https://i.imgur.com/VpGHryx.png' },
-      { name: 'scorp_attack', url: 'https://i.imgur.com/Js0c1Yn.png' },
-      { name: 'octo_walk', url: 'https://i.imgur.com/8T713I9.png' },
-      { name: 'octo_attack', url: 'https://i.imgur.com/mNbn4eJ.png' },
+      { name: 'scorp_walk', url: 'https://i.imgur.com/wnZD4tY.png' },
+      { name: 'scorp_attack', url: 'https://i.imgur.com/VBxfGVM.png' },
+      { name: 'octo_walk', url: 'https://i.imgur.com/cUUhR61.png' },
+      { name: 'octo_attack', url: 'https://i.imgur.com/sifw1KZ.png' },
       { name: 'toofer_walk', url: 'https://i.imgur.com/aapkoqq.png' },
       { name: 'toofer_attack', url: 'https://i.imgur.com/inBwJ2p.png' },
       { name: 'timer1', url: 'https://i.imgur.com/shRbAl5.png' },
@@ -1548,7 +1548,7 @@ if(getPlayerCurrentHealth() > 0){
       const tooferWalkTextures = createAnimationTextures2('toofer_walk', 6, 377, 2412, 377);
       const tooferAttackTextures = createAnimationTextures2('toofer_attack', 15, 377, 1206, 1885);
       const octoWalkTextures = createAnimationTextures2('octo_walk', 10, 482, 3415, 964);
-      const octoAttackTextures = createAnimationTextures2('octo_attack', 18, 482, 2049, 2892);
+      const octoAttackTextures = createAnimationTextures2('octo_attack', 18, 482, 3415, 1928);
       const eleWalkTextures = createAnimationTextures2('ele_walk', 6, 377, 2256, 377);
       const eleAttackTextures = createAnimationTextures2('ele_attack', 12, 377, 1128, 1508);
       const pigWalkTextures = createAnimationTextures2('pig_walk', 6, 618, 1590, 1854);
@@ -2438,18 +2438,22 @@ setisPaused(true);
       enemy.scale.set(.45);
     }
     console.log("ENEMY NAME", enemyName);
-    if ((enemyName != "scorp")) {
-      if (enemyName != "octo") {
+
+     
         enemy.scale.x *= -1; // Flip the enemy horizontally
         console.log("ENEMY XXXXXXXXXXXXXXXXNAME", enemyName);
-      }
+      
 
-    }
+    
     enemy.exp = 20 + Math.floor(currentRound * 2);
     enemy.anchor.set(0.5, .5);
     enemy.position.set(3000, app.screen.height - 90 - enemy.height / 4 - randomScale * 120 + (Math.random() * 60 - 30));
     enemy.zIndex = enemy.position.y + 10000;
     enemy.animationSpeed = 0.25;
+    if (enemyName == "pig") {
+      enemy.animationSpeed = 0.2;
+
+    }
     enemy.loop = true;
     enemy.isAlive = true;
     enemy.isVisible;
@@ -2734,7 +2738,7 @@ setisPaused(true);
 
         // Stop the frog's movement temporarily until character is selected
         clearInterval(moveInterval);
-        if (leveling = false) {
+        if (leveling == false) {
           // Check if character is selected
           if (selectedCharacter !== "") {
             // Hide the character info boxes
@@ -3271,7 +3275,7 @@ setisPaused(true);
     const hpBarWidth = 100;
     const hpBarHeight = 8;
     const hpBarX = enemy.anchor.x - 32;
-    const hpBarY = -(enemy.height / 3.75);
+    const hpBarY = -40;
 
 
     if (!enemy.hpBarContainer) {
