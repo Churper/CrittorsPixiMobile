@@ -1359,6 +1359,10 @@ if(getPlayerCurrentHealth() > 0){
     frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
 
     PIXI.Loader.shared.add([
+      { name: 'shark_emerge', url: 'https://i.imgur.com/BUxEAgz.png' },
+      { name: 'shark_submerge', url: 'https://i.imgur.com/j1eM9EI.png' },
+      { name: 'shark_walk', url: 'https://i.imgur.com/HNILgOX.png' },
+      { name: 'shark_attack', url: 'https://i.imgur.com/AGrq5qY.png' },
       { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
       { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
       { name: 'octo_portrait', url: 'https://i.imgur.com/F3OYSDm.png' },
@@ -1553,6 +1557,8 @@ if(getPlayerCurrentHealth() > 0){
       const eleAttackTextures = createAnimationTextures2('ele_attack', 12, 377, 1128, 1508);
       const pigWalkTextures = createAnimationTextures2('pig_walk', 6, 618, 1590, 1854);
       const pigAttackTextures = createAnimationTextures2('pig_attack', 15, 618, 2385, 3090);
+      const sharkWalkTextures = createAnimationTextures2('shark_walk', 10, 398, 1398, 1990);
+      const sharkAttackTextures = createAnimationTextures2('shark_attack', 21, 398, 3495, 1990);
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 30, 200);
       const clouds2 = createTilingSprite(clouds2Texture, backgroundImage.width * 30, 200);
@@ -2316,7 +2322,9 @@ setisPaused(true);
         { attackTextures: critterAttackTextures, walkTextures: critterWalkTextures, name: "imp" },
         { attackTextures: pufferAttackTextures, walkTextures: pufferWalkTextures, name: "puffer" },
         { attackTextures: scorpAttackTextures, walkTextures: scorpWalkTextures, name: "scorp" },
-        { attackTextures: tooferAttackTextures, walkTextures: tooferWalkTextures, name: "toofer" }
+        { attackTextures: tooferAttackTextures, walkTextures: tooferWalkTextures, name: "toofer" },
+        { attackTextures: sharkAttackTextures, walkTextures: sharkWalkTextures, name: "shark" }
+
       ];
 
 
@@ -2389,7 +2397,8 @@ setisPaused(true);
     { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
     { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
     { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
-    { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' }
+    { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
+    { name: 'shark_portrait', url: 'https://i.imgur.com/9gLYMax.png' }
 
 
 
@@ -2435,6 +2444,9 @@ setisPaused(true);
       enemy.scale.set(.45);
     }
     if (enemyName == "imp") {
+      enemy.scale.set(.45);
+    }
+    if (enemyName == "shark") {
       enemy.scale.set(.45);
     }
     console.log("ENEMY NAME", enemyName);

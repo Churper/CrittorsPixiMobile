@@ -250,6 +250,8 @@ body {
 
 
 #character-portrait {
+  -webkit-tap-highlight-color: transparent;
+
   width: 46px;
   height: 46px;
   background-image: url("https://i.imgur.com/yzzwAH6.png");
@@ -343,6 +345,7 @@ body {
 
 .upgrade-box {
   outline: none;
+  -webkit-tap-highlight-color: transparent;
   width: 46px;
   height: 46px;
   position: absolute;
