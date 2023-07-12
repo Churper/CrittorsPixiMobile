@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     transparent: false,
     resolution: 1,
   });
+  let sharkEmergeTextures;
   let pauseMenuContainer;
   let flashing = false;
   let reviveDialogContainer;
@@ -1559,6 +1560,7 @@ if(getPlayerCurrentHealth() > 0){
       const pigAttackTextures = createAnimationTextures2('pig_attack', 15, 618, 2385, 3090);
       const sharkWalkTextures = createAnimationTextures2('shark_walk', 10, 398, 1398, 1990);
       const sharkAttackTextures = createAnimationTextures2('shark_attack', 21, 398, 3495, 1990);
+      sharkEmergeTextures = createAnimationTextures2('shark_emerge', 5, 398, 699, 1990);
       const backgroundImage = PIXI.Sprite.from('background');
       const clouds = createTilingSprite(cloudsTexture, backgroundImage.width * 30, 200);
       const clouds2 = createTilingSprite(clouds2Texture, backgroundImage.width * 30, 200);
@@ -2448,6 +2450,8 @@ setisPaused(true);
     }
     if (enemyName == "shark") {
       enemy.scale.set(.45);
+      enemy.emerging = false; 
+
     }
     console.log("ENEMY NAME", enemyName);
 
@@ -2524,7 +2528,6 @@ setisPaused(true);
               if (getEnemiesInRange() == 0) {
                 enemy.textures = critterWalkTextures;
                 enemy.loop = true;
-
                 enemy.play();
               }
             }
@@ -2610,7 +2613,7 @@ setisPaused(true);
             }
             isAttacking = true;
             isCombat = true;
-            handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures);
+            handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures,enemyName);
           }
         }
         isCombat = false;
@@ -2778,12 +2781,50 @@ setisPaused(true);
     }, 16); // (16ms = 60fps)
   }
 
-  function handleEnemyAttacking(enemy, critterAttackTextures, critter) {
-    if (roundOver) { return; }
-    enemy.textures = critterAttackTextures;
 
+  function createEnemy(name) {
+    let enemy = {
+        name: name,
+        emerging: false,
+      
+    };
+
+    return enemy;
+}
+
+  function resetToAttackTextures(enemy, critterAttackTextures) {
+    enemy.textures = critterAttackTextures;
     enemy.loop = true;
     enemy.gotoAndPlay(0);
+}
+
+  function handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures,enemyName) {
+    if (roundOver) { return; }
+
+    console.log("enemyname?", enemyName);
+    console.log("enemynaeeeme?", enemy.emerging);
+
+    // If the enemy is a shark and it's not currently playing the emerge animation
+    if (enemyName === "shark" && !enemy.emerging) {
+        console.log(enemy.name, "TRANSITION");
+
+        // Set the enemy textures to the shark emerge textures and play it once
+        enemy.textures = sharkEmergeTextures;
+        enemy.loop = false;
+        enemy.emerging = true;  // Mark that the shark is in the process of emerging
+        enemy.play();
+
+        enemy.onComplete = () => {
+            // After the shark emerge animation completes, set the enemy textures to the attacking textures
+            enemy.emerging = false;  // Mark that the shark has finished emerging
+            resetToAttackTextures(enemy, critterAttackTextures);
+        };
+    } else if (!enemy.emerging) {
+        // For other enemies, directly set the enemy textures to the attacking textures
+        resetToAttackTextures(enemy, critterAttackTextures);
+    }
+
+
     let hasDied = false;
     if (roundOver) { return; }
 
