@@ -14,8 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
         appStarted = true;
       }
     }
-    
   }
+
+  document.getElementById('proceedAnyway').addEventListener('click', function() {
+    document.getElementById('rotateDevice').style.display = "none";
+    if (!appStarted) {
+      mainAppFunction();
+      appStarted = true;
+    }
+  });
 
   function mainAppFunction() {
     let leveling = false;
