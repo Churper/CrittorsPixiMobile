@@ -1529,12 +1529,12 @@ document.addEventListener('DOMContentLoaded', function () {
   backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
 
 // Create first background sprite
-background1 = new PIXI.Sprite(backgroundTexture);
-background1.width = app.screen.width * 2.75;
-background1.height = app.screen.height;
-background1.anchor.set(0, 0);
-background1.position.set(0, 0);
-
+background = new PIXI.Sprite(backgroundTexture);
+background.width = app.screen.width * 3;
+background.height = app.screen.height;
+background.anchor.set(0, 0);
+background.position.set(0, 0);
+app.stage.addChild(background);
 
 
 
@@ -1557,21 +1557,12 @@ foreground.y = Math.max(app.screen.height);
       backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
 
       // Create a new tiling sprite with the background texture, specifying the width and height
-      background = new PIXI.TilingSprite(
-          backgroundTexture, 
-          app.screen.width * 2.75,
-          app.screen.height
-      );
+ 
       
       // No need to set the width and height again, since it's set in the TilingSprite constructor
       // background.width = app.screen.width * 2.75;
       // background.height = app.screen.height;
-      
-      // Position the tiling sprite 
-      background.anchor.set(0, 0);
-      background.position.set(0, 0);
-      
-      app.stage.addChild(background);
+   
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
       const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.45, mountainVelocity2, foreground);
       const mountain3 = createMountainSprite('mountain3', -200, mountainVelocity3, foreground); // Adjust the position as needed
@@ -2537,7 +2528,7 @@ foreground.y = Math.max(app.screen.height);
     enemy.type = enemyName;
     enemy.isAttacking = false;
     enemy.enemyAdded = false;
-    enemy.position.set(2800, app.screen.height - 120 - enemy.height / 4 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
+    enemy.position.set(2800, app.screen.height - 120 - enemy.height / 8 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
     enemy.zIndex = enemy.position.y + 10000;
     enemy.animationSpeed = enemyName === "pig" ? 0.23 : enemyName === "scorp" ? 0.15 : 0.25;
     enemy.loop = true;
