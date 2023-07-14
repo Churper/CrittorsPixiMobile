@@ -711,14 +711,17 @@ z-index: 99999999999999999999999;
   display: none;
   position: fixed;
   background-image: url("https://i.imgur.com/YtBjxdf.png");
-  background-size: cover;
+  background-size: contain; /* Ensures the whole image is always visible */
+  background-repeat: no-repeat; /* Prevents image from repeating */
+  background-color: #000; /* Adds a background color */
+  background-position: center; /* Centers the image */
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   text-align: center;
-  padding-top: 20%;
-  font-size: 2em;
+
+  font-size: 24px;
   z-index: 9999;
 }
 
@@ -727,7 +730,7 @@ z-index: 99999999999999999999999;
   left: 25%;  /* Positions the left edge of the button at the center of the screen */
   top: 25%;  /* Positions the top edge of the button at the center of the screen */
   padding: 30px;  /* Increase padding to make the button larger */
-  font-size: 2em;  /* Increase font size to match the larger button */
+  font-size: 24px;  /* Increase font size to match the larger button */
   background-color: #4caf4f00;
   border: none;
   color: white;
@@ -741,7 +744,7 @@ z-index: 99999999999999999999999;
 }
 #chooseScreenSize {
   position: absolute;
-  top: -40%;  /* Adjust as needed */
+  top: 20%;  /* Adjust as needed */
 left: 20%;
   font-family: 'Patrick Hand', sans-serif; /* Change this to the font family you prefer */
   font-size: 2em; /* Increase or decrease size as needed */
