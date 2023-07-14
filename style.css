@@ -129,7 +129,7 @@ touch-action: manipulation;
   font-weight: bold;
   /* Initially hidden */
   position: fixed;
-  bottom: 10px;
+  top: 10px;
   right: 0px;
   background-image: url("https://i.imgur.com/Ft63zNi.png");
   background-size: contain;
@@ -152,18 +152,18 @@ touch-action: manipulation;
 
 #coffee-amount {
   position: absolute;
-  font-size: 36px;
-  bottom: 0px;
-  right: 1px;
+  font-size: 60px;
+  top: -16px;
+  font-weight: bold;  /* New line added */
+
+  right: 26px;
   width: 100%;
   padding: 5px;
   background-color: transparent;
-  color: #3a2206;
+  color: #ffffff;
   text-align: center;
-  text-shadow: 1px 1px 2px #000;
-  -webkit-text-stroke-width: 0.2px;
+  -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #000000;
-  -webkit-text-fill-color: #865721;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 
