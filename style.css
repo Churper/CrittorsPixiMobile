@@ -36,7 +36,7 @@ touch-action: manipulation;
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt", 'Permanent Marker',cursive;
   color: black;
   text-shadow: 0px 0px 12px white;
   font-size: 74px;
@@ -50,7 +50,7 @@ touch-action: manipulation;
   top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt",'Permanent Marker', cursive;
   color: black;
   text-shadow: 0px 0px 12px white;
   font-size: 74px;
@@ -65,7 +65,7 @@ touch-action: manipulation;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt",'Permanent Marker', cursive;
   color: black;
   text-shadow: 0px 0px 12px white;
   font-size: 74px;
@@ -81,7 +81,7 @@ touch-action: manipulation;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt",'Permanent Marker', cursive;
   color: black;
   text-shadow: 0px 0px 12px white;
   font-size: 74px;
@@ -112,7 +112,7 @@ touch-action: manipulation;
 
 #coffee-button {
   visibility: hidden;
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt", 'Permanent Marker', cursive;
   font-weight: bold;
   /* Initially hidden */
   position: fixed;
@@ -347,7 +347,7 @@ touch-action: manipulation;
 }
 
 .bar-text {
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt", 'Permanent Marker', cursive;
   position: absolute;
   top: 41%;
   left: 55%;
@@ -539,7 +539,7 @@ touch-action: manipulation;
   bottom: -10px;
   left: 36px;
   font-size: 20px;
-  font-family: "Marker Felt", cursive;
+  font-family: "Marker Felt",'Permanent Marker', cursive;
   font-weight: bold;
   white-space: nowrap;
   /* Prevent text from wrapping */
