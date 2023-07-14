@@ -2665,50 +2665,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   function rangedAttack(critter, enemy) {
-    // Reduce enemy's HP
+    // Apply damage to the enemy
+    drawHitSplat(enemy);
     console.log('ENEMY HP', enemy.currentHP);
-    console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
-    if (enemy.currentHP - getCharacterDamage(getCurrentCharacter()) <= 0) {
-      // Callback function to remove enemy after death animation
-      if (app.stage.children.includes(enemy)) {
-        drawHitSplat(enemy);
-        enemy.tint = 0xFF0000; // Set the hit color
-        if (getEnemiesInRange() > 0) {
-          setEnemiesInRange(getEnemiesInRange() - 1);
+
+    if (enemy.currentHP <= 0) {
+        // Callback function to remove enemy after death animation
+        if (app.stage.children.includes(enemy)) {
+            enemy.tint = 0xFF0000; // Set the hit color
+            if (getEnemiesInRange() > 0) {
+                setEnemiesInRange(getEnemiesInRange() - 1);
+            }
+
+            if (getEnemiesInRange() === 0) {
+                const enemyPortrait = document.getElementById('enemy-portrait');
+                enemyPortrait.style.display = 'none'; // Make the element visible
+            }
+
+            console.log("ENEMY DEAD", enemy.position.x, enemy.position.y);
+            createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
+            app.stage.removeChild(enemy);
+            getEnemies().splice(getEnemies().indexOf(enemy), 1);
+
+            isCombat = false;
+            setIsCharAttacking(false);
+            playDeathAnimation(enemy, critter);
+
+            critter.play();
         }
-        //isCombat = false;
-        if (getEnemiesInRange() === 0) {
-          const enemyPortrait = document.getElementById('enemy-portrait');
-          enemyPortrait.style.display = 'none'; // Make the element visible
-        }
-
-        //setIsCharAttacking(false);
-        console.log("ENEMY DEAD", enemy.position.x, enemy.position.y);
-        createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
-        app.stage.removeChild(enemy);
-        getEnemies().splice(getEnemies().indexOf(enemy), 1);
-
-        isCombat = false;
-        setIsCharAttacking(false);
-        playDeathAnimation(enemy, critter);
-
-        critter.play();
-
-
-      }
-    } else {
-      if (enemy.isAlive === true) {
-        if (getisDead() === false) {
-          drawHitSplat(enemy);
-
-        }
-      }
-
-
-    }
-
-
-  }
+    } 
+}
 
   function resetEnemiesState() {
     getEnemies().forEach(enemy => {
@@ -3139,7 +3125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   
     damageText.anchor.set(0.5);
-    damageText.position.set(enemy.position.x + 40, enemy.position.y - enemy.height / 1.3);
+    damageText.position.set(enemy.position.x + 40, enemy.position.y - 30);
     app.stage.addChild(damageText);
   
     // Animate the hitsplat
