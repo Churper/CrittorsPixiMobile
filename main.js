@@ -1031,33 +1031,31 @@ document.addEventListener('DOMContentLoaded', function () {
     if (reviveDialogContainer && app.stage.children.includes(reviveDialogContainer)) {
       return;
     }
-
+  
     reviveDialogContainer = new PIXI.Container();
-
+  
     // Create a semi-transparent black background sprite for the dialog box
     backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    backgroundSprite.width = app.screen.width * 0.6; // 50% wider
-    backgroundSprite.height = 400; // 100% taller
+    backgroundSprite.width = app.screen.width * 0.6; // 60% of the screen width
+    backgroundSprite.height = 400; // Fixed height
     backgroundSprite.tint = 0x000000; // Black color
     backgroundSprite.alpha = 0.5; // Make it semi-transparent
     reviveDialogContainer.addChild(backgroundSprite);
-
+  
     // Create a brown border around the background
     const border = new PIXI.Graphics();
     border.lineStyle(4, 0x8B4513); // Brown color with 4px thickness
     border.drawRect(0, 0, backgroundSprite.width, backgroundSprite.height);
     reviveDialogContainer.addChild(border);
-
-    // Create the text for the dialog box
-    // Create the text for the dialog box
+  
     // Create the text for the dialog box
     const characterName = getCharacterName(characterType);
-    const reviveText1 = 'Would you like to spend';
-    const reviveText2 = `50     to revive ${characterName}?`;
 
+    const reviveText2 = `Spend 50 to revive ${characterName}?`;
+  
     const textStyle = new PIXI.TextStyle({
       fontFamily: 'Marker Felt',
-      fontSize: 48,
+      fontSize: app.screen.width * 0.04, // Responsive font size
       fill: '#FFFF00', // Yellow color
       stroke: '#000000', // Black outline color
       strokeThickness: 6, // Outline thickness
@@ -1067,34 +1065,28 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
       wordWrap: true, // Enable word wrapping
-      wordWrapWidth: backgroundSprite.width - 40, // Set the word wrap width
+      wordWrapWidth: backgroundSprite.width * 0.8, // Set the word wrap width
     });
-
-    const text = new PIXI.Text(reviveText1, textStyle);
-    text.anchor.set(0.5);
-    text.position.set(backgroundSprite.width / 2, backgroundSprite.height * 0.1);
-    reviveDialogContainer.addChild(text);
-
-    // Second part of the text
-    const text2 = new PIXI.Text(reviveText2, textStyle);
-    text2.anchor.set(0.5);
-    text2.position.set(backgroundSprite.width / 2, text.position.y + text.height + 40); // Position below the first text with vertical spacing
-    reviveDialogContainer.addChild(text2);
-
-
+  
+    const text = new PIXI.Text(reviveText2, textStyle);
+    text.anchor.set(.5);
+    text.position.set(backgroundSprite.width / 2, backgroundSprite.height * 0.25);
+  
+  
+  
     // Add coffee bean image
     let beanSprite = PIXI.Sprite.from('https://i.imgur.com/Ft63zNi.png');
     beanSprite.anchor.set(0.5);
-    beanSprite.scale.set(0.7);
-    beanSprite.zIndex = - 999999;
-    beanSprite.position.set(text2.position.x - text.width / 2.60, text2.position.y);
+    beanSprite.scale.set(0.85);
+    beanSprite.position.set(text.position.x - text.width / 5.5, text.position.y);
+    
     reviveDialogContainer.addChild(beanSprite);
-    reviveDialogContainer.addChild(text2);
-    let playerCoins = getCoffee();  // Assuming getCoffee() is the function that returns the player's current coin amount
-
+    reviveDialogContainer.addChild(text);
+  
     // Create the 'Yes' button with emoji
+    const playerCoins = getCoffee(); // Assuming getCoffee() is the function that returns the player's current coin amount
     const yesButtonStyle = new PIXI.TextStyle({
-      fontSize: 180, // Bigger size
+      fontSize: app.screen.width * 0.12, // Responsive font size
       fill: playerCoins >= 50 ? '#008000' : '#808080', // Green color if player has 50 or more coins, grey otherwise
       backgroundColor: '#000000', // Black background
       fontFamily: 'Marker Felt',
@@ -1105,16 +1097,16 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowBlur: 4, // Shadow blur
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
-
     });
+  
     const yesButton = new PIXI.Text('☑', yesButtonStyle);
     yesButton.anchor.set(0.5);
     yesButton.position.set(backgroundSprite.width * 0.35, backgroundSprite.height * 0.75);
     reviveDialogContainer.addChild(yesButton);
-
+  
     // Create the 'No' button with emoji and red tint
     const noButtonStyle = new PIXI.TextStyle({
-      fontSize: 180, // Bigger size
+      fontSize: app.screen.width * 0.12, // Responsive font size
       fill: '#FF0000', // Red color
       backgroundColor: '#000000', // Black background
       fontFamily: 'Marker Felt',
@@ -1126,40 +1118,39 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
     });
+  
     const noButton = new PIXI.Text('☒', noButtonStyle);
     noButton.anchor.set(0.5);
     noButton.position.set(backgroundSprite.width * 0.65, backgroundSprite.height * 0.75);
     reviveDialogContainer.addChild(noButton);
+  
     // Calculate the position of the dialog box based on the current stage position
-    let dialogX = (app.screen.width / 2) - (backgroundSprite.width / 2);
-    let dialogY = (app.screen.height / 2) - (backgroundSprite.height / 2);
+    const dialogX = (app.screen.width / 2) - (backgroundSprite.width / 2);
+    const dialogY = (app.screen.height / 2) - (backgroundSprite.height / 2);
     reviveDialogContainer.position.set(dialogX, dialogY);
-
+  
     // Add the dialog box to the PIXI stage
     app.stage.addChild(reviveDialogContainer);
     setisPaused(true);
+  
     // Listen for click events on the 'Yes' button
     yesButton.interactive = true;
     yesButton.buttonMode = true;
     noButton.interactive = true;
     noButton.buttonMode = true;
+  
     yesButton.on('pointerdown', () => {
       // Check if the player has enough coins to revive the character
       if (getCoffee() >= 50) {
         // Perform the revive logic
         if (characterType === 'character-snail') {
           setCurrentSnailHealth(getSnailHealth());
-
-
         } else if (characterType === 'character-bird') {
           setCurrentBirdHealth(getBirdHealth());
-
         } else if (characterType === 'character-frog') {
           setCurrentFrogHealth(getFrogHealth());
-
         } else if (characterType === 'character-bee') {
           setCurrentBeeHealth(getBeeHealth());
-
         }
         addCoffee(-50);
         // Remove the dialog box from the PIXI stage
@@ -1170,17 +1161,14 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Not enough coins to revive');
         app.stage.removeChild(reviveDialogContainer);
         setisPaused(false);
-
         // You can display an error message or perform other actions as needed
       }
     });
-
+  
     noButton.on('pointerdown', () => {
-      // Check if the player has enough coins to revive the character
       // Remove the dialog box from the PIXI stage
       app.stage.removeChild(reviveDialogContainer);
       setisPaused(false);
-
     });
   }
 
@@ -2454,7 +2442,7 @@ document.addEventListener('DOMContentLoaded', function () {
     enemy.enemyAdded = false;
     enemy.position.set(2800, app.screen.height - 120 - enemy.height / 4 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
     enemy.zIndex = enemy.position.y + 10000;
-    enemy.animationSpeed = enemyName === "pig" ? 0.23 : 0.25;
+    enemy.animationSpeed = enemyName === "pig" ? 0.23 : enemyName === "scorp" ? 0.15 : 0.25;
     enemy.loop = true;
     enemy.isAlive = true;
     enemy.attackDamage = 2 + currentRound;
@@ -3068,41 +3056,41 @@ document.addEventListener('DOMContentLoaded', function () {
     switch (characterType) {
       case 'character-snail':
         if (enemyType === 'imp' || enemyType === 'toofer') {  
-          damage = getSnailDamage() * 2; // Half damage for weak against enemy.type toofer
+          damage = Math.round(getSnailDamage() * 2); // Half damage for weak against enemy.type toofer
         } else if (enemyType === 'scorp') {
-          damage = getSnailDamage() * .3; // Double damage for strong against enemy.type scorp and puffer
+          damage = Math.round(getSnailDamage() * .5); // Double damage for strong against enemy.type scorp and puffer
         } else {
-          damage = getSnailDamage();
+          damage = Math.round(getSnailDamage());
         }
         enemy.currentHP -= damage;
         break;
       case 'character-bird':
         if (enemyType === 'imp' || enemyType === 'toofer') {
-          damage = getBirdDamage() * 0.2; // 1/4 damage for weak against enemy.type imp and toofer
+          damage = Math.round(getBirdDamage() * 0.3); // 1/4 damage for weak against enemy.type imp and toofer
         } else if (enemyType === 'shark' || enemyType === 'octo') {
-          damage = getBirdDamage() * 2; // Double damage for strong against enemy.type shark and octo
+          damage = Math.round(getBirdDamage() * 2); // Double damage for strong against enemy.type shark and octo
         } else {
-          damage = getBirdDamage();
+          damage = Math.round(getBirdDamage());
         }
         enemy.currentHP -= damage;
         break;
       case 'character-frog':
         if (enemyType === 'pig' || enemyType === 'scorp') {
-          damage = getFrogDamage() * 2; // Double damage for strong against enemy.type pig and scorp
+          damage = Math.round(getFrogDamage() * 2); // Double damage for strong against enemy.type pig and scorp
         } else if (enemyType === 'puffer') {
-          damage = getFrogDamage() * 0.3; // Half damage for weak against enemy.type ele and octo
+          damage = Math.round(getFrogDamage() * 0.5); // Half damage for weak against enemy.type ele and octo
         } else {
-          damage = getFrogDamage();
+          damage = Math.round(getFrogDamage());
         }
         enemy.currentHP -= damage;
         break;
       case 'character-bee':
         if (enemyType === 'ele' || enemyType === 'puffer') {
-          damage = getBeeDamage() * 2; // Double damage for strong against enemy.type ele and puffer
+          damage = Math.round(getBeeDamage() * 2); // Double damage for strong against enemy.type ele and puffer
         } else if (enemyType === 'octo') {
-          damage = getBeeDamage() * 0.3; // Half damage for weak against enemy.type shark and pig
+          damage = Math.round(getBeeDamage() * 0.5); // Half damage for weak against enemy.type shark and pig
         } else {
-          damage = getBeeDamage();
+          damage = Math.round(getBeeDamage());
         }
         enemy.currentHP -= damage;
         break;
@@ -3147,6 +3135,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     app.ticker.add(update); // Start the ticker update for hitsplat animation
   }
+
 
   function critterAttack(critter, enemy, critterAttackTextures) {
     // Reduce enemy's HP
