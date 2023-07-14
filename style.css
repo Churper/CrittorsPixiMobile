@@ -119,7 +119,7 @@ touch-action: manipulation;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-
+z-index: 99999999999999999999999;
   touch-action: manipulation;
 }
 
@@ -717,14 +717,18 @@ touch-action: manipulation;
 
 
 #proceedAnyway {
-  padding: 20px; /* Makes the button larger */
-  font-size: 1.5em; /* Makes the text larger */
-  background-color: #4CAF50; /* Makes the button green */
+  position: fixed; 
+  left: 50%;  /* Positions the left edge of the button at the center of the screen */
+  top: 50%;  /* Positions the top edge of the button at the center of the screen */
+  transform: translate(-50%, 30px); /* Moves the button so its center is at the screen center, and then down by 30px */
+  padding: 20px;
+  font-size: 1.5em;
+  background-color: #4CAF50;
   border: none;
   color: white;
-  cursor: pointer; /* Changes the cursor when you hover over the button */
+  cursor: pointer;
 }
 
 #proceedAnyway:hover {
-  background-color: #45a049; /* Changes the button's color when you hover over it */
+  background-color: #45a049;
 }
