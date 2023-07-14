@@ -16,18 +16,24 @@ body {
 
 }
 #rotateDevice {
+  min-height: 520px;
+
   display: none;
   position: fixed;
+  background-image: url("https://i.imgur.com/YtBjxdf.png");
+  background-size: 100%, 100%;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
   text-align: center;
   padding-top: 20%;
   font-size: 2em;
   z-index: 9999;
+}
+#playButton {
+  width: 150px;
+  height: 150px;
 }
 #ui-overlay {
   
@@ -152,11 +158,11 @@ z-index: 99999999999999999999999;
 
 #coffee-amount {
   position: absolute;
-  font-size: 60px;
-  top: -16px;
+  font-size: 48px;
+  top: -4px;
   font-weight: bold;  /* New line added */
 
-  right: 26px;
+  right: 20px;
   width: 100%;
   padding: 5px;
   background-color: transparent;
@@ -661,8 +667,8 @@ z-index: 99999999999999999999999;
   position: absolute;
   top: 12px;
   left: 4vw; 
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   background-image: url('https://i.imgur.com/shRbAl5.png');
   background-size: cover;
   z-index: 4;
@@ -670,7 +676,7 @@ z-index: 99999999999999999999999;
 
 @keyframes snail-movement {
   0% {
-    left: 4vw;
+    left: 12vw;
   }
   100% {
     left: 80vw; /* Adjusted value to ensure it doesn't exceed the progress bar */
@@ -688,9 +694,9 @@ z-index: 99999999999999999999999;
 
 #progress {
   position: fixed;
-  top: 40px;
-  left: 4vw; /* Changed from 80px to vw */
-  width: 88vw;
+  top: 30px;
+  left: 12vw; /* Changed from 80px to vw */
+  width: 68vw;
   height: 20px;
   background-color: rgba(0, 0, 0, 0.363);
   z-index: 2;
@@ -698,8 +704,8 @@ z-index: 99999999999999999999999;
 
 #progress-filled {
   position: fixed;
-  top: 40px;
-  left: 4vw; /* Changed from 80px to vw */
+  top: 30px;
+  left: 12vw; /* Changed from 80px to vw */
   width: 0;
   height: 20px;
   background-color: rgba(0, 0, 0, 0.411);
@@ -708,26 +714,41 @@ z-index: 99999999999999999999999;
 
 @keyframes progress-fill {
   0% {
-    width: 0;
+    width: 0vw;
   }
   100% {
-    width: 80vw; /* Adjusted value to match the progress bar */
+    width: 68vw; /* Adjusted value to match the progress bar */
   }
 }
 
 
 #proceedAnyway {
   position: fixed; 
-  left: 45%;  /* Positions the left edge of the button at the center of the screen */
-  top: 50%;  /* Positions the top edge of the button at the center of the screen */
-  padding: 20px;
-  font-size: 1.5em;
-  background-color: #4CAF50;
+  left: 15%;  /* Positions the left edge of the button at the center of the screen */
+  top: 40%;  /* Positions the top edge of the button at the center of the screen */
+  padding: 30px;  /* Increase padding to make the button larger */
+  font-size: 2em;  /* Increase font size to match the larger button */
+  background-color: #4caf4f00;
   border: none;
   color: white;
   cursor: pointer;
+  transition: transform 0.3s;  /* Transition effect for the scaling */
 }
 
 #proceedAnyway:hover {
-  background-color: #45a049;
+  background-color: #45a04900;
+  transform: scale(2);  /* Scales the button up to 110% when hovered over */
+}
+#chooseScreenSize {
+  position: absolute;
+  top: -40%;  /* Adjust as needed */
+left: 20%;
+  font-family: 'Patrick Hand', sans-serif; /* Change this to the font family you prefer */
+  font-size: 2em; /* Increase or decrease size as needed */
+  color: #ffffff; /* Change to your preferred color */
+  text-align: center;
+  letter-spacing: 0.05em; /* Adjusts spacing between each character */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Provides a shadow to the text */
+  line-height: 1.2; /* Adjusts spacing between lines of text */
+  padding-top: 40%; /* Adjusts the vertical alignment */
 }

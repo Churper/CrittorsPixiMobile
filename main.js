@@ -1,51 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
-  let preferredOrientation = null;
 
-  // Function to determine if the user is on a mobile device
-  function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && window.innerWidth < 800;
-  }
-  
   let rotateMessage = document.getElementById('rotateDevice');
-
-  // If user is on mobile device and it's the first load
-  if (isMobileDevice() && !localStorage.getItem('notFirstLoad')) {
-    console.log('Mobile device detected');
-    window.addEventListener('resize', checkOrientation);
-    checkOrientation();
-    localStorage.setItem('notFirstLoad', 'true');
-  }
-  else {
-    rotateMessage.style.display = "none";
-    mainAppFunction();
-    appStarted = true;
-  }
-
-  function checkOrientation() {
-    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-    let proceedButton = document.getElementById('proceedAnyway');
-
-    if (deviceOrientation !== preferredOrientation) {
-      rotateMessage.style.display = "block";
-      proceedButton.textContent = "Proceed.";
-    } else {
-      rotateMessage.style.display = "none";
-      // Run your app's main function if it's not already running
-      if (!appStarted) {
-        mainAppFunction();
-        appStarted = true;
-      }
-    }
-  }
+  rotateMessage.style.display = "block"; // Always display the new menu
 
   document.getElementById('proceedAnyway').addEventListener('click', function() {
-    preferredOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-    document.getElementById('rotateDevice').style.display = 'none';
+    rotateMessage.style.display = 'none';
     // Run your app's main function here if it's not already running
     if (!appStarted) {
       mainAppFunction();
       appStarted = true;
+      
     }
   });
 
@@ -228,15 +193,15 @@ document.addEventListener('DOMContentLoaded', function () {
     void progressFilled.offsetWidth;
 
     // Set the animations
-    snail.style.animation = 'snail-movement 100s linear, snail-animation 1s steps(2) infinite';
-    progressFilled.style.animation = 'progress-fill 100s linear';
+    snail.style.animation = 'snail-movement 60s linear, snail-animation 1s steps(2) infinite';
+    progressFilled.style.animation = 'progress-fill 60s linear';
 
     snail.style.animationPlayState = 'running';
     progressFilled.style.animationPlayState = 'running';
 
     timer = setInterval(() => {
       const diff = Date.now() - startTime;
-      const percentage = Math.min(diff / 1000 / 100, 1); // 100 seconds
+      const percentage = Math.min(diff / 60000, 1); // 100 seconds
 
       if (percentage === 1) {
         clearInterval(timer);
@@ -244,8 +209,8 @@ document.addEventListener('DOMContentLoaded', function () {
         timerFinished = true;
         snail.style.animation = 'none';
         progressFilled.style.animation = 'none';
-        snail.style.left = 'calc(88%)';
-        progressFilled.style.width = '84%';
+        snail.style.left = 'calc(12%)';
+        progressFilled.style.width = '0%';
       }
     }, 10);
   }
@@ -275,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
     snail.style.animation = 'none';
     progressFilled.style.animation = 'none';
 
-    snail.style.left = 'calc(4%)';
+    snail.style.left = 'calc(12%)';
     progressFilled.style.width = '0%';
 
     if (timer) {
@@ -673,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     // Garbage Button
     const garbageButton = createGarbageButton(backgroundSprite);
-    garbageButton.position.set(backgroundSprite.width - garbageButton.width - 10, backgroundSprite.height / 2);
+    garbageButton.position.set(backgroundSprite.width - garbageButton.width - 10, backgroundSprite.height);
     pauseMenuContainer.addChild(garbageButton);
   
     // Adjust position and add children to the container
@@ -722,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // The remaining helper functions (createBackgroundSprite, createBorder, getTextStyle, createText, createVolumeSlider, createVolumeButton, createGarbageButton, createSliderBall) will need to be implemented.
   function createBackgroundSprite() {
     const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    backgroundSprite.width = app.screen.width - 20;
+    backgroundSprite.width = app.screen.width;
     backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
     backgroundSprite.tint = 0xFFFFFF; // White color
     backgroundSprite.alpha = 0.8; // Semi-transparent background
@@ -851,7 +816,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function createGarbageButton(backgroundSprite) {
     const garbageButton = new PIXI.Text('🗑️', { fontSize: 80 });
     garbageButton.anchor.set(0.5);
-    garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height / 2);
+    garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height -200 );
 
     garbageButton.interactive = true;
     garbageButton.buttonMode = true;
@@ -1345,22 +1310,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-
-  menuSprite.anchor.set(0.5);
-  menuSprite.width = app.screen.width;
-  menuSprite.height = app.screen.height - 26;
-  menuSprite.position.set(app.screen.width / 2, app.screen.height / 2);
-  app.stage.addChild(menuSprite);
   document.body.appendChild(app.view);
-  const playButtonTexture = PIXI.Texture.from('https://i.imgur.com/5zdfKQG.png');
-  const playButton = new PIXI.Sprite(playButtonTexture);
-  playButton.anchor.set(.5, .5);
-  playButton.interactive = true;
-  playButton.buttonMode = true;
-  playButton.position.set(app.screen.width / 4.2, app.screen.height / 4.2);
+ 
   const hoverScale = 1.2;
   const hoverAlpha = 0.8;
-  app.stage.addChild(playButton);
+ 
 
   function startGame() {
 
@@ -1369,6 +1323,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setisPaused(true);
       }
     });
+    
 
     const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
     const loadingSprite = new PIXI.Sprite(loadingTexture);
@@ -1378,7 +1333,6 @@ document.addEventListener('DOMContentLoaded', function () {
     loadingSprite.position.set(app.screen.width / 2, app.screen.height / 2);
     loadingSprite.alpha = 1; // Start fully opaque
     app.stage.removeChild(menuSprite);
-    app.stage.removeChild(playButton);
     app.stage.addChild(loadingSprite);
     const sound = new Audio();
     sound.src = "./theme.ogg";
@@ -2522,7 +2476,7 @@ foreground.y = Math.max(app.screen.height);
   function createSpawnEnemy(critterWalkTextures, enemyName) {
     const enemy = new PIXI.AnimatedSprite(critterWalkTextures);
     enemy.scale.set(determineEnemyScale(enemyName));
-    enemy.exp = 20 + Math.floor(currentRound * 2);
+    enemy.exp = 32 + Math.floor(currentRound * 2);
     enemy.anchor.set(0.5, 0.5);
     enemy.resett = false;
     enemy.type = enemyName;
@@ -3144,9 +3098,9 @@ foreground.y = Math.max(app.screen.height);
     switch (characterType) {
       case 'character-snail':
         if (enemyType === 'imp' || enemyType === 'toofer') {  
-          damage = Math.round(getSnailDamage() * 2); // Half damage for weak against enemy.type toofer
+          damage = Math.round(getSnailDamage() * 1.75); // Half damage for weak against enemy.type toofer
         } else if (enemyType === 'scorp') {
-          damage = Math.round(getSnailDamage() * .5); // Double damage for strong against enemy.type scorp and puffer
+          damage = Math.round(getSnailDamage() * .75); // Double damage for strong against enemy.type scorp and puffer
         } else {
           damage = Math.round(getSnailDamage());
         }
@@ -3155,8 +3109,8 @@ foreground.y = Math.max(app.screen.height);
       case 'character-bird':
         if (enemyType === 'imp' || enemyType === 'toofer') {
           damage = Math.round(getBirdDamage() * 0.3); // 1/4 damage for weak against enemy.type imp and toofer
-        } else if (enemyType === 'shark' || enemyType === 'octo') {
-          damage = Math.round(getBirdDamage() * 2); // Double damage for strong against enemy.type shark and octo
+        } else if (enemyType === 'shark' || enemyType === 'puffer') {
+          damage = Math.round(getBirdDamage() * 1.75); // Double damage for strong against enemy.type shark and octo
         } else {
           damage = Math.round(getBirdDamage());
         }
@@ -3164,19 +3118,19 @@ foreground.y = Math.max(app.screen.height);
         break;
       case 'character-frog':
         if (enemyType === 'pig' || enemyType === 'scorp') {
-          damage = Math.round(getFrogDamage() * 2); // Double damage for strong against enemy.type pig and scorp
+          damage = Math.round(getFrogDamage() * 1.75); // Double damage for strong against enemy.type pig and scorp
         } else if (enemyType === 'puffer') {
-          damage = Math.round(getFrogDamage() * 0.5); // Half damage for weak against enemy.type ele and octo
+          damage = Math.round(getFrogDamage() * 0.75); // Half damage for weak against enemy.type ele and octo
         } else {
           damage = Math.round(getFrogDamage());
         }
         enemy.currentHP -= damage;
         break;
       case 'character-bee':
-        if (enemyType === 'ele' || enemyType === 'puffer') {
-          damage = Math.round(getBeeDamage() * 2); // Double damage for strong against enemy.type ele and puffer
+        if (enemyType === 'ele' || enemyType === 'octo') {
+          damage = Math.round(getBeeDamage() * 1.75); // Double damage for strong against enemy.type ele and puffer
         } else if (enemyType === 'octo') {
-          damage = Math.round(getBeeDamage() * 0.5); // Half damage for weak against enemy.type shark and pig
+          damage = Math.round(getBeeDamage() * 0.75); // Half damage for weak against enemy.type shark and pig
         } else {
           damage = Math.round(getBeeDamage());
         }
@@ -3742,6 +3696,9 @@ foreground.y = Math.max(app.screen.height);
   }
 
   function handleVisibilityChange() {
+    if (!document.hidden && !isSpawning && !getisDead()) {
+      spawnEnemies();
+  }
     if (document.hidden || document.webkitHidden) {
       // Document is hidden, perform actions here (e.g., pause the game)
       if (getPlayerCurrentHealth() > 0) {
@@ -3784,16 +3741,7 @@ foreground.y = Math.max(app.screen.height);
     }, 10); // Adjust the interval duration by changing this value
   }
 
-  playButton.on('mouseover', () => {
-    playButton.scale.set(hoverScale);
-    playButton.alpha = hoverAlpha;
-  });
 
-  playButton.on('mouseout', () => {
-    playButton.scale.set(1);
-    playButton.alpha = 1;
-  });
-  playButton.on('pointertap', handlePlayClick);
 
   // Add event listeners for visibility change
   document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -3999,8 +3947,10 @@ foreground.y = Math.max(app.screen.height);
 
     }
   }
-
-
+  resetTimer();
+      startTimer();
+startGame();
+isGameStart=true;
   }
 
 });
