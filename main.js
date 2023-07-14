@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 0;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -118,6 +118,28 @@ document.addEventListener('DOMContentLoaded', function () {
     'character-bee': { speed: getBeeSpeed(), attack: getBeeDamage(), health: getBeeHealth() },
     // Add stats for other characters here
   };
+
+  const enemyPortraits = [
+    { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
+    { name: 'octo_portrait', url: 'https://i.imgur.com/F3OYSDm.png' },
+    { name: 'pig_portrait', url: 'https://i.imgur.com/ZxaI7rG.png' },
+    { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
+    { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
+    { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
+    { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
+    { name: 'shark_portrait', url: 'https://i.imgur.com/9gLYMax.png' }
+  ];
+
+  const portraitNames = {
+    'ele': 'ele_portrait',
+    'puffer': 'puffer_portrait',
+    'octo': 'octo_portrait',
+    'pig': 'pig_portrait',
+    'scorp': 'scorp_portrait',
+    'toofer': 'toofer_portrait',
+    'imp': 'imp_portrait',
+  };
+
   let pauseTime = null;
   let startTime = null;
   let isPaused1 = false;
@@ -246,9 +268,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  
-  
-  
+
+
+
 
 
   // Revised setCurrentFrogHealth function
@@ -558,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ((value && pauseMenuContainer) || (!value && isUnpausing) || app.stage.children.includes(reviveDialogContainer)) {
       console.log('returning early');
       return true;
- 
+
     }
 
     const spawnTextElement = document.getElementById('spawn-text');
@@ -622,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (value) {
-    
+
       pauseMenuContainer = createPauseMenuContainer();
     } else {
       if (pauseMenuContainer) {
@@ -820,7 +842,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setisPaused(!getisPaused());
         console.log("PAUSED");
       }
-      
+
     }
   });
 
@@ -1274,8 +1296,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function startGame() {
 
     window.addEventListener('blur', () => {
-if(getPlayerCurrentHealth() > 0){
-      setisPaused(true);}
+      if (getPlayerCurrentHealth() > 0) {
+        setisPaused(true);
+      }
     });
 
     const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
@@ -1896,7 +1919,7 @@ if(getPlayerCurrentHealth() > 0){
             updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
           }
           setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 25);
-          updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()), critter);
+          updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()));
 
         }
 
@@ -1912,11 +1935,9 @@ if(getPlayerCurrentHealth() > 0){
         currentRound++;
         roundOver = true;
         setEnemiesInRange(0);
-        isCombat = false;
+
         console.log("enemies has been updated to", getEnemiesInRange())
-        resett = false;
-        isAttacking = false;
-        isCombat = false;
+        resetEnemiesState();
         exploded = true;
 
 
@@ -1934,8 +1955,8 @@ if(getPlayerCurrentHealth() > 0){
       initialClouds = clouds.position.x;
       let once = 0;
       app.ticker.add(() => {
-        if(isTimerFinished()){
-           pauseTimer();
+        if (isTimerFinished()) {
+          pauseTimer();
         }
         //console.log("HERXOROR:", getEnemiesInRange());
         if (reviveDialogContainer) {
@@ -2004,7 +2025,7 @@ if(getPlayerCurrentHealth() > 0){
             }
 
             if (exploded) {
-           
+
               mountain1.tint = getRandomColor();
               mountain2.tint = getRandomColor();
               mountain3.tint = getRandomColor3();
@@ -2028,7 +2049,7 @@ if(getPlayerCurrentHealth() > 0){
               }
               exploded = false;
               saveGame();
-             
+
               spawnEnemies();
               resetTimer();
               startTimer();
@@ -2111,6 +2132,7 @@ if(getPlayerCurrentHealth() > 0){
             roundOver = false;
             // setisPaused(false);
             setIsDead(false);
+            resetEnemiesState();
 
           }
           return;
@@ -2164,7 +2186,7 @@ if(getPlayerCurrentHealth() > 0){
 
           }
           critter.position.x -= 20;
-          updateEXP(getCharEXP(getCurrentCharacter()), getEXPtoLevel(getCurrentCharacter), critter);
+          updateEXP(getCharEXP(getCurrentCharacter()), getEXPtoLevel(getCurrentCharacter));
           document.getElementById('spawn-text').style.visibility = 'hidden';
           updateVelocity();
           setCharSwap(false);
@@ -2272,37 +2294,37 @@ if(getPlayerCurrentHealth() > 0){
       updateEXP(0, expToLevel);
       updatePlayerHealthBar(getPlayerCurrentHealth() / getPlayerHealth() * 100);
       // Start the timer animation
-      if(getPlayerCurrentHealth() <= 0){
-    
-
-setisPaused(true);
+      if (getPlayerCurrentHealth() <= 0) {
 
 
+        setisPaused(true);
 
 
 
 
 
-    // Toggle the visibility of the character info boxes
-    const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
 
-    if (isCharacterMenuOpen) {
-      characterBoxes.forEach((box) => {
-        box.style.visibility = 'hidden';
-      });
-      isCharacterMenuOpen = false;
-    } else {
-      characterBoxes.forEach((box) => {
-        if (selectedCharacter !== "" && box.classList.contains(selectedCharacter)) {
-          box.style.visibility = 'hidden';
+
+        // Toggle the visibility of the character info boxes
+        const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
+
+        if (isCharacterMenuOpen) {
+          characterBoxes.forEach((box) => {
+            box.style.visibility = 'hidden';
+          });
+          isCharacterMenuOpen = false;
         } else {
-          box.style.visibility = 'visible';
+          characterBoxes.forEach((box) => {
+            if (selectedCharacter !== "" && box.classList.contains(selectedCharacter)) {
+              box.style.visibility = 'hidden';
+            } else {
+              box.style.visibility = 'visible';
+            }
+          });
+          isCharacterMenuOpen = true;
         }
-      });
-      isCharacterMenuOpen = true;
-    }
 
-    // Start the cooldown
+        // Start the cooldown
 
 
 
@@ -2331,7 +2353,7 @@ setisPaused(true);
 
 
       spawnEnemies();
-   
+
 
 
     }
@@ -2348,7 +2370,7 @@ setisPaused(true);
       return; // If already spawning or game is paused or player is dead, exit the function
     }
 
-    if(isTimerFinished()){
+    if (isTimerFinished()) {
       return
     }
 
@@ -2369,14 +2391,8 @@ setisPaused(true);
     enemySpawnTimeout = setTimeout(() => {
       isSpawning = false; // Set isSpawning to false when the timeout completes
       spawnEnemies(); // Spawn the next enemy
-    }, interval) - currentRound * 100;
+    }, interval- (currentRound * 125)) ;
   }
-
-
-
-
-
-
 
 
   function checkEnemyCollision(projectile, enemy) {
@@ -2392,99 +2408,83 @@ setisPaused(true);
     );
   }
 
-  const enemyPortraits = [
-    { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
-    { name: 'octo_portrait', url: 'https://i.imgur.com/F3OYSDm.png' },
-    { name: 'pig_portrait', url: 'https://i.imgur.com/ZxaI7rG.png' },
-    { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
-    { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
-    { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
-    { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
-    { name: 'shark_portrait', url: 'https://i.imgur.com/9gLYMax.png' }
 
 
-
-  ];
-  function updateEnemyPortrait(enemyName) {
-
-    const enemyPortrait = document.getElementById('enemy-portrait');
-    console.log("FLUBX", enemyPortrait);
-    const portraitUrl = getEnemyPortraitUrl(enemyName);
-    enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
-    enemyPortrait.style.display = 'block'; // Make the element visible
-  }
   function getEnemyPortraitUrl(enemyName) {
     // Find the matching enemy portrait URL based on enemy name
     const enemy = enemyPortraits.find(portrait => portrait.name === enemyName);
     return enemy ? enemy.url : ''; // Return the URL or an empty string if not found
   }
   let enemyPortrait;
+
+
+
   function spawnEnemy(critter, critterAttackTextures, critterWalkTextures, enemyName) {
-    let enemyAdded = false;
-    const enemy = new PIXI.AnimatedSprite(critterWalkTextures); // Start with idle textures
-    let resett = false;
-    const minScale = 0.45;
-    const maxScale = 0.55;
-    const randomScale = minScale + Math.random() * (maxScale - minScale);
-    const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
-    enemy.scale.set(.45);
+    const enemy = createSpawnEnemy(critterWalkTextures, enemyName);
 
-
-    if (enemyName == "puffer") {
-      enemy.scale.set(.35);
-    }
-    if (enemyName == "octo") {
-      enemy.scale.set(.45);
-    }
-    if (enemyName == "scorp") {
-      enemy.scale.set(.4);
-    }
-    if (enemyName == "pig") {
-      enemy.scale.set(.5);
-    }
-    if (enemyName == "ele") {
-      enemy.scale.set(.45);
-    }
-    if (enemyName == "imp") {
-      enemy.scale.set(.45);
-    }
-    if (enemyName == "shark") {
-      enemy.scale.set(.45);
-      enemy.emerging = false; 
-
-    }
-    console.log("ENEMY NAME", enemyName);
-
-     
-        enemy.scale.x *= -1; // Flip the enemy horizontally
-        console.log("ENEMY XXXXXXXXXXXXXXXXNAME", enemyName);
-      
-
-    
-    enemy.exp = 20 + Math.floor(currentRound * 2);
-    enemy.anchor.set(0.5, .5);
-    enemy.position.set(3000, app.screen.height - 90 - enemy.height / 4 - randomScale * 120 + (Math.random() * 60 - 30));
-    enemy.zIndex = enemy.position.y + 10000;
-    enemy.animationSpeed = 0.25;
-    if (enemyName == "pig") {
-      enemy.animationSpeed = 0.23;
-
-    }
-    enemy.loop = true;
-    enemy.isAlive = true;
-    enemy.isVisible;
-    enemy.attackDamage = 1 + currentRound;
-    enemy.maxHP = 80 + currentRound * 5;
-    enemy.currentHP = 80 + currentRound * 5;
-    enemy.play();
-    enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor
-    let isAttacking = false; // Flag to track if enemy is attacking
-
-    // Add enemy to the enemies array
-    addEnemies(enemy);
+    addEnemies(enemy); // add the already created enemy
     if (enemy.isAlive) {
       app.stage.addChild(enemy);
     }
+
+    handleEnemySorting(enemy);
+
+    app.ticker.add(() => {
+      if (getisPaused()) {
+        return;
+      }
+
+      if (app.stage.children.includes(enemy)) {
+        handleEnemyActions(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName);
+      } else {
+        removeEnemy(enemy);
+        return;
+      }
+    });
+  }
+
+  function createSpawnEnemy(critterWalkTextures, enemyName) {
+    const enemy = new PIXI.AnimatedSprite(critterWalkTextures);
+    enemy.scale.set(determineEnemyScale(enemyName));
+    enemy.exp = 20 + Math.floor(currentRound * 2);
+    enemy.anchor.set(0.5, 0.5);
+    enemy.resett = false;
+    enemy.isAttacking = false;
+    enemy.enemyAdded = false;
+    enemy.position.set(2800, app.screen.height - 120 - enemy.height / 4 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
+    enemy.zIndex = enemy.position.y + 10000;
+    enemy.animationSpeed = enemyName === "pig" ? 0.23 : 0.25;
+    enemy.loop = true;
+    enemy.isAlive = true;
+    enemy.attackDamage = 2 + currentRound;
+    enemy.maxHP = 80 + currentRound * 7;
+    enemy.currentHP = enemy.maxHP;
+    enemy.scale.x *= -1; // Flip the enemy horizontally
+    enemy.play();
+    const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
+    enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor    console.log("enemy created", enemyName);
+    return enemy;
+  }
+
+  function determineEnemyScale(enemyName) {
+    switch (enemyName) {
+      case "puffer":
+        return 0.35;
+      case "octo":
+      case "ele":
+      case "imp":
+      case "shark":
+        return 0.45;
+      case "scorp":
+        return 0.4;
+      case "pig":
+        return 0.5;
+      default:
+        return 0.45;
+    }
+  }
+
+  function handleEnemySorting(enemy) {
     if (app.stage.children.includes(enemy)) {
       enemies.sort((a, b) => a.position.y - b.position.y);
       enemies.forEach((enemy) => {
@@ -2496,138 +2496,105 @@ setisPaused(true);
         app.stage.addChild(enemy);
       });
     }
-    enemy.play();
-    app.ticker.add(() => {
+  }
 
-      if (getisPaused()) {
-        // Game is paused, skip logic
-        return;
+  function handleEnemyActions(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName) {
+    if (getisDead()) {
+      return;
+    }
+
+    checkProjectileCollisions(critter, enemy);
+    if (getisDead()) {
+      enemy.textures = critterWalkTextures;
+      enemy.loop = true;
+      // enemy.play();
+      return;
+    }
+
+    if (enemy.isAlive && enemy.position.x - critter.position.x > 100 && enemy.position.x > 250) {
+      handleEnemyMoving(critterWalkTextures, enemy);
+    } else {
+      handleEnemyCombat(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName);
+    }
+
+    //isCombat = false;
+  }
+
+  function handleEnemyMoving(critterWalkTextures, enemy) {
+    if (enemy.textures !== critterWalkTextures && getEnemiesInRange() === 0) {
+      enemy.textures = critterWalkTextures;
+      enemy.loop = true;
+      enemy.play();
+    }
+    enemy.position.x += enemy.vx;
+  }
+
+  function handleEnemyCombat(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName) {
+
+
+    if (critter.textures !== frogWalkTextures && critter.currentFrame === critter.totalFrames - 2) {
+      handleCritterAttack(critter, enemy, critterAttackTextures);
+    } else if (critter.currentFrame === critter.totalFrames - 1) {
+      setIsCharAttacking(false);
+    }
+
+    if (!enemy.enemyAdded) {
+      addEnemyInRange(enemy);
+      return;
+    }
+
+    if (!getisDead() && !enemy.isAttacking && enemy.isAlive) {
+      handleEnemyAttack(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName);
+    }
+  }
+
+
+  function handleCritterAttack(critter, enemy, critterAttackTextures) {
+    if (!getIsCharAttacking()) {
+      setIsCharAttacking(true);
+      if (getCurrentCharacter() !== "character-bird") {
+        critterAttack(critter, enemy, critterAttackTextures);
       }
+    }
+  }
 
-      if (app.stage.children.includes(enemy)) {
+  function addEnemyInRange(enemy) {
+    enemy.enemyAdded = true;
+    setEnemiesInRange(getEnemiesInRange() + 1);
+  }
+
+  function handleEnemyAttack(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName) {
+    if (!isCombat) {
+      prepareEnemyPortrait(enemyName);
+    }
+
+    enemy.isAttacking = true;
+    enemy.isCombat = true;
+
+    handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures, enemyName);
+  }
+
+  function prepareEnemyPortrait(enemyName) {
+    enemyPortrait = document.getElementById('enemy-portrait');
+    updateEnemyGrayscale(100);
 
 
-        if (getisDead()) {
-         
-          resett = true;
+    if (portraitNames.hasOwnProperty(enemyName)) {
+      enemyName = portraitNames[enemyName];
+    }
 
-        }
+    const portraitUrl = getEnemyPortraitUrl(enemyName);
+    enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
+    enemyPortrait.style.display = 'block';
+  }
 
-        
-        checkProjectileCollisions(critter, enemy);
-        if (getisDead()) {
-          enemy.textures = critterWalkTextures;
-          enemy.loop = true;
-          enemy.play();
-          return;
-        }
-
-        if (enemy.isAlive && (enemy.position.x - critter.position.x > 100)) {
-          if (enemy.position.x > 250) {
-            if (enemy.textures !== critterWalkTextures) {
-              if (getEnemiesInRange() == 0) {
-                enemy.textures = critterWalkTextures;
-                enemy.loop = true;
-                enemy.play();
-              }
-            }
-            enemy.position.x += enemy.vx;
-          }
-        } else {
-
-          if (resett == true) {
-            inRange = false;
-            if (!getisDead()) {
-              if (app.stage.children.includes(critter)) {
-                isCombat = false;
-                resett = false;
-                isAttacking = false;
-                isCombat = false;
-                enemyAdded = false;
-
-              }
-
-            }
-          }
-
-          if ((critter.textures !== frogWalkTextures)) {
-            if (critter.currentFrame === critter.totalFrames - 2) {
-              if (!getIsCharAttacking()) {
-                setIsCharAttacking(true);
-                if (getCurrentCharacter() != "character-bird") {
-                  critterAttack(critter, enemy, critterAttackTextures);
-                }
-              }
-            } else if (critter.currentFrame === critter.totalFrames - 1) {
-              setIsCharAttacking(false);
-            }
-          }
-          if (!enemyAdded) {
-            enemyAdded = true;
-            setEnemiesInRange(getEnemiesInRange() + 1);
-            return;
-          }
-          if (!getisDead() && !isAttacking && enemy.isAlive) {
-            if (!isCombat) {
-              enemyPortrait = document.getElementById('enemy-portrait');
-              updateEnemyGrayscale(100);
-              // Determine the enemy name
-
-              console.log("FLUB", enemyName);
-              switch (enemyName) {
-                case 'ele':
-                  enemyName = 'ele_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'puffer':
-                  enemyName = 'puffer_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'octo':
-                  enemyName = 'octo_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'pig':
-                  enemyName = 'pig_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'scorp':
-                  enemyName = 'scorp_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'toofer':
-                  enemyName = 'toofer_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-                case 'imp':
-                  enemyName = 'imp_portrait';
-                  updateEnemyPortrait(enemyName);
-                  break;
-              }
-
-              // Update the enemy portrait URL based on the enemy name
-              const portraitUrl = getEnemyPortraitUrl(enemyName);
-              enemyPortrait.style.backgroundImage = `url(${portraitUrl})`;
-
-              enemyPortrait.style.display = 'block'; // Make the element visible
-            }
-            isAttacking = true;
-            isCombat = true;
-            handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures,enemyName);
-          }
-        }
-        isCombat = false;
-      } else {
-        app.stage.removeChild(enemy);
-        // Remove the enemy object from the enemies array
-        const index = getEnemies().indexOf(enemy);
-        if (index !== -1) {
-          getEnemies().splice(index, 1);
-        }
-        app.ticker.remove(() => { });
-        return;
-      }
-    });
+  function removeEnemy(enemy) {
+    app.stage.removeChild(enemy);
+    const index = getEnemies().indexOf(enemy);
+    if (index !== -1) {
+      getEnemies().splice(index, 1);
+    }
+    app.ticker.remove(() => { });
   }
 
 
@@ -2707,9 +2674,24 @@ setisPaused(true);
 
   }
 
+  function resetEnemiesState() {
+    getEnemies().forEach(enemy => {
+      enemy.isAlive = true;
+      enemy.isCombat = false;
+      enemy.inRange = false;
+
+      enemy.enemyAdded = false;
+      enemy.isAttacking = false; // allow the enemy to attack again
+      enemy.play();  // restart the walking animation
+    });
+
+
+
+
+  }
   function playGhostFly() {
-   
-      pauseTimer();
+
+    pauseTimer();
     setEnemiesInRange(0);
     setIsDead(true);
     frogGhostPlayer.alpha = 0.5;
@@ -2782,23 +2764,14 @@ setisPaused(true);
   }
 
 
-  function createEnemy(name) {
-    let enemy = {
-        name: name,
-        emerging: false,
-      
-    };
-
-    return enemy;
-}
 
   function resetToAttackTextures(enemy, critterAttackTextures) {
     enemy.textures = critterAttackTextures;
     enemy.loop = true;
     enemy.gotoAndPlay(0);
-}
+  }
 
-  function handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures,enemyName) {
+  function handleEnemyAttacking(enemy, critterAttackTextures, critter, critterWalkTextures, enemyName) {
     if (roundOver) { return; }
 
     console.log("enemyname?", enemyName);
@@ -2806,22 +2779,22 @@ setisPaused(true);
 
     // If the enemy is a shark and it's not currently playing the emerge animation
     if (enemyName === "shark" && !enemy.emerging) {
-        console.log(enemy.name, "TRANSITION");
+      console.log(enemy.name, "TRANSITION");
 
-        // Set the enemy textures to the shark emerge textures and play it once
-        enemy.textures = sharkEmergeTextures;
-        enemy.loop = false;
-        enemy.emerging = true;  // Mark that the shark is in the process of emerging
-        enemy.play();
+      // Set the enemy textures to the shark emerge textures and play it once
+      enemy.textures = sharkEmergeTextures;
+      enemy.loop = false;
+      enemy.emerging = true;  // Mark that the shark is in the process of emerging
+      enemy.play();
 
-        enemy.onComplete = () => {
-            // After the shark emerge animation completes, set the enemy textures to the attacking textures
-            enemy.emerging = false;  // Mark that the shark has finished emerging
-            resetToAttackTextures(enemy, critterAttackTextures);
-        };
-    } else if (!enemy.emerging) {
-        // For other enemies, directly set the enemy textures to the attacking textures
+      enemy.onComplete = () => {
+        // After the shark emerge animation completes, set the enemy textures to the attacking textures
+        enemy.emerging = false;  // Mark that the shark has finished emerging
         resetToAttackTextures(enemy, critterAttackTextures);
+      };
+    } else if (!enemy.emerging) {
+      // For other enemies, directly set the enemy textures to the attacking textures
+      resetToAttackTextures(enemy, critterAttackTextures);
     }
 
 
@@ -2882,7 +2855,7 @@ setisPaused(true);
                 for (let i = 0; i < getEnemies().length; i++) {
                   let enemy = getEnemies()[i];
                   // console.log(i);
-                  enemy.textures = critterWalkTextures
+                  enemy.stop();
                   // Destroy the enemy object to free up memory
                 }
                 //enemy.play();
@@ -2900,8 +2873,11 @@ setisPaused(true);
             hasPlayedSound = true;
           }
           else {
-            isAttacking = false;
-            isCombat = false;
+
+
+
+
+
           }
 
         }
@@ -3309,7 +3285,7 @@ setisPaused(true);
       //ox setPlayerEXP(getPlayerEXP() + 100);
       console.log("YEP", getCharEXP(getCurrentCharacter()));
       console.log("YEPX", getEXPtoLevel(getCurrentCharacter()));
-      updateEXP(getCharEXP(getCurrentCharacter()) + enemy.exp, getEXPtoLevel(getCurrentCharacter()), critter);
+      updateEXP(getCharEXP(getCurrentCharacter()) + enemy.exp, getEXPtoLevel(getCurrentCharacter()));
 
       // Create the EXP drop text
 
@@ -3402,13 +3378,13 @@ setisPaused(true);
     document.getElementById('enemy-portrait').style.filter = `grayscale(${grayscalePercentage}%)`;
   }
 
-  function updateEXP(exp, expToLevel1, critter) {
+  function updateEXP(exp, expToLevel1) {
     let leftover = 0;
     if (exp >= getEXPtoLevel(getCurrentCharacter())) {
       leftover = exp - expToLevel1;
       setCharEXP(getCurrentCharacter(), leftover);
       setEXPtoLevel(getCurrentCharacter(), getEXPtoLevel(getCurrentCharacter() + expToLevel1) * 1.1);
-      levelUp(critter);
+      levelUp();
 
     }
     const playerEXPBarFill = document.getElementById('exp-bar-fill');
@@ -3427,7 +3403,7 @@ setisPaused(true);
 
   let isUpgradeBoxesAnimated = false;
 
-  function animateUpgradeBoxes(critter) {
+  function animateUpgradeBoxes() {
     console.log("SLECT", getSelectLevel());
     if (isUpgradeBoxesAnimated) {
       return; // If already animated, exit the function
@@ -3452,7 +3428,7 @@ setisPaused(true);
       // Define the click event handler separately
       box.clickHandler = () => {
         const upgradeType = classNames[1];
-        handleUpgrade(upgradeType, critter);
+        handleUpgrade(upgradeType);
       };
 
       box.addEventListener('click', box.clickHandler); // Add the updated event listener
@@ -3518,7 +3494,7 @@ setisPaused(true);
   }
 
 
-  function handleUpgrade(upgradeType, critter) {
+  function handleUpgrade(upgradeType) {
     const upgradeBoxes = document.getElementsByClassName('upgrade-box');
 
     // Get the current character
@@ -3536,7 +3512,7 @@ setisPaused(true);
 
         stats.level++;
         // Update the display
-        stats.speed += 1; // Update the speed stat for the current character
+        stats.speed += .25; // Update the speed stat for the current character
         setCharacterSpeed(currentCharacter, stats.speed);
         setSpeedChanged(true);
         //console.log(getCharacterSpeed(currentCharacter));
@@ -3550,7 +3526,6 @@ setisPaused(true);
         // Logic for attack upgrade
         console.log('Attack upgrade');
         var divElement = document.getElementById("swords-level");
-        stats.attack++;
         stats.attack += 3; // Update the attack stat for the current character
         setCharacterDamage(currentCharacter, stats.attack);
         // setSnailDamage(getSnailDamage() + 5);
@@ -3597,7 +3572,7 @@ setisPaused(true);
     isUpgradeBoxesAnimated = false;
   }
 
-  function levelUp(critter) {
+  function levelUp() {
     leveling = true;
     const characterLevelElement = document.getElementById("character-level");
 
@@ -3642,12 +3617,12 @@ setisPaused(true);
         updateCharacterLevel(beeLevel++);
         break;
       default:
-        console.log('Invalid character', critter);
+        console.log('Invalid character');
         return;
     }
 
     setSelectLevel(getSelectLevel() + 1);
-    animateUpgradeBoxes(critter);
+    animateUpgradeBoxes();
     levelSound.volume = .2;
     levelSound.play();
     leveling = false;
@@ -3656,18 +3631,19 @@ setisPaused(true);
   function handleVisibilityChange() {
     if (document.hidden || document.webkitHidden) {
       // Document is hidden, perform actions here (e.g., pause the game)
-      if(getPlayerCurrentHealth() > 0) {
-      setisPaused(true);
+      if (getPlayerCurrentHealth() > 0) {
+        setisPaused(true);
       }
     } else {
-      if(getPlayerCurrentHealth() > 0) {
-      // Document is visible again, perform actions here (e.g., resume the game)
-      setisPaused(false);}
+      if (getPlayerCurrentHealth() > 0) {
+        // Document is visible again, perform actions here (e.g., resume the game)
+        setisPaused(false);
+      }
     }
   }
 
   function playRoundText(round) {
-  
+
     // Get the element with id "Round-text"
     var roundText = document.getElementById("round-text");
 
@@ -3820,7 +3796,7 @@ setisPaused(true);
 
       const gameData = JSON.parse(savedData);
       currentRound = gameData.currentRound;
-
+    
       // Load the saved values into your variables
       setCurrentFrogHealth(gameData.currentFrogHealth);
       setCurrentSnailHealth(gameData.currentSnailHealth);
@@ -3834,7 +3810,7 @@ setisPaused(true);
       setEXPtoLevel("character-snail", gameData.snailEXPToLevel);
       setEXPtoLevel("character-bee", gameData.beeEXPToLevel);
       setEXPtoLevel("character-bird", gameData.birdEXPToLevel);
-
+      updateEXP(gameData.frogEXP, gameData.frogEXPToLevel);
 
 
       expToLevel = gameData.expToLevel;
@@ -3885,7 +3861,7 @@ setisPaused(true);
       level = getFrogLevel();
       updateLightning.textContent = getFrogSpeed().toString();
       updateHP.textContent = getFrogHealth().toString();
-      console.log("LOADER",getCharacterDamage('character-frog').toString());
+      console.log("LOADER", getCharacterDamage('character-frog').toString());
       updateDamage.textContent = getCharacterDamage('character-frog').toString();
       characterLevelElement.textContent = 'Lvl. ' + level;
       isCharacterMenuOpen = false; // Flag to track if the character menu is open
