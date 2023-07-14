@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
   let proceedingInPortrait = false;
 
   window.addEventListener('resize', checkOrientation);
-  
+  checkOrientation();
+
   function checkOrientation() {
       let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
       let rotateMessage = document.getElementById('rotateDevice');
@@ -14,21 +15,30 @@ document.addEventListener('DOMContentLoaded', function () {
           } else {
               rotateMessage.style.display = "none";
               // Run your app's main function if it's not already running
-              // mainAppFunction();
+              if (!appStarted) {
+                  mainAppFunction();
+                  appStarted = true;
+              }
           }
       } else {
           rotateMessage.style.display = "none";
           proceedingInPortrait = false; // Reset this since they're back in landscape mode
           // Run your app's main function if it's not already running
-          // mainAppFunction();
+          if (!appStarted) {
+              mainAppFunction();
+              appStarted = true;
+          }
       }
   }
-  
+
   document.getElementById('proceedAnyway').addEventListener('click', function() {
       proceedingInPortrait = true;
       document.getElementById('rotateDevice').style.display = 'none';
       // Run your app's main function here
-      // mainAppFunction();
+      if (!appStarted) {
+          mainAppFunction();
+          appStarted = true;
+      }
   });
 
   function mainAppFunction() {
