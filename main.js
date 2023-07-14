@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
   let snailSpeed = 1;
-  let snailDamage = 24;
+  let snailDamage = 16;
   let snailHealth = 100;
   let snailLevel = 1;
   let beeLevel = 1;
@@ -52,10 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
   let touchCount = 0;
   let birdHealth = 100;
   let beeSpeed = 1;
-  let beeDamage = 20;
+  let beeDamage = 16;
   let beeHealth = 100;
   let frogSpeed = 1;
-  let frogDamage = 20;
+  let frogDamage = 16;
   let frogHealth = 100;
   let frogLevel = 1;
   let currentFrogHealth = 100;
@@ -1611,7 +1611,7 @@ document.addEventListener('DOMContentLoaded', function () {
       playerSpawn.loop = false;
       playerSpawn.anchor.set(.65, 0.2);
       playerSpawn.scale.set(0.35);
-
+      updateCurrentLevels();
       enemyDeath.animationSpeed = 0.175;
       enemyDeath.loop = false;
       enemyDeath.anchor.set(0.2, 0);
@@ -2449,6 +2449,7 @@ document.addEventListener('DOMContentLoaded', function () {
     enemy.exp = 20 + Math.floor(currentRound * 2);
     enemy.anchor.set(0.5, 0.5);
     enemy.resett = false;
+    enemy.type = enemyName;
     enemy.isAttacking = false;
     enemy.enemyAdded = false;
     enemy.position.set(2800, app.screen.height - 120 - enemy.height / 4 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
@@ -2482,6 +2483,41 @@ document.addEventListener('DOMContentLoaded', function () {
       default:
         return 0.45;
     }
+  }
+
+  function updateCurrentLevels()
+  {
+    characterLevelElement = document.getElementById("character-level");
+    updateLightning = document.getElementById("lightning-level");
+    updateHP = document.getElementById("heart-level");
+    updateDamage = document.getElementById("swords-level");
+    let level;
+
+    level = getSnailLevel();
+
+    updateLightning.textContent = getSnailSpeed().toString();
+    updateHP.textContent = getSnailHealth().toString();
+    updateDamage.textContent = getSnailDamage().toString();
+
+    level = getBirdLevel();
+    console.log("DIRTY", level);
+    updateLightning.textContent = getBirdSpeed().toString();
+    updateHP.textContent = getBirdHealth().toString();
+    updateDamage.textContent = getBirdDamage().toString();
+
+    level = getFrogLevel();
+    updateLightning.textContent = getFrogSpeed().toString();
+    updateHP.textContent = getFrogHealth().toString();
+    console.log("LOADER", getCharacterDamage('character-frog').toString());
+    updateDamage.textContent = getCharacterDamage('character-frog').toString();
+    characterLevelElement.textContent = 'Lvl. ' + level;
+    isCharacterMenuOpen = false; // Flag to track if the character menu is open
+
+    level = getBeeLevel();
+    updateLightning.textContent = getBeeSpeed().toString();
+    updateHP.textContent = getBeeHealth().toString();
+    updateDamage.textContent = getBeeDamage().toString();
+
   }
 
   function handleEnemySorting(enemy) {
@@ -3033,7 +3069,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   function drawHitSplat(enemy) {
-
     // Flash hit color for a brief second
     const originalTint = enemy.tint;
     enemy.tint = 0xFF0000; // Set the hit color
@@ -3041,33 +3076,57 @@ document.addEventListener('DOMContentLoaded', function () {
       enemy.tint = originalTint; // Reset to original color
     }, 100);
     let damage = null;
-
-
-    switch (getCurrentCharacter()) {
+    const characterType = getCurrentCharacter();
+    const enemyType = enemy.type;
+  
+    switch (characterType) {
       case 'character-snail':
-        console.log('Snail damage: ', getSnailDamage());
-        enemy.currentHP -= getSnailDamage();
-        damage = -getSnailDamage(); // Assuming getFrogDamage() returns a positive value
+        if (enemyType === 'imp' || enemyType === 'toofer') {  
+          damage = getSnailDamage() * 2; // Half damage for weak against enemy.type toofer
+        } else if (enemyType === 'scorp') {
+          damage = getSnailDamage() * .3; // Double damage for strong against enemy.type scorp and puffer
+        } else {
+          damage = getSnailDamage();
+        }
+        enemy.currentHP -= damage;
         break;
       case 'character-bird':
-        enemy.currentHP -= getBirdDamage();
-        damage = -getBirdDamage(); // Assuming getFrogDamage() returns a positive value
+        if (enemyType === 'imp' || enemyType === 'toofer') {
+          damage = getBirdDamage() * 0.2; // 1/4 damage for weak against enemy.type imp and toofer
+        } else if (enemyType === 'shark' || enemyType === 'octo') {
+          damage = getBirdDamage() * 2; // Double damage for strong against enemy.type shark and octo
+        } else {
+          damage = getBirdDamage();
+        }
+        enemy.currentHP -= damage;
         break;
       case 'character-frog':
-        enemy.currentHP -= getFrogDamage();
-        damage = -getFrogDamage(); // Assuming getFrogDamage() returns a positive value
+        if (enemyType === 'pig' || enemyType === 'scorp') {
+          damage = getFrogDamage() * 2; // Double damage for strong against enemy.type pig and scorp
+        } else if (enemyType === 'puffer') {
+          damage = getFrogDamage() * 0.3; // Half damage for weak against enemy.type ele and octo
+        } else {
+          damage = getFrogDamage();
+        }
+        enemy.currentHP -= damage;
         break;
       case 'character-bee':
-        enemy.currentHP -= getBeeDamage();
-        damage = -getBeeDamage(); // Assuming getFrogDamage() returns a positive value
+        if (enemyType === 'ele' || enemyType === 'puffer') {
+          damage = getBeeDamage() * 2; // Double damage for strong against enemy.type ele and puffer
+        } else if (enemyType === 'octo') {
+          damage = getBeeDamage() * 0.3; // Half damage for weak against enemy.type shark and pig
+        } else {
+          damage = getBeeDamage();
+        }
+        enemy.currentHP -= damage;
         break;
       default:
         console.log('Invalid character type');
     }
+  
     drawEnemyHPBar(enemy);
     updateEnemyGrayscale(enemy.currentHP);
-
-
+  
     const damageText = new PIXI.Text(`${damage}`, {
       fontFamily: 'Marker Felt Cursive',
       fontSize: 24,
@@ -3078,39 +3137,41 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowAngle: Math.PI / 4,
       dropShadowDistance: 2,
     });
-
+  
     damageText.anchor.set(0.5);
     damageText.position.set(enemy.position.x + 40, enemy.position.y - enemy.height / 1.3);
     app.stage.addChild(damageText);
-
+  
     // Animate the hitsplat
     const startY = damageText.position.y; // Adjust the starting Y position as needed
     const duration = 100; // Animation duration in milliseconds
     let elapsed = 0; // Elapsed time
     const update = (delta) => {
       elapsed += delta;
-
+  
       if (elapsed >= duration) {
         app.ticker.remove(update); // Stop the ticker update
         app.stage.removeChild(damageText); // Remove hitsplat after animation
       } else {
         const progress = elapsed / duration;
-        damageText.position.y = startY - (progress * 30); // Update the Y position based on progress
+        damageText.position.y = startY - progress * 30; // Update the Y position based on progress
         damageText.alpha = 1 - progress; // Update the alpha (opacity) based on progress
       }
     };
-
+  
     app.ticker.add(update); // Start the ticker update for hitsplat animation
   }
 
   function critterAttack(critter, enemy, critterAttackTextures) {
     // Reduce enemy's HP
-    console.log('ENEMY HP', enemy.currentHP);
+    console.log('ENEMY TYPE', enemy.type);
+
+    drawHitSplat(enemy);
+
     console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
     if (enemy.currentHP - getCharacterDamage(getCurrentCharacter()) <= 0) {
       // Callback function to remove enemy after death animation
       if (app.stage.children.includes(enemy)) {
-        drawHitSplat(enemy);
         enemy.tint = 0xFF0000; // Set the hit color
         if (getCurrentCharacter !== 'character-bird') {
           if (getEnemiesInRange() > 0) {
@@ -3131,18 +3192,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         playDeathAnimation(enemy, critter);
       }
-    } else {
-      if (enemy.isAlive === true) {
-        if (getisDead() === false) {
-          drawHitSplat(enemy);
-
-        }
-      }
-
-
-    }
-
-
+    } 
   }
 
 
