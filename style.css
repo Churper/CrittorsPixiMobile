@@ -717,3 +717,16 @@ touch-action: manipulation;
     width: 84%;
   }
 }
+
+#proceedAnyway {
+  padding: 20px; /* Makes the button larger */
+  font-size: 1.5em; /* Makes the text larger */
+  background-color: #4CAF50; /* Makes the button green */
+  border: none;
+  color: white;
+  cursor: pointer; /* Changes the cursor when you hover over the button */
+}
+
+#proceedAnyway:hover {
+  background-color: #45a049; /* Changes the button's color when you hover over it */
+}
