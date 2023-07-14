@@ -1535,7 +1535,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
       foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
-      foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1.3;
+      foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1;
       foreground.anchor.set(0, 1);
       foreground.x = 0;
       //foreground.tint = getRandomColor3();
