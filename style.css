@@ -209,6 +209,8 @@ body {
 }
 
 #health-bar {
+  cursor: pointer;
+
   width: 200px;
   height: 20px;
   background-color: #53282891;
@@ -226,6 +228,8 @@ body {
 }
 
 #exp-bar {
+  cursor: pointer;
+
   width: 200px;
   height: 20px;
   background-color: #4846a0e1;

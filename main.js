@@ -878,22 +878,23 @@ document.addEventListener('DOMContentLoaded', function () {
       overlayElement.style.display = "none";
     }, cooldownDuration);
   }
-
-  document.getElementById("character-portrait").addEventListener("click", function () {
+  document.getElementById("character-portrait").addEventListener("click", openCharacterMenu);
+  document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
+  document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
+  
+  function openCharacterMenu() {
     if (getSelectLevel() >= 1) {
       return;
     }
-
+  
     // Check if there is a cooldown
     if (isCooldownActive()) {
       return;
     }
-
-
-
+  
     // Toggle the visibility of the character info boxes
     const characterBoxes = document.querySelectorAll('.upgrade-box.character-snail, .upgrade-box.character-bird, .upgrade-box.character-bee, .upgrade-box.character-frog');
-
+  
     if (isCharacterMenuOpen) {
       characterBoxes.forEach((box) => {
         box.style.visibility = 'hidden';
@@ -909,10 +910,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       isCharacterMenuOpen = true;
     }
-
+  
     // Start the cooldown
-
-  });
+  }
 
   function handleCharacterClick(characterType) {
     let characterHealth;
