@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     transparent: false,
     resolution: 1,
   });
+  let volumeButton;
   let sharkEmergeTextures;
   let pauseMenuContainer;
   let flashing = false;
@@ -594,45 +595,50 @@ document.addEventListener('DOMContentLoaded', function () {
   function createPauseMenuContainer() {
     const pauseMenuContainer = new PIXI.Container();
     pauseMenuContainer.myCustomID = 'pauseMenuX';
-
+  
     const backgroundSprite = createBackgroundSprite();
     pauseMenuContainer.addChild(backgroundSprite);
-
+  
     const border = createBorder(backgroundSprite);
     pauseMenuContainer.addChild(border);
-
+  
     const pauseText = 'Game Paused';
     const roundText = 'Round: ' + currentRound; // Add current round information
-
+  
     const textStyle = getTextStyle(backgroundSprite.width);
     const text = createText(pauseText, textStyle, backgroundSprite);
     pauseMenuContainer.addChild(text);
-
+  
     const text1 = createText('\n' + roundText, textStyle, backgroundSprite, true);
     pauseMenuContainer.addChild(text1);
-
+  
     // Volume Slider
     const volumeSlider = createVolumeSlider(backgroundSprite);
-
+  
     // Volume Button
-    const volumeButton = createVolumeButton(backgroundSprite);
+    volumeButton = createVolumeButton(backgroundSprite);
+    volumeButton.position.set(volumeSlider.x + volumeSlider.width + 10, backgroundSprite.height / 2);
     pauseMenuContainer.addChild(volumeButton);
-
+  
     // Garbage Button
     const garbageButton = createGarbageButton(backgroundSprite);
-
+    garbageButton.position.set(backgroundSprite.width - garbageButton.width - 10, backgroundSprite.height / 2);
+    pauseMenuContainer.addChild(garbageButton);
+  
+    // Adjust position and add children to the container
+    pauseMenuContainer.addChild(volumeSlider);
+    volumeSlider.addChild(createSliderBall(backgroundSprite));
+  
     let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
     let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
     pauseMenuContainer.position.set(pauseX, pauseY);
-    pauseMenuContainer.addChild(volumeSlider);
-
+  
     app.stage.addChild(pauseMenuContainer);
-    pauseMenuContainer.addChild(garbageButton);
-
-    volumeSlider.addChild(createSliderBall());
-
+  
     return pauseMenuContainer;
   }
+  
+  
 
   function setisPaused(value) {
     isPaused = value;
@@ -701,22 +707,37 @@ document.addEventListener('DOMContentLoaded', function () {
     return text;
   }
 
+
+  function setVolume(x,backgroundSprite, boundaryOffset) {
+    let normalizedX = (x + backgroundSprite.width / 8 - boundaryOffset) / (2 * boundaryOffset);
+    if (normalizedX <= 0) {
+        volumeButton.text = '🔈';
+    } else if (normalizedX < 0.5) {
+        volumeButton.text = '🔉';
+    } else {
+        volumeButton.text = '🔊';
+    }
+}
+
   function createVolumeSlider(backgroundSprite) {
     const volumeSlider = new PIXI.Container();
     volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
     const sliderBackground = new PIXI.Graphics();
     sliderBackground.beginFill(0x000000); // Black color for the rectangle background
-    sliderBackground.drawRect(-100, -10, 200, 20); // Set the same bounds as the sliding ball
+    sliderBackground.drawRect(-100, -10, backgroundSprite.width/4, 20); // Set the same bounds as the sliding ball
     sliderBackground.endFill();
     volumeSlider.addChild(sliderBackground);
+     // New function to adjust the volume based on the slider ball's position
+  
     return volumeSlider;
   }
+  function createSliderBall(backgroundSprite) {
+    let boundaryOffset = backgroundSprite.width / 14; // You can adjust this value to fine-tune the boundaries
 
-  function createSliderBall() {
-    const sliderBall = new PIXI.Text('🔵', { fontSize: 20 });
+    const sliderBall = new PIXI.Text('🔵', { fontSize: 80 });
     sliderBall.anchor.set(0.5);
     sliderBall.position.set(0, 0);
-
+    
     let isDragging = false;
     let offsetX = 0;
 
@@ -731,8 +752,9 @@ document.addEventListener('DOMContentLoaded', function () {
     sliderBall.on('pointermove', (event) => {
       if (isDragging) {
         let newX = event.data.global.x - offsetX;
-        newX = Math.max(-100, Math.min(100, newX));
+        newX = Math.max(-backgroundSprite.width / 8 + boundaryOffset, Math.min(backgroundSprite.width / 8 + boundaryOffset, newX));
         sliderBall.x = newX;
+        setVolume(newX,backgroundSprite, boundaryOffset);
         // Update volume based on slider position
         // Add your volume control logic here
       }
@@ -740,17 +762,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     sliderBall.on('pointerup', () => {
       isDragging = false;
+      setVolume(sliderBall.x,backgroundSprite, boundaryOffset); // Make sure to update the volume when the dragging ends
+
     });
 
     sliderBall.on('pointerupoutside', () => {
       isDragging = false;
+      setVolume(sliderBall.x,backgroundSprite, boundaryOffset); // Make sure to update the volume when the dragging ends
+
     });
 
     return sliderBall;
   }
 
+
   function createVolumeButton(backgroundSprite) {
-    const volumeButton = new PIXI.Text('🔊', { fontSize: 80 });
+   volumeButton = new PIXI.Text('🔉', { fontSize: 80 });
     volumeButton.anchor.set(0.5);
     volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
 
@@ -1037,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create a semi-transparent black background sprite for the dialog box
     backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     backgroundSprite.width = app.screen.width * 0.6; // 60% of the screen width
-    backgroundSprite.height = 400; // Fixed height
+    backgroundSprite.height = app.screen.height/2; // Fixed height
     backgroundSprite.tint = 0x000000; // Black color
     backgroundSprite.alpha = 0.5; // Make it semi-transparent
     reviveDialogContainer.addChild(backgroundSprite);
