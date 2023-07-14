@@ -130,7 +130,7 @@ touch-action: manipulation;
   /* Initially hidden */
   position: fixed;
   bottom: 10px;
-  left: 10px;
+  right: 10px;
   background-image: url("https://i.imgur.com/Ft63zNi.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -154,7 +154,7 @@ touch-action: manipulation;
   position: absolute;
   font-size: 36px;
   bottom: 0px;
-  left: 65px;
+  right: 65px;
   width: 100%;
   padding: 5px;
   background-color: transparent;
@@ -660,53 +660,41 @@ touch-action: manipulation;
 #snail {
   position: absolute;
   top: 12px;
-  left: calc(4%);
+  left: 4vw; 
   width: 60px;
   height: 60px;
   background-image: url('https://i.imgur.com/shRbAl5.png');
   background-size: cover;
   z-index: 4;
-
 }
 
 @keyframes snail-movement {
   0% {
-    left: calc(4%);
+    left: 4vw;
   }
   100% {
-    left: calc(88%);
-  }
-}
-
-@keyframes snail-animation {
-  0%, 49% {
-    background-image: url('https://i.imgur.com/shRbAl5.png');
-  }
-  50%, 100% {
-    background-image: url('https://i.imgur.com/r3DQaWf.png');
+    left: 80vw; /* Adjusted value to ensure it doesn't exceed the progress bar */
   }
 }
 
 #progress {
   position: fixed;
   top: 40px;
-  left: 80px;
-  width: 88%;
-  height: 20px; /* Adjust the height of the progress bar as needed */
-  background-color: rgba(0, 0, 0, 0.363); /* Use the desired semi-transparent color */
+  left: 4vw; /* Changed from 80px to vw */
+  width: 88vw;
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.363);
   z-index: 2;
 }
 
 #progress-filled {
   position: fixed;
   top: 40px;
-  left: 80px;
+  left: 4vw; /* Changed from 80px to vw */
   width: 0;
-
-  height: 20px; /* Adjust the height of the progress bar as needed */
-  background-color: rgba(0, 0, 0, 0.411); /* Use the desired opaque color */
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.411);
   z-index: 3;
-
 }
 
 @keyframes progress-fill {
@@ -714,9 +702,10 @@ touch-action: manipulation;
     width: 0;
   }
   100% {
-    width: 84%;
+    width: 80vw; /* Adjusted value to match the progress bar */
   }
 }
+
 
 #proceedAnyway {
   padding: 20px; /* Makes the button larger */
