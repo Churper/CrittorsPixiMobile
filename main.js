@@ -722,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // The remaining helper functions (createBackgroundSprite, createBorder, getTextStyle, createText, createVolumeSlider, createVolumeButton, createGarbageButton, createSliderBall) will need to be implemented.
   function createBackgroundSprite() {
     const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    backgroundSprite.width = app.screen.width + 100;
+    backgroundSprite.width = app.screen.width - 20;
     backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
     backgroundSprite.tint = 0xFFFFFF; // White color
     backgroundSprite.alpha = 0.8; // Semi-transparent background
