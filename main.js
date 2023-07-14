@@ -1530,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Create first background sprite
 background = new PIXI.Sprite(backgroundTexture);
-background.width = app.screen.width * 3;
+background.width = 2800;
 background.height = app.screen.height;
 background.anchor.set(0, 0);
 background.position.set(0, 0);
