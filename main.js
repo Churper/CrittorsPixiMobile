@@ -844,8 +844,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (pauseMenuContainer) {
-      let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
-      let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
+      let pauseX = -app.stage.position.x + (window.innerWidth / 2) - (pauseMenuContainer.width / 2);
+      let pauseY = -app.stage.position.y + (window.innerWidth / 2) - (pauseMenuContainer.height / 2);
       pauseMenuContainer.position.set(pauseX, pauseY);
     }
   }
