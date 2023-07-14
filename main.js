@@ -1526,25 +1526,33 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add the timer animation to the stage
 
 
-       backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
-       background = new PIXI.Sprite(backgroundTexture);
-      background.width = app.screen.width * 2.75;
-      background.height = app.screen.height;
-      background.anchor.set(0.5, 0);
-      background.position.set(0, 0);
+  backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
 
-  
+// Create first background sprite
+background1 = new PIXI.Sprite(backgroundTexture);
+background1.width = app.screen.width * 2.75;
+background1.height = app.screen.height;
+background1.anchor.set(0, 0);
+background1.position.set(0, 0);
+app.stage.addChild(background1);
 
-      app.stage.addChild(background);
-// Adjust the foreground
+// Create second background sprite
+background2 = new PIXI.Sprite(backgroundTexture);
+background2.width = app.screen.width * 2.75;
+background2.height = app.screen.height;
+background2.anchor.set(0, 0);
+background2.position.set(background1.width, 0); // position this at the end of the first background
+app.stage.addChild(background2);
+
+// Set up the foreground
 foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
 foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
 foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1;
 foreground.anchor.set(0, 1);
 foreground.x = 0;
-//foreground.tint = getRandomColor3();
-
 foreground.y = Math.max(app.screen.height);
+
+
 
 
       const frogGhostTextures = PIXI.Loader.shared.resources['frog_ghost'].texture;
