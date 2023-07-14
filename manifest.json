@@ -3,14 +3,14 @@
   "name": "Crittors Game",
   "icons": [
     {
-      "src": "icons/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "https://i.imgur.com/vprHoLR.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "https://i.imgur.com/vprHoLR.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "orientation": "landscape",
