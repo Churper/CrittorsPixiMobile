@@ -5,24 +5,28 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to determine if the user is on a mobile device
   function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && window.innerWidth < 800;
-}
+  }
+  
+  let rotateMessage = document.getElementById('rotateDevice');
 
-  // Only attach the event listener if the user is on a mobile device
-  if (isMobileDevice()) {
+  // If user is on mobile device and it's the first load
+  if (isMobileDevice() && !localStorage.getItem('notFirstLoad')) {
     console.log('Mobile device detected');
     window.addEventListener('resize', checkOrientation);
     checkOrientation();
+    localStorage.setItem('notFirstLoad', 'true');
   }
-  else{mainAppFunction();
+  else {
     rotateMessage.style.display = "none";
-    appStarted = true;}
+    mainAppFunction();
+    appStarted = true;
+  }
 
   function checkOrientation() {
     let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-    let rotateMessage = document.getElementById('rotateDevice');
     let proceedButton = document.getElementById('proceedAnyway');
 
-    if (!isMobileDevice()) {
+    if (deviceOrientation !== preferredOrientation) {
       rotateMessage.style.display = "block";
       proceedButton.textContent = "Proceed.";
     } else {
@@ -3993,5 +3997,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  checkOrientation();
 });
