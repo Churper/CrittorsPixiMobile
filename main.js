@@ -2065,7 +2065,7 @@ document.addEventListener('DOMContentLoaded', function () {
               exploded = false;
               saveGame();
 
-              spawnEnemies();
+              
               resetTimer();
               startTimer();
               console.log("REEEE");
@@ -2148,6 +2148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // setisPaused(false);
             setIsDead(false);
             resetEnemiesState();
+            spawnEnemies();
 
           }
           return;
