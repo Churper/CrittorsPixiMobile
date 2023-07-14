@@ -1,27 +1,34 @@
 document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
+  let proceedingInPortrait = false;
 
+  window.addEventListener('resize', checkOrientation);
+  
   function checkOrientation() {
-    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-    let rotateMessage = document.getElementById('rotateDevice');
-    
-    if (deviceOrientation === "portrait" && window.matchMedia('(hover: none)').matches) {
-      rotateMessage.style.display = "block";
-    } else {
-      rotateMessage.style.display = "none";
-      if (!appStarted) {
-        mainAppFunction();
-        appStarted = true;
+      let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+      let rotateMessage = document.getElementById('rotateDevice');
+  
+      if (deviceOrientation === "portrait") {
+          if (!proceedingInPortrait) {
+              rotateMessage.style.display = "block";
+          } else {
+              rotateMessage.style.display = "none";
+              // Run your app's main function if it's not already running
+              // mainAppFunction();
+          }
+      } else {
+          rotateMessage.style.display = "none";
+          proceedingInPortrait = false; // Reset this since they're back in landscape mode
+          // Run your app's main function if it's not already running
+          // mainAppFunction();
       }
-    }
   }
-
+  
   document.getElementById('proceedAnyway').addEventListener('click', function() {
-    document.getElementById('rotateDevice').style.display = "none";
-    if (!appStarted) {
-      mainAppFunction();
-      appStarted = true;
-    }
+      proceedingInPortrait = true;
+      document.getElementById('rotateDevice').style.display = 'none';
+      // Run your app's main function here
+      // mainAppFunction();
   });
 
   function mainAppFunction() {
@@ -3972,6 +3979,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  window.addEventListener('resize', checkOrientation);
   checkOrientation();
 });
