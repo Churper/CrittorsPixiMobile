@@ -718,9 +718,8 @@ z-index: 99999999999999999999999;
 
 #proceedAnyway {
   position: fixed; 
-  left: 50%;  /* Positions the left edge of the button at the center of the screen */
+  left: 45%;  /* Positions the left edge of the button at the center of the screen */
   top: 50%;  /* Positions the top edge of the button at the center of the screen */
-  transform: translate(-50%, 30px); /* Moves the button so its center is at the screen center, and then down by 30px */
   padding: 20px;
   font-size: 1.5em;
   background-color: #4CAF50;

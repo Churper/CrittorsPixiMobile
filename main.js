@@ -2,35 +2,47 @@ document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
   let preferredOrientation = null;
 
-  window.addEventListener('resize', checkOrientation);
-  checkOrientation();
+  // Function to determine if the user is on a mobile device
+  function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && window.innerWidth < 800;
+}
+
+  // Only attach the event listener if the user is on a mobile device
+  if (isMobileDevice()) {
+    console.log('Mobile device detected');
+    window.addEventListener('resize', checkOrientation);
+    checkOrientation();
+  }
+  else{mainAppFunction();
+    rotateMessage.style.display = "none";
+    appStarted = true;}
 
   function checkOrientation() {
-      let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-      let rotateMessage = document.getElementById('rotateDevice');
-      let proceedButton = document.getElementById('proceedAnyway');
+    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+    let rotateMessage = document.getElementById('rotateDevice');
+    let proceedButton = document.getElementById('proceedAnyway');
 
-      if (deviceOrientation !== preferredOrientation) {
-          rotateMessage.style.display = "block";
-          proceedButton.textContent = "Would you like to proceed with the current rotation?";
-      } else {
-          rotateMessage.style.display = "none";
-          // Run your app's main function if it's not already running
-          if (!appStarted) {
-              mainAppFunction();
-              appStarted = true;
-          }
+    if (!isMobileDevice()) {
+      rotateMessage.style.display = "block";
+      proceedButton.textContent = "Proceed.";
+    } else {
+      rotateMessage.style.display = "none";
+      // Run your app's main function if it's not already running
+      if (!appStarted) {
+        mainAppFunction();
+        appStarted = true;
       }
+    }
   }
 
   document.getElementById('proceedAnyway').addEventListener('click', function() {
-      preferredOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-      document.getElementById('rotateDevice').style.display = 'none';
-      // Run your app's main function here if it's not already running
-      if (!appStarted) {
-          mainAppFunction();
-          appStarted = true;
-      }
+    preferredOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+    document.getElementById('rotateDevice').style.display = 'none';
+    // Run your app's main function here if it's not already running
+    if (!appStarted) {
+      mainAppFunction();
+      appStarted = true;
+    }
   });
 
   function mainAppFunction() {
