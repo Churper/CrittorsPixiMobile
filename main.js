@@ -1526,21 +1526,25 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add the timer animation to the stage
 
 
-      const backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
-      const background = new PIXI.Sprite(backgroundTexture);
+       backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
+       background = new PIXI.Sprite(backgroundTexture);
       background.width = app.screen.width * 2.75;
       background.height = app.screen.height;
       background.anchor.set(0.5, 0);
       background.position.set(0, 0);
 
-      const anotherBackground = new PIXI.Sprite(backgroundTexture);
-      anotherBackground.width = app.screen.width * 2.75;
-      anotherBackground.height = app.screen.height;
-      anotherBackground.anchor.set(0.5, 0);
-      anotherBackground.position.set(app.screen.width * 2.75, 0);
+  
 
       app.stage.addChild(background);
-      app.stage.addChild(anotherBackground);
+// Adjust the foreground
+foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
+foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
+foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1;
+foreground.anchor.set(0, 1);
+foreground.x = 0;
+//foreground.tint = getRandomColor3();
+
+foreground.y = Math.max(app.screen.height);
 
 
       const frogGhostTextures = PIXI.Loader.shared.resources['frog_ghost'].texture;
@@ -1548,15 +1552,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
       frogGhostPlayer.anchor.set(0, 0);
       frogGhostPlayer.scale.set(0.28);
+      backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
 
-      foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
-      foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
-      foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1;
-      foreground.anchor.set(0, 1);
-      foreground.x = 0;
-      //foreground.tint = getRandomColor3();
-
-      foreground.y = Math.max(app.screen.height);
+      // Create a new tiling sprite with the background texture, specifying the width and height
+      background = new PIXI.TilingSprite(
+          backgroundTexture, 
+          app.screen.width * 2.75,
+          app.screen.height
+      );
+      
+      // No need to set the width and height again, since it's set in the TilingSprite constructor
+      // background.width = app.screen.width * 2.75;
+      // background.height = app.screen.height;
+      
+      // Position the tiling sprite 
+      background.anchor.set(0, 0);
+      background.position.set(0, 0);
+      
+      app.stage.addChild(background);
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
       const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.45, mountainVelocity2, foreground);
       const mountain3 = createMountainSprite('mountain3', -200, mountainVelocity3, foreground); // Adjust the position as needed
