@@ -1,6 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
-  let leveling = false;
-  let timer = null;
+  let appStarted = false;
+
+  function checkOrientation() {
+    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+    let rotateMessage = document.getElementById('rotateDevice');
+    
+    if (deviceOrientation === "portrait" && window.matchMedia('(hover: none)').matches) {
+      rotateMessage.style.display = "block";
+    } else {
+      rotateMessage.style.display = "none";
+      if (!appStarted) {
+        mainAppFunction();
+        appStarted = true;
+      }
+    }
+    
+  }
+
+  function mainAppFunction() {
+    let leveling = false;
+    let timer = null;
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: Math.max(window.innerHeight),
@@ -638,18 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return pauseMenuContainer;
   }
   
-  window.addEventListener('resize', checkOrientation);
-  checkOrientation();
-  function checkOrientation() {
-    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-    let rotateMessage = document.getElementById('rotateDevice');
-    
-    if (deviceOrientation === "portrait") {
-      rotateMessage.style.display = "block";
-    } else {
-      rotateMessage.style.display = "none";
-    }
-  }
+
   
   // Initial check
 
@@ -3955,5 +3963,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
+  }
 
+  window.addEventListener('resize', checkOrientation);
+  checkOrientation();
 });
