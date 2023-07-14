@@ -16,6 +16,5 @@
   "orientation": "landscape",
   "start_url": "/CrittorsPixiMobile/",
   "display": "fullscreen",
-  "background_color": "#ffffff",
-  "theme_color": "#000000"
+  "background_color": "#ffffff"
 }
