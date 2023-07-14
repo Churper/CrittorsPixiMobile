@@ -17,6 +17,7 @@ body {
 }
 
 #ui-overlay {
+  
   visibility: hidden;
   /* Initially hidden */
   position: fixed;
@@ -24,6 +25,8 @@ body {
   left: 55%;
   transform: translateX(-50%);
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+touch-action: manipulation;
 
 }
 
@@ -53,6 +56,8 @@ body {
   font-size: 74px;
   user-select: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
 }
 #spawn-text {
   visibility: hidden;
@@ -66,6 +71,8 @@ body {
   font-size: 74px;
   user-select: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
 }
 
 #round-text {
@@ -80,6 +87,8 @@ body {
   font-size: 74px;
   user-select: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
 }
 
 #pause-button {
@@ -96,6 +105,8 @@ body {
   height: 60px;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
   touch-action: manipulation;
 }
 
@@ -122,6 +133,8 @@ body {
   padding-right: 5px;
   /* Add padding to align with the right edge */
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
 }
 
 #coffee-amount {
@@ -139,6 +152,8 @@ body {
   -webkit-text-stroke-color: #fff;
   -webkit-text-fill-color: #3a2206;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
 }
 
 
@@ -160,6 +175,8 @@ body {
   -webkit-touch-callout: none;
   /* Disable callout on iOS devices */
   outline: none;
+  touch-action: manipulation;
+
 
 }
 
@@ -209,7 +226,8 @@ body {
 }
 
 #health-bar {
-  cursor: pointer;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 
   width: 200px;
   height: 20px;
@@ -229,6 +247,7 @@ body {
 
 #exp-bar {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   width: 200px;
   height: 20px;
@@ -271,6 +290,7 @@ body {
   /* Disable callout on iOS devices */
   outline: none;
   cursor: pointer;
+  touch-action: manipulation;
 
 }
 @keyframes pulsate {
