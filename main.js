@@ -1491,7 +1491,7 @@ document.addEventListener('DOMContentLoaded', function () {
       { name: 'frog_portrait', url: 'https://i.imgur.com/XaXTV73.png' },
       { name: 'bee_portrait', url: 'https://i.imgur.com/rmcGGP9.png' },
       { name: 'bean', url: 'https://i.imgur.com/Ft63zNi.png ' },
-      { name: 'background', url: 'https://i.imgur.com/HNTGehL.png' },
+      { name: 'background', url: 'https://i.imgur.com/BGFZHat.png' },
       { name: 'frog_ghost', url: 'https://i.imgur.com/45E9OPW.png' },
       { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
       { name: 'critter', url: 'https://i.imgur.com/Fl29VZM.png' },
@@ -1534,15 +1534,9 @@ background1.width = app.screen.width * 2.75;
 background1.height = app.screen.height;
 background1.anchor.set(0, 0);
 background1.position.set(0, 0);
-app.stage.addChild(background1);
 
-// Create second background sprite
-background2 = new PIXI.Sprite(backgroundTexture);
-background2.width = app.screen.width * 2.75;
-background2.height = app.screen.height;
-background2.anchor.set(0, 0);
-background2.position.set(background1.width, 0); // position this at the end of the first background
-app.stage.addChild(background2);
+
+
 
 // Set up the foreground
 foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
