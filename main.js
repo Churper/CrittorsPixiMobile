@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
-  let proceedingInPortrait = false;
+  let preferredOrientation = null;
 
   window.addEventListener('resize', checkOrientation);
   checkOrientation();
@@ -8,21 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
   function checkOrientation() {
       let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
       let rotateMessage = document.getElementById('rotateDevice');
-  
-      if (deviceOrientation === "portrait") {
-          if (!proceedingInPortrait) {
-              rotateMessage.style.display = "block";
-          } else {
-              rotateMessage.style.display = "none";
-              // Run your app's main function if it's not already running
-              if (!appStarted) {
-                  mainAppFunction();
-                  appStarted = true;
-              }
-          }
+      let proceedButton = document.getElementById('proceedAnyway');
+
+      if (deviceOrientation !== preferredOrientation) {
+          rotateMessage.style.display = "block";
+          proceedButton.textContent = "Would you like to proceed with the current rotation?";
       } else {
           rotateMessage.style.display = "none";
-          proceedingInPortrait = false; // Reset this since they're back in landscape mode
           // Run your app's main function if it's not already running
           if (!appStarted) {
               mainAppFunction();
@@ -32,9 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   document.getElementById('proceedAnyway').addEventListener('click', function() {
-      proceedingInPortrait = true;
+      preferredOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
       document.getElementById('rotateDevice').style.display = 'none';
-      // Run your app's main function here
+      // Run your app's main function here if it's not already running
       if (!appStarted) {
           mainAppFunction();
           appStarted = true;
