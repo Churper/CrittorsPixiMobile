@@ -638,7 +638,21 @@ document.addEventListener('DOMContentLoaded', function () {
     return pauseMenuContainer;
   }
   
+  window.addEventListener('resize', checkOrientation);
+  checkOrientation();
+  function checkOrientation() {
+    let deviceOrientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+    let rotateMessage = document.getElementById('rotateDevice');
+    
+    if (deviceOrientation === "portrait") {
+      rotateMessage.style.display = "block";
+    } else {
+      rotateMessage.style.display = "none";
+    }
+  }
   
+  // Initial check
+
 
   function setisPaused(value) {
     isPaused = value;
