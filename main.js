@@ -1404,12 +1404,6 @@ document.addEventListener('DOMContentLoaded', function () {
       { name: 'shark_submerge', url: 'https://i.imgur.com/j1eM9EI.png' },
       { name: 'shark_walk', url: 'https://i.imgur.com/HNILgOX.png' },
       { name: 'shark_attack', url: 'https://i.imgur.com/AGrq5qY.png' },
-      { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
-      { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
-      { name: 'octo_portrait', url: 'https://i.imgur.com/F3OYSDm.png' },
-      { name: 'pig_portrait', url: 'https://i.imgur.com/ZxaI7rG.png' },
-      { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
-      { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
       { name: 'pig_walk', url: 'https://i.imgur.com/141LQoZ.png' },
       { name: 'pig_attack', url: 'https://i.imgur.com/O0FXcIH.png' },
       { name: 'ele_walk', url: 'https://i.imgur.com/HAbxzx2.png' },
@@ -1438,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', function () {
       { name: 'snail_portrait', url: 'https://i.imgur.com/Chu3ZkP.png' },
       { name: 'frog_portrait', url: 'https://i.imgur.com/XaXTV73.png' },
       { name: 'bee_portrait', url: 'https://i.imgur.com/rmcGGP9.png' },
-      { name: 'bean', url: 'https://i.imgur.com/Ft63zNi.png ' },
+      { name: 'bean', url: 'https://i.imgur.com/Ft63zNi.png'},
       { name: 'background', url: 'https://i.imgur.com/BGFZHat.png' },
       { name: 'frog_ghost', url: 'https://i.imgur.com/45E9OPW.png' },
       { name: 'foreground', url: 'https://i.imgur.com/yIjGEpm.png' },
@@ -3303,7 +3297,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     const coffeeContainer = new PIXI.Container();
 
     // Get the bean texture from the loaded resources
-    const beanTexture = PIXI.Texture.from("https://i.imgur.com/Ft63zNi.png");
+    const beanTexture = PIXI.Texture.from('bean');
 
     // Generate a random number between 1 and 10 for the number of coffee beans
     const numBeans = Math.floor(Math.random() * 15 + currentRound * 2) + 1;
