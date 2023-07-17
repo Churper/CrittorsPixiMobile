@@ -2465,7 +2465,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
   }
   let timeOfLastSpawn = Date.now();
-  let interval = 15000; // Initial interval value
+  let interval = 13000; // Initial interval value
   let enemySpawnTimeout; // Variable to store the enemy spawn timeout ID
   let isSpawning = false; // Flag to track if an enemy is currently being spawned
 
@@ -2496,7 +2496,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     enemySpawnTimeout = setTimeout(() => {
       isSpawning = false; // Set isSpawning to false when the timeout completes
       spawnEnemies(); // Spawn the next enemy
-    }, interval- (currentRound * 125)) ;
+    }, interval- (currentRound * 225)) ;
   }
 
 
