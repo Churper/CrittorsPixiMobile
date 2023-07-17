@@ -2020,6 +2020,7 @@ let cantGainEXP = false;
         exploded = true;
         app.stage.removeChild(castle);
         let completedExplosions = 0; // Counter for completed explosions
+        createCoffeeDrop(critter.position.x + 20, critter.position.y-20);
 
         // Create multiple explosions
         for (let i = 0; i < 7; i++) {
@@ -2038,7 +2039,7 @@ let cantGainEXP = false;
               explosion.position.set(explosion.position.x, explosion.position.y + 50);
           } else {
               explosion.scale.set(0.35 * (0.75 + Math.random() * 0.5));
-              explosion.animationSpeed = 0.1 + Math.random() * 0.4 - .02;
+              explosion.animationSpeed = 0.1 + Math.random() * .1 - .03;
               explosion.tint = getRandomColor();
           }
           explosion.loop=false;
@@ -2055,6 +2056,7 @@ let cantGainEXP = false;
 
                 if (completedExplosions === 7) { // All explosions completed
                   roundOver = true;
+                
               }
             };
         }
@@ -3141,7 +3143,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
     const damageText = new PIXI.Text(`${damage}`, {
       fontSize: 24,
-      fill: "rgb(255, 105, 97)", // This is a light red color.
+      fill: "rgb(240, 70, 60)", // This is a slightly more red color.
       fontWeight: "bold",
       stroke: "#000",
       strokeThickness: 3,
@@ -3165,7 +3167,7 @@ app.stage.addChild(hpBarBackground,hpBar);
       } else {
         const progress = elapsed / duration;
         damageText.position.y = startY - (progress * 30); // Update the Y position based on progress
-        damageText.alpha = 1 - progress; // Update the alpha (opacity) based on progress
+        damageText.alpha = 1 - progress/3; // Update the alpha (opacity) based on progress
       }
     };
 
@@ -3235,7 +3237,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     updateEnemyGrayscale(enemy.currentHP);
     const damageText = new PIXI.Text(`${-damage}`, {
       fontSize: 24,
-      fill: "rgb(255, 105, 97)", // This is a light red color.
+      fill: "rgb(240, 70, 60)", // This is a slightly more red color.
       fontWeight: "bold",
       stroke: "#000",
       strokeThickness: 3,
@@ -3312,7 +3314,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     const beanTexture = PIXI.Texture.from("https://i.imgur.com/Ft63zNi.png");
 
     // Generate a random number between 1 and 10 for the number of coffee beans
-    const numBeans = Math.floor(Math.random() * 15) + 1;
+    const numBeans = Math.floor(Math.random() * 15 + currentRound * 2) + 1;
 
     // Define the duration (in milliseconds) for the coffee beans to fall
     const duration = 2000; // Adjust this value as desired
@@ -3373,7 +3375,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     setCoffee(getCoffee() + amount);
     const coffeeAmountElement = document.getElementById('coffee-amount');
     const coffeeAmount = getCoffee();
-    coffeeAmountElement.textContent = `x ${coffeeAmount}`;
+    coffeeAmountElement.textContent = `${coffeeAmount}`;
   }
 
   function playSpawnAnimation(critter, critterSpawn) {

@@ -100,7 +100,7 @@ touch-action: manipulation;
   /* Initially hidden */
   position: fixed;
   top: 0px;
-  left: 0px;
+  left: -6px;
   background-image: url("https://i.imgur.com/HTeDEQJ.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -145,7 +145,7 @@ z-index: 99999999999999999999999;
   font-size: 36px;
   top: 1.25vh;
   font-family: 'Luckiest Guy';
-  right: 2vh;
+  right: 0vh;
   width: 100%;
   padding: 5px;
   background-color: transparent;
