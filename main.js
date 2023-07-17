@@ -1132,6 +1132,8 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowBlur: 4, // Shadow blur
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
+      wordWrap: true,
+      wordWrapWidth: backgroundSpriteWidth /3,
     });
   
     const yesButton = new PIXI.Text('☑', yesButtonStyle);
@@ -1152,6 +1154,8 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowBlur: 4, // Shadow blur
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
+      wordWrap: true,
+      wordWrapWidth: backgroundSpriteWidth /3,
     });
   
     const noButton = new PIXI.Text('☒', noButtonStyle);
