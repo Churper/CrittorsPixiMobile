@@ -1412,26 +1412,18 @@ document.addEventListener('DOMContentLoaded', function () {
       { name: 'scorp_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/scorp_attack.png' },
       { name: 'octo_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/octo_walk.png' },
       { name: 'octo_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/octo_attack.png' },
-      { name: 'toofer_walk', url: 'https://i.imgur.com/aapkoqq.png' },
-      { name: 'toofer_attack', url: 'https://i.imgur.com/inBwJ2p.png' },
-      { name: 'timer1', url: 'https://i.imgur.com/shRbAl5.png' },
-      { name: 'timer2', url: 'https://i.imgur.com/r3DQaWf.png' },
+      { name: 'toofer_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_walk.png' },
+      { name: 'toofer_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_attack.png' },
       { name: 'bird_egg', url: 'https://i.imgur.com/q5JvpXv.png' },
       { name: 'bird_ghost', url: 'https://i.imgur.com/FKED8kx.png' },
-      { name: 'bird_portrait', url: 'https://i.imgur.com/WAwZpGS.png' },
       { name: 'bird_walk', url: 'https://i.imgur.com/ABVoGmQ.png' },
       { name: 'bird_attack', url: 'https://i.imgur.com/vRD1CeL.png' },
-      { name: 'frog_snail', url: 'https://i.imgur.com/ekpSpFg.png' },
-      { name: 'frog_bee', url: 'https://i.imgur.com/bUw6K0K.png' },
-      { name: 'frog_puffer', url: 'https://i.imgur.com/fBWKqfA.png' },
+      { name: 'snail_ghost', url: 'https://i.imgur.com/ekpSpFg.png' },
+      { name: 'bee_ghost', url: 'https://i.imgur.com/bUw6K0K.png' },
       { name: 'bee_walk', url: 'https://i.imgur.com/Jxke4OH.png' },
       { name: 'bee_attack', url: 'https://i.imgur.com/toZiN31.png' },
       { name: 'puffer_walk', url: 'https://i.imgur.com/cNLd5vp.png' },
       { name: 'puffer_attack', url: 'https://i.imgur.com/cl09j99.png' },
-      { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
-      { name: 'snail_portrait', url: 'https://i.imgur.com/Chu3ZkP.png' },
-      { name: 'frog_portrait', url: 'https://i.imgur.com/XaXTV73.png' },
-      { name: 'bee_portrait', url: 'https://i.imgur.com/rmcGGP9.png' },
       { name: 'bean', url: 'https://i.imgur.com/Ft63zNi.png'},
       { name: 'background', url: 'https://i.imgur.com/BGFZHat.png' },
       { name: 'frog_ghost', url: 'https://i.imgur.com/45E9OPW.png' },
@@ -1507,8 +1499,8 @@ foreground.y = Math.max(app.screen.height);
    
       const mountain1 = createMountainSprite('mountain1', -100, mountainVelocity1, foreground);
       const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.45, mountainVelocity2, foreground);
-      const mountain3 = createMountainSprite('mountain3', -200, mountainVelocity3, foreground); // Adjust the position as needed
-      const mountain4 = createMountainSprite('mountain4', app.screen.width * 1.2, mountainVelocity4, foreground); // Adjust the position as needed
+      const mountain3 = createMountainSprite('mountain2', -200, mountainVelocity3, foreground); // Adjust the position as needed
+      const mountain4 = createMountainSprite('mountain1', app.screen.width * 1.2, mountainVelocity4, foreground); // Adjust the position as needed
 
       mountain3.scale.x = .6;
       mountain3.scale.y = .65;
@@ -2833,10 +2825,10 @@ app.stage.addChild(hpBarBackground,hpBar);
 
     switch (currentCharacter) {
       case "character-snail":
-        frogGhostPlayer.texture = PIXI.Texture.from("frog_snail");
+        frogGhostPlayer.texture = PIXI.Texture.from("snail_ghost");
         break;
       case "character-bee":
-        frogGhostPlayer.texture = PIXI.Texture.from("frog_bee");
+        frogGhostPlayer.texture = PIXI.Texture.from("bee_ghost");
         break;
       case "character-bird":
         frogGhostPlayer.texture = PIXI.Texture.from("bird_ghost");
