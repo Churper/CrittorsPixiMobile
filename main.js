@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 10;
+  let speed = 1;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -705,8 +705,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getTextStyle(backgroundSpriteWidth) {
     return new PIXI.TextStyle({
-      fontFamily: 'Marker Felt',
-      fontSize: 60, // Increased font size to 60
+      fontFamily: 'Patrick Hand',
+      fontSize: 44, // Increased font size to 60
       fill: '#FFFFFF', // White color for text fill
       stroke: '#000000',
       strokeThickness: 6,
@@ -816,9 +816,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function createGarbageButton(backgroundSprite) {
-    const garbageButton = new PIXI.Text('🗑️', { fontSize: 80 });
-    garbageButton.anchor.set(0.5);
-    garbageButton.position.set((backgroundSprite.width / 3) * 2, backgroundSprite.height -200 );
+    const garbageButton = new PIXI.Text('🗑️', { fontSize: 70 });
+    garbageButton.anchor.set(0.4);
+    garbageButton.position.set((backgroundSprite.width / 4) * 2, backgroundSprite.height -200 );
 
     garbageButton.interactive = true;
     garbageButton.buttonMode = true;
@@ -1101,20 +1101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const reviveText2 = `Spend 50 to revive ${characterName}?`;
   
-    const textStyle = new PIXI.TextStyle({
-      fontFamily: 'Marker Felt',
-      fontSize: app.screen.width * 0.045, // Responsive font size
-      fill: '#FFFF00', // Yellow color
-      stroke: '#000000', // Black outline color
-      strokeThickness: 6, // Outline thickness
-      dropShadow: true,
-      dropShadowColor: '#000000', // Shadow color
-      dropShadowBlur: 4, // Shadow blur
-      dropShadowAngle: Math.PI / 6, // Shadow angle
-      dropShadowDistance: 2, // Shadow distance
-      wordWrap: true, // Enable word wrapping
-      wordWrapWidth: backgroundSprite.width * 0.8, // Set the word wrap width
-    });
+    const textStyle = getTextStyle();
   
     const text = new PIXI.Text(reviveText2, textStyle);
     text.anchor.set(.5);
@@ -3406,7 +3393,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     });
   
     // Position the coffee drop text
-    coffeeDrop.position.set(x, y);
+    coffeeDrop.position.set(x, y-50);
     coffeeDrop.zIndex = 9999999999;
     app.stage.addChild(coffeeDrop);
   

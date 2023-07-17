@@ -100,7 +100,7 @@ touch-action: manipulation;
   /* Initially hidden */
   position: fixed;
   top: 0px;
-  left: -6px;
+  left: -4px;
   background-image: url("https://i.imgur.com/HTeDEQJ.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -678,7 +678,7 @@ z-index: 99999999999999999999999;
 #progress {
   position: fixed;
   top: 30px;
-  left: 12vw; /* Changed from 80px to vw */
+  left: 14vw; /* Changed from 80px to vw */
   width: 68vw;
   height: 20px;
   background-color: rgba(0, 0, 0, 0.363);
@@ -688,7 +688,7 @@ z-index: 99999999999999999999999;
 #progress-filled {
   position: fixed;
   top: 30px;
-  left: 12vw; /* Changed from 80px to vw */
+  left: 14vw; /* Changed from 80px to vw */
   width: 0;
   height: 20px;
   background-color: rgba(0, 0, 0, 0.411);
