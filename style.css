@@ -99,8 +99,8 @@ touch-action: manipulation;
   visibility: hidden;
   /* Initially hidden */
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 0px;
+  left: 0px;
   background-image: url("https://i.imgur.com/HTeDEQJ.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -116,11 +116,10 @@ z-index: 99999999999999999999999;
 
 #coffee-button {
   visibility: hidden;
-  font-family: "Marker Felt", 'Patrick Hand', cursive;
-  font-weight: bold;
+  font-family: 'Luckiest Guy';
   /* Initially hidden */
   position: fixed;
-  top: 10px;
+  top: 0px;
   right: 0px;
   background-image: url("https://i.imgur.com/Ft63zNi.png");
   background-size: contain;
@@ -143,17 +142,16 @@ z-index: 99999999999999999999999;
 
 #coffee-amount {
   position: absolute;
-  font-size: 48px;
-  top: -4px;
-  font-weight: bold;  /* New line added */
-
-  right: 20px;
+  font-size: 36px;
+  top: 4px;
+  font-family: 'Luckiest Guy';
+  right: 10px;
   width: 100%;
   padding: 5px;
   background-color: transparent;
   color: #ffffff;
   text-align: center;
-  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: #000000;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;

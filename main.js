@@ -189,15 +189,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Cause a reflow by accessing offsetWidth
-    void snail.offsetWidth;
-    void progressFilled.offsetWidth;
+    snail.getBoundingClientRect();
+    progressFilled.getBoundingClientRect();
 
     // Set the animations
     snail.style.animation = 'snail-movement 60s linear, snail-animation 1s steps(2) infinite';
     progressFilled.style.animation = 'progress-fill 60s linear';
-
-    snail.style.animationPlayState = 'running';
-    progressFilled.style.animationPlayState = 'running';
+    setTimeout(() => {
+      snail.style.animationPlayState = 'running';
+      progressFilled.style.animationPlayState = 'running';
+    }, 0);
+  
 
     timer = setInterval(() => {
       const diff = Date.now() - startTime;
@@ -209,8 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
         timerFinished = true;
         snail.style.animation = 'none';
         progressFilled.style.animation = 'none';
-        snail.style.left = 'calc(12%)';
-        progressFilled.style.width = '0%';
+        snail.style.left = 'calc(80vw)';  // Changed line
+        progressFilled.style.width = '68vw';  // Changed line
       }
     }, 10);
   }
@@ -633,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     // Volume Button
     volumeButton = createVolumeButton(backgroundSprite);
-    volumeButton.position.set(volumeSlider.x + volumeSlider.width + 10, backgroundSprite.height / 2);
+    volumeButton.position.set(volumeSlider.x - backgroundSprite.width /8, backgroundSprite.height / 2);
     pauseMenuContainer.addChild(volumeButton);
   
     // Garbage Button
@@ -646,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function () {
     volumeSlider.addChild(createSliderBall(backgroundSprite));
   
     let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
-    let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
+    let pauseY = -app.stage.position.y + (app.screen.width / 2) - (pauseMenuContainer.height / 2);
     pauseMenuContainer.position.set(pauseX, pauseY);
   
     app.stage.addChild(pauseMenuContainer);
@@ -687,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // The remaining helper functions (createBackgroundSprite, createBorder, getTextStyle, createText, createVolumeSlider, createVolumeButton, createGarbageButton, createSliderBall) will need to be implemented.
   function createBackgroundSprite() {
     const backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    backgroundSprite.width = window.innerWidth;
+    backgroundSprite.width = app.screen.width;
     backgroundSprite.height = Math.max(app.screen.height * 0.4, 300);
     backgroundSprite.tint = 0xFFFFFF; // White color
     backgroundSprite.alpha = 0.8; // Semi-transparent background
@@ -740,10 +742,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function createVolumeSlider(backgroundSprite) {
     const volumeSlider = new PIXI.Container();
-    volumeSlider.position.set(backgroundSprite.width / 2 - 100, backgroundSprite.height / 2);
+    volumeSlider.position.set(backgroundSprite.width / 2.75, backgroundSprite.height / 2);
     const sliderBackground = new PIXI.Graphics();
     sliderBackground.beginFill(0x000000); // Black color for the rectangle background
-    sliderBackground.drawRect(-100, -10, backgroundSprite.width/4, 20); // Set the same bounds as the sliding ball
+    sliderBackground.drawRect(0, -10, backgroundSprite.width/3.5, 20); // Set the same bounds as the sliding ball
     sliderBackground.endFill();
     volumeSlider.addChild(sliderBackground);
      // New function to adjust the volume based on the slider ball's position
@@ -751,11 +753,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return volumeSlider;
   }
   function createSliderBall(backgroundSprite) {
-    let boundaryOffset = backgroundSprite.width / 14; // You can adjust this value to fine-tune the boundaries
+    let boundaryOffset = backgroundSprite.width / 8; // You can adjust this value to fine-tune the boundaries
 
     const sliderBall = new PIXI.Text('🔵', { fontSize: 80 });
     sliderBall.anchor.set(0.5);
-    sliderBall.position.set(0, 0);
+    sliderBall.position.set(100, 0);
     
     let isDragging = false;
     let offsetX = 0;
@@ -798,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function createVolumeButton(backgroundSprite) {
    volumeButton = new PIXI.Text('🔉', { fontSize: 80 });
     volumeButton.anchor.set(0.5);
-    volumeButton.position.set(backgroundSprite.width / 3, backgroundSprite.height / 2);
+    volumeButton.position.set(backgroundSprite.width / 20, backgroundSprite.height / 2);
 
     volumeButton.interactive = true;
     volumeButton.buttonMode = true;
@@ -844,8 +846,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (pauseMenuContainer) {
-      let pauseX = -app.stage.position.x + (window.innerWidth / 2) - (pauseMenuContainer.width / 2);
-      let pauseY = -app.stage.position.y + (window.innerWidth / 2) - (pauseMenuContainer.height / 2);
+      let pauseX = -app.stage.position.x + (app.screen.width / 2) - (pauseMenuContainer.width / 2);
+      let pauseY = -app.stage.position.y + (app.screen.height / 2) - (pauseMenuContainer.height / 2);
       pauseMenuContainer.position.set(pauseX, pauseY);
     }
   }
