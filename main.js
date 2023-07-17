@@ -888,8 +888,11 @@ document.addEventListener('DOMContentLoaded', function () {
   pauseButton.addEventListener("click", function () {
     if (getisDead() == false) {
       if (getPlayerCurrentHealth() > 0) {
+        if(roundOver == false){
+          
         setisPaused(!getisPaused());
         console.log("PAUSED");
+        }
       }
 
     }
@@ -2586,7 +2589,7 @@ app.stage.addChild(hpBarBackground,hpBar);
         return 0.45;
     }
   }
-
+let attackingEnemy = null;
   function updateCurrentLevels()
   {
     characterLevelElement = document.getElementById("character-level");
@@ -2666,17 +2669,25 @@ app.stage.addChild(hpBarBackground,hpBar);
     }
     enemy.position.x += enemy.vx;
   }
+let hasAttackedThisFrame = false;
 
   function handleEnemyCombat(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName) {
 
 
     if (critter.textures !== frogWalkTextures && critter.currentFrame === critter.totalFrames - 2) {
+      if(!hasAttackedThisFrame){
+
       handleCritterAttack(critter, enemy, critterAttackTextures);
+      hasAttackedThisFrame = true;
+      }
     } else if (critter.currentFrame === critter.totalFrames - 1) {
       setIsCharAttacking(false);
+      hasAttackedThisFrame = false;
+
     }
 
     if (!enemy.enemyAdded) {
+      
       addEnemyInRange(enemy);
       return;
     }
@@ -2686,15 +2697,23 @@ app.stage.addChild(hpBarBackground,hpBar);
     }
   }
 
-
-  function handleCritterAttack(critter, enemy, critterAttackTextures) {
-    if (!getIsCharAttacking()) {
-      setIsCharAttacking(true);
-      if (getCurrentCharacter() !== "character-bird") {
-        critterAttack(critter, enemy, critterAttackTextures);
+let currentAttackedEnemy = null;
+function handleCritterAttack(critter, enemy, critterAttackTextures) {
+  if (!getIsCharAttacking()) {
+      if (currentAttackedEnemy === null || !currentAttackedEnemy.isAlive) {
+          currentAttackedEnemy = enemy;
       }
-    }
+      if (currentAttackedEnemy === enemy) {
+          if(currentAttackedEnemy.currentHP <= 0) {
+              return;
+          }
+          setIsCharAttacking(true);
+          if (getCurrentCharacter() !== "character-bird") {
+              critterAttack(critter, currentAttackedEnemy, critterAttackTextures);
+          }
+      }
   }
+}
 
   function addEnemyInRange(enemy) {
     enemy.enemyAdded = true;
@@ -2772,6 +2791,8 @@ app.stage.addChild(hpBarBackground,hpBar);
     console.log('ENEMY HP', enemy.currentHP);
 
     if (enemy.currentHP <= 0) {
+   
+      currentAttackedEnemy = null;
         // Callback function to remove enemy after death animation
         if (app.stage.children.includes(enemy)) {
             enemy.tint = 0xFF0000; // Set the hit color
@@ -2788,7 +2809,7 @@ app.stage.addChild(hpBarBackground,hpBar);
             createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
             app.stage.removeChild(enemy);
             getEnemies().splice(getEnemies().indexOf(enemy), 1);
-
+enemy.isAlive = false;
             isCombat = false;
             setIsCharAttacking(false);
             playDeathAnimation(enemy, critter);
@@ -2859,6 +2880,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
         // Stop the frog's movement temporarily until character is selected
         clearInterval(moveInterval);
+        console.log("LEVELING",leveling);
         if (leveling == false) {
           // Check if character is selected
           if (selectedCharacter !== "") {
@@ -3254,6 +3276,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
     console.log("dmgD", getCharacterDamage(getCurrentCharacter()));
     if (enemy.currentHP - getCharacterDamage(getCurrentCharacter()) <= 0) {
+
       // Callback function to remove enemy after death animation
       if (app.stage.children.includes(enemy)) {
         enemy.tint = 0xFF0000; // Set the hit color
@@ -3267,7 +3290,9 @@ app.stage.addChild(hpBarBackground,hpBar);
           const enemyPortrait = document.getElementById('enemy-portrait');
           enemyPortrait.style.display = 'none'; // Make the element visible
         }
+        currentAttackedEnemy = null;
 
+        enemy.isAlive = false;
         setIsCharAttacking(false);
         console.log("ENEMY DEAD", enemy.position.x, enemy.position.y);
         createCoffeeDrop(enemy.position.x + 20, enemy.position.y);
@@ -3603,6 +3628,7 @@ app.stage.addChild(hpBarBackground,hpBar);
       box.clickHandler = () => {
         const upgradeType = classNames[1];
         handleUpgrade(upgradeType);
+        leveling = false;
       };
 
       box.addEventListener('click', box.clickHandler); // Add the updated event listener
@@ -3799,7 +3825,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     animateUpgradeBoxes();
     levelSound.volume = .2;
     levelSound.play();
-    leveling = false;
+  
   }
 
   function handleVisibilityChange() {
