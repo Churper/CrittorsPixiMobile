@@ -2686,6 +2686,7 @@ let hasAttackedThisFrame = false;
       hasAttackedThisFrame = false;
 
     }
+    else{ hasAttackedThisFrame = false;}
 
     if (!enemy.enemyAdded) {
       
@@ -3989,8 +3990,8 @@ enemy.isAlive = false;
     if (savedData) {
 
       const gameData = JSON.parse(savedData);
-      currentRound = gameData.currentRound;
-    
+     // currentRound = gameData.currentRound;
+    currentRound = 20;
       // Load the saved values into your variables
       setCurrentFrogHealth(gameData.currentFrogHealth);
       setCurrentSnailHealth(gameData.currentSnailHealth);
