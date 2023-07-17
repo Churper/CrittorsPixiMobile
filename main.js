@@ -682,6 +682,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       isUnpausing = false;
       isPaused = false; // Resume the game
+      
       spawnEnemies();
       startTimer();
     }
