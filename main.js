@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
   hitSound.src = "./hurt.wav";
   let isCombat = false;
   let isPointerDown = false;
-  const menuTexture = PIXI.Texture.from('https://i.imgur.com/YtBjxdf.png');
+  const menuTexture = PIXI.Texture.from('https://churper.github.io/CrittorsPixiMobile/assets/mainmenu.png');
   const menuSprite = new PIXI.Sprite(menuTexture);
   let characterPositions = {
     "character-snail": { top: "-50px", left: "calc(45% - 70px)" },
@@ -137,14 +137,14 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const enemyPortraits = [
-    { name: 'ele_portrait', url: 'https://i.imgur.com/Zvw72h5.png' },
-    { name: 'octo_portrait', url: 'https://i.imgur.com/F3OYSDm.png' },
-    { name: 'pig_portrait', url: 'https://i.imgur.com/ZxaI7rG.png' },
-    { name: 'scorp_portrait', url: 'https://i.imgur.com/u2T4oon.png' },
-    { name: 'toofer_portrait', url: 'https://i.imgur.com/lNPjWon.png' },
-    { name: 'imp_portrait', url: 'https://i.imgur.com/1EFx7kH.png' },
-    { name: 'puffer_portrait', url: 'https://i.imgur.com/9gLYMax.png' },
-    { name: 'shark_portrait', url: 'https://i.imgur.com/9gLYMax.png' }
+    { name: 'ele_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/eleportrait.png' },
+    { name: 'octo_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/octoportrait.png' },
+    { name: 'pig_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pigportrait.png' },
+    { name: 'scorp_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/scorpportrait.png' },
+    { name: 'toofer_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/tooferportrait.png' },
+    { name: 'imp_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/impportrait.png' },
+    { name: 'puffer_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pufferportrait.png' },
+    { name: 'shark_portrait', url: 'https://churper.github.io/CrittorsPixiMobile/assets/sharkportrait.png' }
   ];
 
   const portraitNames = {
