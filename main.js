@@ -899,12 +899,12 @@ document.addEventListener('DOMContentLoaded', function () {
   var pauseButton = document.getElementById("pause-button");
 
   pauseButton.addEventListener("mousedown", function () {
-    pauseButton.style.backgroundImage = 'url("https://i.imgur.com/gGcCLKj.png")';
+    pauseButton.style.backgroundImage = 'url("https://churper.github.io/CrittorsPixiMobile/assets/pausedown.png")';
     console.log("Button Pressed");
   });
 
   pauseButton.addEventListener("mouseup", function () {
-    pauseButton.style.backgroundImage = 'url("https://i.imgur.com/HTeDEQJ.png")';
+    pauseButton.style.backgroundImage = 'url("https://churper.github.io/CrittorsPixiMobile/assets/pauseup.png")';
     console.log("Button Released");
   });
 
