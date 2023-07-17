@@ -2793,7 +2793,6 @@ function handleCritterAttack(critter, enemy, critterAttackTextures) {
 
     if (enemy.currentHP <= 0) {
    
-      currentAttackedEnemy = null;
         // Callback function to remove enemy after death animation
         if (app.stage.children.includes(enemy)) {
             enemy.tint = 0xFF0000; // Set the hit color
