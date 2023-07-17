@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     const textStyle = new PIXI.TextStyle({
       fontFamily: 'Marker Felt',
-      fontSize: app.screen.width * 0.04, // Responsive font size
+      fontSize: app.screen.width * 0.045, // Responsive font size
       fill: '#FFFF00', // Yellow color
       stroke: '#000000', // Black outline color
       strokeThickness: 6, // Outline thickness
@@ -2026,7 +2026,7 @@ foreground.y = Math.max(app.screen.height);
           }
 
           // Calculate the amount to move the camera per frame
-          const cameraSpeed = 3;
+          const cameraSpeed = 6;
 
           // Calculate the target position (start position)
           const targetX = 0;
@@ -3049,14 +3049,12 @@ foreground.y = Math.max(app.screen.height);
 
 
     const damageText = new PIXI.Text(`${damage}`, {
-      fontFamily: 'Marker Felt Cursive',
       fontSize: 24,
-      fill: 'red',
-      dropShadow: true,
-      dropShadowColor: 'black',
-      dropShadowBlur: 4,
-      dropShadowAngle: Math.PI / 4,
-      dropShadowDistance: 2,
+      fill: "rgb(255, 105, 97)", // This is a light red color.
+      fontWeight: "bold",
+      stroke: "#000",
+      strokeThickness: 3,
+      strokeOutside: true
     });
 
     damageText.anchor.set(0.5);
@@ -3144,16 +3142,13 @@ foreground.y = Math.max(app.screen.height);
   
     drawEnemyHPBar(enemy);
     updateEnemyGrayscale(enemy.currentHP);
-  
-    const damageText = new PIXI.Text(`${damage}`, {
-      fontFamily: 'Marker Felt Cursive',
+    const damageText = new PIXI.Text(`${-damage}`, {
       fontSize: 24,
-      fill: 'red',
-      dropShadow: true,
-      dropShadowColor: 'black',
-      dropShadowBlur: 4,
-      dropShadowAngle: Math.PI / 4,
-      dropShadowDistance: 2,
+      fill: "rgb(255, 105, 97)", // This is a light red color.
+      fontWeight: "bold",
+      stroke: "#000",
+      strokeThickness: 3,
+      strokeOutside: true
     });
   
     damageText.anchor.set(0.5);
@@ -3277,7 +3272,9 @@ foreground.y = Math.max(app.screen.height);
     setTimeout(() => {
       // Remove the coffee container from the stage or parent container
       app.stage.removeChild(coffeeContainer);
-    }, duration * 3);
+      createCoffeeDropText(x, y + 50, numBeans);
+
+    }, duration * 1.5);
     addCoffee(numBeans);
   }
 
@@ -3303,7 +3300,45 @@ foreground.y = Math.max(app.screen.height);
     };
 
   }
-
+  function createCoffeeDropText(x, y, coffeeAmount) {
+    // create the coffee drop text
+    const coffeeDropText = "+" + coffeeAmount;
+    const coffeeDrop = new PIXI.Text(coffeeDropText, {
+      fontSize: 24,
+      fill: "rgb(178, 135, 90)",
+      fontWeight: "bold",
+      stroke: "#000",
+      strokeThickness: 3,
+      strokeOutside: true
+    });
+  
+    // Position the coffee drop text
+    coffeeDrop.position.set(x, y);
+    coffeeDrop.zIndex = 9999999999;
+    app.stage.addChild(coffeeDrop);
+  
+    // Animate the Coffee drop text
+    const startY = y -50;
+    const endY = startY - 100; // Adjust the value to control the floating height
+    const duration = 2600; // Animation duration in milliseconds
+    const startTime = performance.now();
+  
+    const animateCoffeeDrop = (currentTime) => {
+      const elapsed = currentTime - startTime;
+  
+      if (elapsed < duration) {
+        const progress = elapsed / duration;
+        const newY = startY - (progress * (startY - endY));
+        coffeeDrop.position.y = newY;
+        requestAnimationFrame(animateCoffeeDrop);
+      } else {
+        // Animation complete, remove the coffee drop text
+        app.stage.removeChild(coffeeDrop);
+      }
+    };
+  
+    requestAnimationFrame(animateCoffeeDrop);
+  }
 
   function playDeathAnimation(enemy, critter) {
 
