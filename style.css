@@ -143,9 +143,9 @@ z-index: 99999999999999999999999;
 #coffee-amount {
   position: absolute;
   font-size: 36px;
-  top: 1vh;
+  top: 1.25vh;
   font-family: 'Luckiest Guy';
-  right: 16px;
+  right: 2vh;
   width: 100%;
   padding: 5px;
   background-color: transparent;

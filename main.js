@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 0;
+  let speed = 10;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -755,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function createSliderBall(backgroundSprite) {
     let boundaryOffset = backgroundSprite.width / 8; // You can adjust this value to fine-tune the boundaries
 
-    const sliderBall = new PIXI.Text('🔵', { fontSize: 80 });
+    const sliderBall = new PIXI.Text('🔵', { fontSize: 48 });
     sliderBall.anchor.set(0.5);
     sliderBall.position.set(100, 0);
     
@@ -1622,8 +1622,13 @@ foreground.y = Math.max(app.screen.height);
       clouds2.alpha = .3;
       const enemyDeathTextures = createAnimationTextures('enemy_death', 8, 317);
       enemyDeath = createAnimatedSprite(enemyDeathTextures);
+      const castleDeathTextures = createAnimationTextures('enemy_death', 8, 317);
+      castleDeath = createAnimatedSprite(castleDeathTextures);
       const playerSpawn = createAnimatedSprite(enemyDeathTextures);
-
+      castleDeath.animationSpeed = 0.175;
+      castleDeath.loop = false;
+      castleDeath.anchor.set(1, 0);
+      castleDeath.scale.set(0.5);
       let characterTextures;
 
       characterTextures = frogWalkTextures;
@@ -1933,13 +1938,61 @@ foreground.y = Math.max(app.screen.height);
         hpBar.endFill();
       }
 
-
+let hasExploded = false;
       // Damage function
+      function castleExpDrop(damage){
+        expToGive = Math.round(damage * 0.25);
+        if(cantGainEXP){return;}
+        const expDrop = new PIXI.Text("+" + expToGive+ " EXP", {
+          fontSize: 18,
+          fill: "orange",
+          fontWeight: "bold",
+          stroke: "#000",
+          strokeThickness: 3,
+          strokeOutside: true
+        });
+
+    
+        setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + expToGive);
+        //ox setPlayerEXP(getPlayerEXP() + 100);
+        console.log("YEP", getCharEXP(getCurrentCharacter()));
+        console.log("YEPX", getEXPtoLevel(getCurrentCharacter()));
+        updateEXP(getCharEXP(getCurrentCharacter()) + expToGive, getEXPtoLevel(getCurrentCharacter()));
+        expDrop.position.set(critter.position.x + 20, critter.position.y - 20);
+        expDrop.zIndex = 9999999999;
+        app.stage.addChild(expDrop);
+    
+        // Animate the EXP drop text
+        const startY = critter.position.y - 20;
+    
+        const endY = startY - 50; // Adjust the value to control the floating height
+        const duration = 2600; // Animation duration in milliseconds
+        const startTime = performance.now();
+    
+        const animateExpDrop = (currentTime) => {
+          const elapsed = currentTime - startTime;
+    
+          if (elapsed < duration) {
+            const progress = elapsed / duration;
+            const newY = startY - (progress * (startY - endY));
+            expDrop.position.y = newY;
+            requestAnimationFrame(animateExpDrop);
+          } else {
+            // Animation complete, remove the EXP drop text
+            app.stage.removeChild(expDrop);
+          }
+        };
+    
+        requestAnimationFrame(animateExpDrop);
+
+      }
+      let expToGive = 0;
       function castleTakeDamage(damage) {
         castleHealth -= damage;
-        if (castleHealth <= 0) {
+        
+        if ((castleHealth <= 0) && (!hasExploded)) {
 
-          castleExplode();
+         
           let newHP = getPlayerCurrentHealth() + 25;
           if (newHP < getPlayerHealth()) {
             setPlayerCurrentHealth(newHP);
@@ -1949,30 +2002,64 @@ foreground.y = Math.max(app.screen.height);
             setPlayerCurrentHealth(getPlayerHealth());
             updatePlayerHealthBar(getPlayerHealth() / getPlayerHealth() * 100);
           }
-          setCharEXP(getCurrentCharacter(), getCharEXP(getCurrentCharacter()) + 25);
-          updateEXP(getCharEXP(getCurrentCharacter()) + 25, getEXPtoLevel(getCurrentCharacter()));
-
+          hasExploded=true;
+          castleExplode();
         }
+        else{
+          castleExpDrop(damage);}
 
         updateHPBar(castleHealth, castleMaxHealth);
       }
-
+let cantGainEXP = false;
       function castleExplode() {
-
-
-
-
-
+        cantGainEXP = true;
         currentRound++;
-        roundOver = true;
         setEnemiesInRange(0);
-
         console.log("enemies has been updated to", getEnemiesInRange())
         resetEnemiesState();
         exploded = true;
+        app.stage.removeChild(castle);
+        let completedExplosions = 0; // Counter for completed explosions
 
+        // Create multiple explosions
+        for (let i = 0; i < 7; i++) {
+            // Create a new explosion sprite for each explosion
+            const explosion = createAnimatedSprite(castleDeathTextures);
+    
+            // Customize the position, size, speed, and tint of each explosion
+            explosion.position.set(
+                castle.position.x + Math.random() * 70 - 25 - 140, 
+                castle.position.y - 100 + Math.random() * 70 - 25
+            );
+            if (i === 6) { // Conditions for the last explosion
+              explosion.scale.set(0.35); // This sets the size of the last explosion
+              explosion.animationSpeed = 0.1; // This makes the last explosion go really slow
+              explosion.tint = 0x000000; // This makes the last explosion black
+              explosion.position.set(explosion.position.x, explosion.position.y + 50);
+          } else {
+              explosion.scale.set(0.35 * (0.75 + Math.random() * 0.5));
+              explosion.animationSpeed = 0.1 + Math.random() * 0.4 - .02;
+              explosion.tint = getRandomColor();
+          }
+          explosion.loop=false;
+            // Add the explosion sprite to the stage
+            app.stage.addChild(explosion);
+    
+            // Play the explosion animation
+            explosion.gotoAndPlay(0);
+    
+            // Remove the explosion animation after it completes
+            explosion.onComplete = () => {
+                app.stage.removeChild(explosion);
+                completedExplosions++; // Increment the counter when an explosion completes
 
-      }
+                if (completedExplosions === 7) { // All explosions completed
+                  roundOver = true;
+              }
+            };
+        }
+    }
+    
 
       let unPauser = 0;
       const maxX = foreground.width - critter.width / 2;
@@ -2081,10 +2168,14 @@ foreground.y = Math.max(app.screen.height);
               exploded = false;
               saveGame();
 
-              
+              cantGainEXP=false;
               resetTimer();
               startTimer();
+              app.stage.addChild(castle);
+              app.stage.addChild(critter);
+app.stage.addChild(hpBarBackground,hpBar);
               console.log("REEEE");
+              hasExploded = false;
             }
 
             playRoundText(currentRound);
