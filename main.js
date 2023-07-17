@@ -1295,10 +1295,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getCharacterPortraitUrl(characterType) {
     switch (characterType) {
-      case 'character-snail': return 'https://i.imgur.com/Chu3ZkP.png';
-      case 'character-bird': return 'https://i.imgur.com/WAwZpGS.png';
-      case 'character-frog': return 'https://i.imgur.com/XaXTV73.png';
-      case 'character-bee': return 'https://i.imgur.com/rmcGGP9.png';
+      case 'character-snail': return 'https://churper.github.io/CrittorsPixiMobile/assets/snailportrait.png';
+      case 'character-bird': return 'https://churper.github.io/CrittorsPixiMobile/assets/birdportrait.png';
+      case 'character-frog': return 'https://churper.github.io/CrittorsPixiMobile/assets/frogportrait.png';
+      case 'character-bee': return 'https://churper.github.io/CrittorsPixiMobile/assets/beeportrait.png';
       default: return '';
     }
   }
@@ -1319,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     
 
-    const loadingTexture = PIXI.Texture.from('https://i.imgur.com/dJ4eoGZ.png');
+    const loadingTexture = PIXI.Texture.from('https://churper.github.io/CrittorsPixiMobile/assets/loading.png');
     const loadingSprite = new PIXI.Sprite(loadingTexture);
     loadingSprite.anchor.set(0.5);
     loadingSprite.width = app.screen.width;
