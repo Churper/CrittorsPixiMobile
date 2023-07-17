@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 10;
+  let speed = 1;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -1921,7 +1921,7 @@ foreground.y = Math.max(app.screen.height);
 let hasExploded = false;
       // Damage function
       function castleExpDrop(damage){
-        expToGive = Math.round(damage * 0.25);
+        expToGive = Math.round(damage * 0.75);
         if(cantGainEXP){return;}
         const expDrop = new PIXI.Text("+" + expToGive+ " EXP", {
           fontSize: 18,
@@ -2562,7 +2562,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     enemy.animationSpeed = enemyName === "pig" ? 0.23 : enemyName === "scorp" ? 0.15 : 0.25;
     enemy.loop = true;
     enemy.isAlive = true;
-    enemy.attackDamage = 2 + currentRound;
+    enemy.attackDamage = Math.round(2 + currentRound /3) ;
     enemy.maxHP = 80 + currentRound * 7;
     enemy.currentHP = enemy.maxHP;
     enemy.scale.x *= -1; // Flip the enemy horizontally
