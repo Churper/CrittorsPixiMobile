@@ -1400,14 +1400,14 @@ document.addEventListener('DOMContentLoaded', function () {
     frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
 
     PIXI.Loader.shared.add([
-      { name: 'shark_emerge', url: 'https://i.imgur.com/BUxEAgz.png' },
-      { name: 'shark_submerge', url: 'https://i.imgur.com/j1eM9EI.png' },
-      { name: 'shark_walk', url: 'https://i.imgur.com/HNILgOX.png' },
-      { name: 'shark_attack', url: 'https://i.imgur.com/AGrq5qY.png' },
-      { name: 'pig_walk', url: 'https://i.imgur.com/141LQoZ.png' },
-      { name: 'pig_attack', url: 'https://i.imgur.com/O0FXcIH.png' },
-      { name: 'ele_walk', url: 'https://i.imgur.com/HAbxzx2.png' },
-      { name: 'ele_attack', url: 'https://i.imgur.com/zqpWWPI.png' },
+      { name: 'shark_emerge', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_emerge.png' },
+      { name: 'shark_submerge', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_submerge.png' },
+      { name: 'shark_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_walk.png' },
+      { name: 'shark_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_attack.png' },
+      { name: 'pig_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pig_walk.png' },
+      { name: 'pig_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pig_attack.png' },
+      { name: 'ele_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/ele_walk.png' },
+      { name: 'ele_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/ele_attack.png' },
       { name: 'scorp_walk', url: 'https://i.imgur.com/wnZD4tY.png' },
       { name: 'scorp_attack', url: 'https://i.imgur.com/VBxfGVM.png' },
       { name: 'octo_walk', url: 'https://i.imgur.com/cUUhR61.png' },
