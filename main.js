@@ -1155,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowAngle: Math.PI / 6, // Shadow angle
       dropShadowDistance: 2, // Shadow distance
       wordWrap: true,
-      wordWrapWidth: backgroundSpriteWidth /3,
+      wordWrapWidth: app.screen.width /3,
     });
   
     const noButton = new PIXI.Text('☒', noButtonStyle);
