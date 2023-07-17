@@ -1134,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create the 'Yes' button with emoji
     const playerCoins = getCoffee(); // Assuming getCoffee() is the function that returns the player's current coin amount
     const yesButtonStyle = new PIXI.TextStyle({
-      fontSize: app.screen.width * 0.12, // Responsive font size
+      fontSize: app.screen.width * 0.26, // Responsive font size
       fill: playerCoins >= 50 ? '#008000' : '#808080', // Green color if player has 50 or more coins, grey otherwise
       backgroundColor: '#000000', // Black background
       fontFamily: 'Marker Felt',
@@ -1149,12 +1149,12 @@ document.addEventListener('DOMContentLoaded', function () {
   
     const yesButton = new PIXI.Text('☑', yesButtonStyle);
     yesButton.anchor.set(0.5);
-    yesButton.position.set(backgroundSprite.width * 0.35, backgroundSprite.height * 0.75);
+    yesButton.position.set(backgroundSprite.width * 0.3, backgroundSprite.height * 0.75);
     reviveDialogContainer.addChild(yesButton);
   
     // Create the 'No' button with emoji and red tint
     const noButtonStyle = new PIXI.TextStyle({
-      fontSize: app.screen.width * 0.12, // Responsive font size
+      fontSize: app.screen.width * 0.26, // Responsive font size
       fill: '#FF0000', // Red color
       backgroundColor: '#000000', // Black background
       fontFamily: 'Marker Felt',
@@ -1169,7 +1169,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     const noButton = new PIXI.Text('☒', noButtonStyle);
     noButton.anchor.set(0.5);
-    noButton.position.set(backgroundSprite.width * 0.65, backgroundSprite.height * 0.75);
+    noButton.position.set(backgroundSprite.width * 0.7, backgroundSprite.height * 0.75);
     reviveDialogContainer.addChild(noButton);
   
     // Calculate the position of the dialog box based on the current stage position
