@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let playerHealth = 100;
   let coffee = 0;
   let frogSize = .35;
-  let speed = 1;
+  let speed = 10;
   let choose = false;
   if (speed == 0) {
     speed = 1;
@@ -155,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'scorp': 'scorp_portrait',
     'toofer': 'toofer_portrait',
     'imp': 'imp_portrait',
+    'shark': 'shark_portrait'
   };
 
   let pauseTime = null;
@@ -1110,7 +1111,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   
     // Add coffee bean image
-    let beanSprite = PIXI.Sprite.from('https://i.imgur.com/Ft63zNi.png');
+    let beanSprite = PIXI.Sprite.from('bean')
     beanSprite.anchor.set(0.5);
     beanSprite.scale.set(0.85);
     beanSprite.position.set(text.position.x - text.width / 5.5, text.position.y);
