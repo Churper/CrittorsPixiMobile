@@ -1101,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const reviveText2 = `Spend 50 to revive ${characterName}?`;
   
-    const textStyle = getTextStyle( backgroundSprite );
+    const textStyle = getTextStyle( backgroundSprite.width );
   
     const text = new PIXI.Text(reviveText2, textStyle);
     text.anchor.set(.5);
