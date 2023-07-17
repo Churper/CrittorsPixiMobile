@@ -716,7 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
       dropShadowAngle: Math.PI / 6,
       dropShadowDistance: 2,
       wordWrap: true,
-      wordWrapWidth: backgroundSpriteWidth /3,
+      wordWrapWidth: backgroundSpriteWidth /2,
     });
   }
 
