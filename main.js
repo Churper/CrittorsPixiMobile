@@ -931,37 +931,12 @@ document.addEventListener('DOMContentLoaded', function () {
       overlayElement.style.display = "none";
     }, cooldownDuration);
   }
-  document.getElementById("character-portrait").addEventListener("click", openCharacterMenu);
-  document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
-  document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
-  let startY = null;
-  let isSwiping = false;
-  let threshold = 50; // Define your threshold here, in pixels
-  
-
-  
-  window.addEventListener('touchstart', function(event) {
-      startY = event.changedTouches[0].pageY;
-  }, false);
-  
-  window.addEventListener('touchmove', function(event) {
-      isSwiping = true;
-  }, false);
-  
-  window.addEventListener('touchend', function(event) {
-      let endY = event.changedTouches[0].pageY;
-  
-      // Determine swipe direction
-      let swipeDirection = endY - startY;
-  
-      // If swiping and moved more than threshold
-      if (isSwiping && Math.abs(swipeDirection) >= threshold) {
-          openCharacterMenu(); // call the function directly
-      }
-  
-      // Reset swiping status
-      isSwiping = false;
-  }, false);
+  // Apply both click and touchmove events to each of your elements
+["character-portrait", "exp-bar", "health-bar"].forEach(id => {
+  const element = document.getElementById(id);
+  element.addEventListener("click", openCharacterMenu);
+  element.addEventListener("touchmove", openCharacterMenu);
+});
   
   function openCharacterMenu() {
     if (getSelectLevel() >= 1) {
