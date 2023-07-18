@@ -931,11 +931,35 @@ document.addEventListener('DOMContentLoaded', function () {
       overlayElement.style.display = "none";
     }, cooldownDuration);
   }
-  // Apply both click and touchmove events to each of your elements
+
+  let menuOpened = false; // flag to ensure the menu is opened only once per swipe
+
 ["character-portrait", "exp-bar", "health-bar"].forEach(id => {
-  const element = document.getElementById(id);
-  element.addEventListener("click", openCharacterMenu);
-  element.addEventListener("touchmove", openCharacterMenu);
+    const element = document.getElementById(id);
+    
+    element.addEventListener("click", openCharacterMenu);
+
+    element.addEventListener("touchstart", function(e) {
+        const touchPosition = e.changedTouches[0].clientY;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        // Check if the touch started within the bottom 10% of the screen
+        if (touchPosition >= screenHeight * 0.9) {
+            // Now any movement in this touch sequence will open the menu
+            element.addEventListener("touchmove", function() {
+                if (!menuOpened) {
+                    openCharacterMenu();
+                    menuOpened = true;
+                }
+            });
+        }
+    });
+    
+    element.addEventListener("touchend", function() {
+        menuOpened = false;
+        // Remove the touchmove listener after the touch sequence is finished
+        element.removeEventListener("touchmove", openCharacterMenu);
+    });
 });
   
   function openCharacterMenu() {
