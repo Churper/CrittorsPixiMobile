@@ -2328,7 +2328,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
           return;
         }
-        if(getEnemiesInRange()>0){handleTouchHold();}
+       // if(getEnemiesInRange()>0){handleTouchHold();}
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
         if (!isAttackingChar) {
           //  console.log("attacking char",isAttackingChar);
