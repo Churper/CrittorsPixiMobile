@@ -934,31 +934,38 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("character-portrait").addEventListener("click", openCharacterMenu);
   document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
   document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
-  let start = null;
-let threshold = 50; // Define your threshold here, in pixels
-
-window.addEventListener('touchstart', function(event) {
-    start = event.changedTouches[0].pageY;
-}, false);
-
-window.addEventListener('touchend', function(event) {
-    let end = event.changedTouches[0].pageY;
-
-    // Determine swipe direction
-    let swipeDirection = end - start;
-
-    if (Math.abs(swipeDirection) >= threshold) {
-        if (swipeDirection > 0) { // swipe down
-            document.getElementById("character-portrait").click();
-            document.getElementById("exp-bar").click();
-            document.getElementById("health-bar").click();
-        } else if (swipeDirection < 0) { // swipe up
-            document.getElementById("character-portrait").click();
-            document.getElementById("exp-bar").click();
-            document.getElementById("health-bar").click();
-        }
-    }
-}, false);
+  let startY = null;
+  let startTime = null;
+  let threshold = 50; // Define your threshold here, in pixels
+  let maxTapTime = 120; // Max time (in ms) between touchstart and touchend for a tap
+  
+  window.addEventListener('touchstart', function(event) {
+      startY = event.changedTouches[0].pageY;
+      startTime = new Date().getTime(); // Get start time
+  }, false);
+  
+  window.addEventListener('touchend', function(event) {
+      let endY = event.changedTouches[0].pageY;
+      let endTime = new Date().getTime(); // Get end time
+  
+      // Determine swipe direction
+      let swipeDirection = endY - startY;
+  
+      // Calculate elapsed time
+      let elapsedTime = endTime - startTime;
+  
+      if (Math.abs(swipeDirection) >= threshold && elapsedTime > maxTapTime) {
+          if (swipeDirection > 0) { // swipe down
+              document.getElementById("character-portrait").click();
+              document.getElementById("exp-bar").click();
+              document.getElementById("health-bar").click();
+          } else if (swipeDirection < 0) { // swipe up
+              document.getElementById("character-portrait").click();
+              document.getElementById("exp-bar").click();
+              document.getElementById("health-bar").click();
+          }
+      }
+  }, false);
   function openCharacterMenu() {
     if (getSelectLevel() >= 1) {
       return;
