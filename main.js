@@ -935,13 +935,13 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
   document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
   let startY = null;
-  let startTime = null;
+  let startTime1 = null;
   let threshold = 50; // Define your threshold here, in pixels
   let maxTapTime = 120; // Max time (in ms) between touchstart and touchend for a tap
   
   window.addEventListener('touchstart', function(event) {
       startY = event.changedTouches[0].pageY;
-      startTime = new Date().getTime(); // Get start time
+      startTime1 = new Date().getTime(); // Get start time
   }, false);
   
   window.addEventListener('touchend', function(event) {
@@ -952,7 +952,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let swipeDirection = endY - startY;
   
       // Calculate elapsed time
-      let elapsedTime = endTime - startTime;
+      let elapsedTime = endTime - startTime1;
   
       if (Math.abs(swipeDirection) >= threshold && elapsedTime > maxTapTime) {
           if (swipeDirection > 0) { // swipe down
