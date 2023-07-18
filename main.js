@@ -935,37 +935,34 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
   document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
   let startY = null;
-  let startTime1 = null;
+  let isSwiping = false;
   let threshold = 50; // Define your threshold here, in pixels
-  let maxTapTime = 120; // Max time (in ms) between touchstart and touchend for a tap
+  
+
   
   window.addEventListener('touchstart', function(event) {
       startY = event.changedTouches[0].pageY;
-      startTime1 = new Date().getTime(); // Get start time
+  }, false);
+  
+  window.addEventListener('touchmove', function(event) {
+      isSwiping = true;
   }, false);
   
   window.addEventListener('touchend', function(event) {
       let endY = event.changedTouches[0].pageY;
-      let endTime = new Date().getTime(); // Get end time
   
       // Determine swipe direction
       let swipeDirection = endY - startY;
   
-      // Calculate elapsed time
-      let elapsedTime = endTime - startTime1;
-  
-      if (Math.abs(swipeDirection) >= threshold && elapsedTime > maxTapTime) {
-          if (swipeDirection > 0) { // swipe down
-              document.getElementById("character-portrait").click();
-              document.getElementById("exp-bar").click();
-              document.getElementById("health-bar").click();
-          } else if (swipeDirection < 0) { // swipe up
-              document.getElementById("character-portrait").click();
-              document.getElementById("exp-bar").click();
-              document.getElementById("health-bar").click();
-          }
+      // If swiping and moved more than threshold
+      if (isSwiping && Math.abs(swipeDirection) >= threshold) {
+          openCharacterMenu(); // call the function directly
       }
+  
+      // Reset swiping status
+      isSwiping = false;
   }, false);
+  
   function openCharacterMenu() {
     if (getSelectLevel() >= 1) {
       return;
