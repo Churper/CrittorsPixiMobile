@@ -2681,12 +2681,11 @@ let hasAttackedThisFrame = false;
       handleCritterAttack(critter, enemy, critterAttackTextures);
       hasAttackedThisFrame = true;
       }
-    } else if (critter.currentFrame === critter.totalFrames - 1) {
+    } else if ((critter.currentFrame > critter.totalFrames - 2) || (critter.textures === frogWalkTextures) || (critter.currentFrame < critter.totalFrames - 2) ) {
       setIsCharAttacking(false);
       hasAttackedThisFrame = false;
 
     }
-    else{ hasAttackedThisFrame = false;}
 
     if (!enemy.enemyAdded) {
       
@@ -2702,18 +2701,16 @@ let hasAttackedThisFrame = false;
 let currentAttackedEnemy = null;
 function handleCritterAttack(critter, enemy, critterAttackTextures) {
   if (!getIsCharAttacking()) {
-      if (currentAttackedEnemy === null || !currentAttackedEnemy.isAlive) {
-          currentAttackedEnemy = enemy;
-      }
-      if (currentAttackedEnemy === enemy) {
-          if(currentAttackedEnemy.currentHP <= 0) {
+
+  
+          if(enemy.currentHP <= 0) {
               return;
           }
           setIsCharAttacking(true);
           if (getCurrentCharacter() !== "character-bird") {
-              critterAttack(critter, currentAttackedEnemy, critterAttackTextures);
+              critterAttack(critter, enemy, critterAttackTextures);
           }
-      }
+      
   }
 }
 
