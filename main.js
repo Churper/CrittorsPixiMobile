@@ -935,6 +935,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
   document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
   let start = null;
+let threshold = 50; // Define your threshold here, in pixels
 
 window.addEventListener('touchstart', function(event) {
     start = event.changedTouches[0].pageY;
@@ -946,14 +947,16 @@ window.addEventListener('touchend', function(event) {
     // Determine swipe direction
     let swipeDirection = end - start;
 
-    if (swipeDirection > 0) { // swipe down
-        document.getElementById("character-portrait").click();
-        document.getElementById("exp-bar").click();
-        document.getElementById("health-bar").click();
-    } else if (swipeDirection < 0) { // swipe up
-        document.getElementById("character-portrait").click();
-        document.getElementById("exp-bar").click();
-        document.getElementById("health-bar").click();
+    if (Math.abs(swipeDirection) >= threshold) {
+        if (swipeDirection > 0) { // swipe down
+            document.getElementById("character-portrait").click();
+            document.getElementById("exp-bar").click();
+            document.getElementById("health-bar").click();
+        } else if (swipeDirection < 0) { // swipe up
+            document.getElementById("character-portrait").click();
+            document.getElementById("exp-bar").click();
+            document.getElementById("health-bar").click();
+        }
     }
 }, false);
   function openCharacterMenu() {
