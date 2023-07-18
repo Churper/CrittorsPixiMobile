@@ -934,7 +934,28 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("character-portrait").addEventListener("click", openCharacterMenu);
   document.getElementById("exp-bar").addEventListener("click", openCharacterMenu);
   document.getElementById("health-bar").addEventListener("click", openCharacterMenu);
-  
+  let start = null;
+
+window.addEventListener('touchstart', function(event) {
+    start = event.changedTouches[0].pageY;
+}, false);
+
+window.addEventListener('touchend', function(event) {
+    let end = event.changedTouches[0].pageY;
+
+    // Determine swipe direction
+    let swipeDirection = end - start;
+
+    if (swipeDirection > 0) { // swipe down
+        document.getElementById("character-portrait").click();
+        document.getElementById("exp-bar").click();
+        document.getElementById("health-bar").click();
+    } else if (swipeDirection < 0) { // swipe up
+        document.getElementById("character-portrait").click();
+        document.getElementById("exp-bar").click();
+        document.getElementById("health-bar").click();
+    }
+}, false);
   function openCharacterMenu() {
     if (getSelectLevel() >= 1) {
       return;
@@ -1699,7 +1720,89 @@ foreground.y = Math.max(app.screen.height);
       updateVelocity();
       critter.loop = true;
 
+      function handleTouchHold() {
+        if (getisPaused()) {
+          return;
+        }
+        if (roundOver === true) { isAttacking = false; attackAnimationPlayed = false; return; }
+        if (!isAttackingChar) {
+          if (!getisDead()) {
+            isAttackingChar = true;
+            critter.textures = frogAttackTextures;
+            setCharAttackAnimating(true);
+            critter.loop = false;
+            critter.onComplete = function () {
+              if (!isAttackingChar) {
+                return; // Return early if attack was interrupted (paused)
+              }
+              if (isAttackingChar) {
+                attackAnimationPlayed = true;
+                attackSound.volume = 0.25;
+                attackSound.src = "./attacksound.wav";
+                attackSound.play();
+                if (getCurrentCharacter() === "character-bird") {
+                  const birdProjectile = new PIXI.Sprite(
+                    PIXI.Loader.shared.resources["bird_egg"].texture
+                  );
+                  birdProjectile.position.set(
+                    critter.position.x,
+                    critter.position.y
+                  );
+                  birdProjectile.name = "birdProjectile";
+                  birdProjectile.scale.set(0.3);
+                  app.stage.addChild(birdProjectile);
 
+                  const projectileSpeed = 6;
+                  const maxDistance = 450; // You can change this to the maximum distance you want the egg to travel
+                  const startingX = birdProjectile.x;
+                  const gravity = 0.1; // This controls the strength of the "gravity"
+                  let verticalSpeed = -3; // This is the initial vertical speed. A negative value means the projectile will move up at first.
+
+                  function updateProjectile() {
+                    birdProjectile.x += projectileSpeed;
+
+                    // Apply the "gravity" to the vertical speed
+                    verticalSpeed += gravity;
+                    // Apply the vertical speed to the projectile's position
+                    birdProjectile.y += verticalSpeed;
+
+                    if (Math.abs(birdProjectile.x - startingX) > maxDistance) {
+                      // If the projectile has travelled more than the maximum distance, remove it
+                      app.stage.removeChild(birdProjectile);
+                      app.ticker.remove(updateProjectile);
+                    }
+
+                    // If the birdProjectile has been removed for any other reason, stop the update
+                    if (!app.stage.children.includes(birdProjectile)) {
+                      app.ticker.remove(updateProjectile);
+                    }
+                  }
+
+                  app.ticker.add(updateProjectile);
+                }
+
+                if (critter.position.x > castle.position.x - castle.width / 1.1) {
+                  console.log("takingDamage");
+                  const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
+                  const remainingHealthPercentage = castleHealth / castleMaxHealth;
+                  const greyscaleFactor = 1 - remainingHealthPercentage;
+
+                  greyscaleFilter.desaturate(greyscaleFactor);
+
+                  castle.filters = [greyscaleFilter];
+
+                  castleTakeDamage(getCharacterDamage(getCurrentCharacter()));
+                }
+                isAttackingChar = false;
+                isMoving = false;
+              }
+              isAttackingChar = false;
+              critter.play();
+            };
+            critter.play();
+          } else { isAttackingChar = false; }
+        }
+      }
 
       function handleTouchStart(event) {
 
@@ -1771,89 +1874,7 @@ foreground.y = Math.max(app.screen.height);
           // Perform any additional actions you want here
         }
 
-        function handleTouchHold() {
-          if (getisPaused()) {
-            return;
-          }
-          if (roundOver === true) { isAttacking = false; attackAnimationPlayed = false; return; }
-          if (!isAttackingChar) {
-            if (!getisDead()) {
-              isAttackingChar = true;
-              critter.textures = frogAttackTextures;
-              setCharAttackAnimating(true);
-              critter.loop = false;
-              critter.onComplete = function () {
-                if (!isAttackingChar) {
-                  return; // Return early if attack was interrupted (paused)
-                }
-                if (isAttackingChar) {
-                  attackAnimationPlayed = true;
-                  attackSound.volume = 0.25;
-                  attackSound.src = "./attacksound.wav";
-                  attackSound.play();
-                  if (getCurrentCharacter() === "character-bird") {
-                    const birdProjectile = new PIXI.Sprite(
-                      PIXI.Loader.shared.resources["bird_egg"].texture
-                    );
-                    birdProjectile.position.set(
-                      critter.position.x,
-                      critter.position.y
-                    );
-                    birdProjectile.name = "birdProjectile";
-                    birdProjectile.scale.set(0.3);
-                    app.stage.addChild(birdProjectile);
-
-                    const projectileSpeed = 6;
-                    const maxDistance = 450; // You can change this to the maximum distance you want the egg to travel
-                    const startingX = birdProjectile.x;
-                    const gravity = 0.1; // This controls the strength of the "gravity"
-                    let verticalSpeed = -3; // This is the initial vertical speed. A negative value means the projectile will move up at first.
-
-                    function updateProjectile() {
-                      birdProjectile.x += projectileSpeed;
-
-                      // Apply the "gravity" to the vertical speed
-                      verticalSpeed += gravity;
-                      // Apply the vertical speed to the projectile's position
-                      birdProjectile.y += verticalSpeed;
-
-                      if (Math.abs(birdProjectile.x - startingX) > maxDistance) {
-                        // If the projectile has travelled more than the maximum distance, remove it
-                        app.stage.removeChild(birdProjectile);
-                        app.ticker.remove(updateProjectile);
-                      }
-
-                      // If the birdProjectile has been removed for any other reason, stop the update
-                      if (!app.stage.children.includes(birdProjectile)) {
-                        app.ticker.remove(updateProjectile);
-                      }
-                    }
-
-                    app.ticker.add(updateProjectile);
-                  }
-
-                  if (critter.position.x > castle.position.x - castle.width / 1.1) {
-                    console.log("takingDamage");
-                    const greyscaleFilter = new PIXI.filters.ColorMatrixFilter();
-                    const remainingHealthPercentage = castleHealth / castleMaxHealth;
-                    const greyscaleFactor = 1 - remainingHealthPercentage;
-
-                    greyscaleFilter.desaturate(greyscaleFactor);
-
-                    castle.filters = [greyscaleFilter];
-
-                    castleTakeDamage(getCharacterDamage(getCurrentCharacter()));
-                  }
-                  isAttackingChar = false;
-                  isMoving = false;
-                }
-                isAttackingChar = false;
-                critter.play();
-              };
-              critter.play();
-            } else { isAttackingChar = false; }
-          }
-        }
+     
 
         isPointerDown = true;
         pointerHoldInterval = setInterval(handleTouchHold, 10);
@@ -2301,7 +2322,7 @@ app.stage.addChild(hpBarBackground,hpBar);
 
           return;
         }
-
+        if(getEnemiesInRange()>0){handleTouchHold();}
         if (getSpeedChanged()) { updateVelocity(); setSpeedChanged(false); }
         if (!isAttackingChar) {
           //  console.log("attacking char",isAttackingChar);
