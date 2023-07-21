@@ -1,19 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
-
+console.log("PIXIVERSION:",PIXI.VERSION);
   let rotateMessage = document.getElementById('rotateDevice');
-  rotateMessage.style.display = "block"; // Always display the new menu
 
-  document.getElementById('proceedAnyway').addEventListener('click', function() {
-    rotateMessage.style.display = 'none';
-    // Run your app's main function here if it's not already running
-    if (!appStarted) {
-      mainAppFunction();
-      appStarted = true;
-      
-    }
-  });
-
+mainAppFunction();
   function mainAppFunction() {
     let leveling = false;
     let timer = null;
@@ -1362,7 +1352,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const sound = new Audio();
     sound.src = "./theme.ogg";
     sound.volume = .02;
-    sound.play();
+    //sound.play();
 
 
     // Game elements and logic 
@@ -1430,59 +1420,109 @@ document.addEventListener('DOMContentLoaded', function () {
     frogEXPIndicator.style.setProperty('--max-exp-frog', getEXPtoLevel('character-frog'));
     frogEXPIndicator.style.setProperty('--exp-indicator-height', frogEXPHeightPercentage + '%');
 
-    PIXI.Loader.shared.add([
-      { name: 'shark_emerge', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_emerge.png' },
-      { name: 'shark_submerge', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_submerge.png' },
-      { name: 'shark_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_walk.png' },
-      { name: 'shark_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/shark_attack.png' },
-      { name: 'pig_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pig_walk.png' },
-      { name: 'pig_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/pig_attack.png' },
-      { name: 'ele_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/ele_walk.png' },
-      { name: 'ele_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/ele_attack.png' },
-      { name: 'scorp_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/scorp_walk.png' },
-      { name: 'scorp_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/scorp_attack.png' },
-      { name: 'octo_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/octo_walk.png' },
-      { name: 'octo_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/octo_attack.png' },
-      { name: 'toofer_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_walk.png' },
-      { name: 'toofer_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_attack.png' },
-      { name: 'bird_egg', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bird_egg.png' },
-      { name: 'bird_ghost', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bird_ghost.png' },
-      { name: 'bird_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bird_walk.png' },
-      { name: 'bird_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bird_attack.png' },
-      { name: 'snail_ghost', url: 'https://churper.github.io/CrittorsPixiMobile/assets/snail_ghost.png' },
-      { name: 'bee_ghost', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bee_ghost.png' },
-      { name: 'bee_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bee_walk.png' },
-      { name: 'bee_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bee_attack.png' },
-      { name: 'puffer_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/puffer_walk.png' },
-      { name: 'puffer_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/puffer_attack.png' },
-      { name: 'bean', url: 'https://churper.github.io/CrittorsPixiMobile/assets/bean.png'},
-      { name: 'background', url: 'https://churper.github.io/CrittorsPixiMobile/assets/background.png' },
-      { name: 'frog_ghost', url: 'https://churper.github.io/CrittorsPixiMobile/assets/frog_ghost.png' },
-      { name: 'foreground', url: 'https://churper.github.io/CrittorsPixiMobile/assets/foreground.png' },
-      { name: 'critter', url: 'https://churper.github.io/CrittorsPixiMobile/assets/critter.png' },
-      { name: 'critter_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/critter_walk.png' },
-      { name: 'critter_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/critter_attack.png' },
-      { name: 'snail_idle', url: 'https://churper.github.io/CrittorsPixiMobile/assets/snail_idle.png' },
-      { name: 'snail_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/snail_walk.png' },
-      { name: 'snail_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/snail_attack.png' },
-      { name: 'frog', url: 'https://churper.github.io/CrittorsPixiMobile/assets/frog.png' },
-      { name: 'frog_walk', url: 'https://churper.github.io/CrittorsPixiMobile/assets/frog_walk.png' },
-      { name: 'frog_attack', url: 'https://churper.github.io/CrittorsPixiMobile/assets/frog_attack.png' },
-      { name: 'enemy_death', url: 'https://churper.github.io/CrittorsPixiMobile/assets/enemy_death.png' },
-      { name: 'mountain1', url: 'https://churper.github.io/CrittorsPixiMobile/assets/mountain1.png' },
-      { name: 'mountain2', url: 'https://churper.github.io/CrittorsPixiMobile/assets/mountain2.png' },
-      { name: 'castle', url: 'https://churper.github.io/CrittorsPixiMobile/assets/castle.png' },
-      { name: 'clouds', url: 'https://churper.github.io/CrittorsPixiMobile/assets/clouds.png' },
-      { name: 'clouds2', url: 'https://churper.github.io/CrittorsPixiMobile/assets/clouds2.png' },
-      { name: 'clouds3', url: 'https://churper.github.io/CrittorsPixiMobile/assets/clouds3.png' },
-      
-    ]).load(setup);
 
 
 
+// Add the assets to load
+PIXI.Assets.add('shark_emerge', 'https://churper.github.io/CrittorsPixiMobile/assets/shark_emerge.png');
+PIXI.Assets.add('shark_submerge', 'https://churper.github.io/CrittorsPixiMobile/assets/shark_submerge.png');
+PIXI.Assets.add('shark_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/shark_walk.png');
+PIXI.Assets.add('shark_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/shark_attack.png');
+PIXI.Assets.add('pig_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/pig_walk.png');
+PIXI.Assets.add('pig_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/pig_attack.png');
+PIXI.Assets.add('ele_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/ele_walk.png');
+PIXI.Assets.add('ele_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/ele_attack.png');
+PIXI.Assets.add('scorp_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/scorp_walk.png');
+PIXI.Assets.add('scorp_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/scorp_attack.png');
+PIXI.Assets.add('octo_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/octo_walk.png');
+PIXI.Assets.add('octo_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/octo_attack.png');
+PIXI.Assets.add('toofer_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_walk.png');
+PIXI.Assets.add('toofer_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/toofer_attack.png');
+PIXI.Assets.add('bird_egg', 'https://churper.github.io/CrittorsPixiMobile/assets/bird_egg.png');
+PIXI.Assets.add('bird_ghost', 'https://churper.github.io/CrittorsPixiMobile/assets/bird_ghost.png');
+PIXI.Assets.add('bird_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/bird_walk.png');
+PIXI.Assets.add('bird_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/bird_attack.png');
+PIXI.Assets.add('snail_ghost', 'https://churper.github.io/CrittorsPixiMobile/assets/snail_ghost.png');
+PIXI.Assets.add('bee_ghost', 'https://churper.github.io/CrittorsPixiMobile/assets/bee_ghost.png');
+PIXI.Assets.add('bee_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/bee_walk.png');
+PIXI.Assets.add('bee_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/bee_attack.png');
+PIXI.Assets.add('puffer_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/puffer_walk.png');
+PIXI.Assets.add('puffer_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/puffer_attack.png');
+PIXI.Assets.add('bean', 'https://churper.github.io/CrittorsPixiMobile/assets/bean.png');
+PIXI.Assets.add('background', 'https://churper.github.io/CrittorsPixiMobile/assets/background.png');
+PIXI.Assets.add('frog_ghost', 'https://churper.github.io/CrittorsPixiMobile/assets/frog_ghost.png');
+PIXI.Assets.add('foreground', 'https://churper.github.io/CrittorsPixiMobile/assets/foreground.png');
+PIXI.Assets.add('critter', 'https://churper.github.io/CrittorsPixiMobile/assets/critter.png');
+PIXI.Assets.add('critter_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/critter_walk.png');
+PIXI.Assets.add('critter_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/critter_attack.png');
+PIXI.Assets.add('snail_idle', 'https://churper.github.io/CrittorsPixiMobile/assets/snail_idle.png');
+PIXI.Assets.add('snail_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/snail_walk.png');
+PIXI.Assets.add('snail_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/snail_attack.png');
+PIXI.Assets.add('frog', 'https://churper.github.io/CrittorsPixiMobile/assets/frog.png');
+PIXI.Assets.add('frog_walk', 'https://churper.github.io/CrittorsPixiMobile/assets/frog_walk.png');
+PIXI.Assets.add('frog_attack', 'https://churper.github.io/CrittorsPixiMobile/assets/frog_attack.png');
+PIXI.Assets.add('enemy_death', 'https://churper.github.io/CrittorsPixiMobile/assets/enemy_death.png');
+PIXI.Assets.add('mountain1', 'https://churper.github.io/CrittorsPixiMobile/assets/mountain1.png');
+PIXI.Assets.add('mountain2', 'https://churper.github.io/CrittorsPixiMobile/assets/mountain2.png');
+PIXI.Assets.add('castle', 'https://churper.github.io/CrittorsPixiMobile/assets/castle.png');
+PIXI.Assets.add('clouds', 'https://churper.github.io/CrittorsPixiMobile/assets/clouds.png');
+PIXI.Assets.add('clouds2', 'https://churper.github.io/CrittorsPixiMobile/assets/clouds2.png');
+PIXI.Assets.add('clouds3', 'https://churper.github.io/CrittorsPixiMobile/assets/clouds3.png');
 
+// Load the assets and get a resolved promise once all are loaded
+const texturesPromise = PIXI.Assets.load([
+  'shark_emerge',
+  'shark_submerge',
+  'shark_walk',
+  'shark_attack',
+  'pig_walk',
+  'pig_attack',
+  'ele_walk',
+  'ele_attack',
+  'scorp_walk',
+  'scorp_attack',
+  'octo_walk',
+  'octo_attack',
+  'toofer_walk',
+  'toofer_attack',
+  'bird_egg',
+  'bird_ghost',
+  'bird_walk',
+  'bird_attack',
+  'snail_ghost',
+  'bee_ghost',
+  'bee_walk',
+  'bee_attack',
+  'puffer_walk',
+  'puffer_attack',
+  'bean',
+  'background',
+  'frog_ghost',
+  'foreground',
+  'critter',
+  'critter_walk',
+  'critter_attack',
+  'snail_idle',
+  'snail_walk',
+  'snail_attack',
+  'frog',
+  'frog_walk',
+  'frog_attack',
+  'enemy_death',
+  'mountain1',
+  'mountain2',
+  'castle',
+  'clouds',
+  'clouds2',
+  'clouds3'
+]);
 
-    function setup() {
+// When the promise resolves, we have the textures!
+texturesPromise.then((texturesPromise) => {
+ setup(texturesPromise);
+});
+
+    function setup(textures) {
 
 
 
@@ -1490,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add the timer animation to the stage
 
 
-  backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
+      backgroundTexture = textures.background;
 
 // Create first background sprite
 background = new PIXI.Sprite(backgroundTexture);
@@ -1501,11 +1541,11 @@ background.position.set(0, 0);
 app.stage.addChild(background);
 
 
-
+foregroundTexture = textures.foreground;
 // Set up the foreground
-foreground = new PIXI.Sprite(PIXI.Loader.shared.resources['foreground'].texture);
-foreground.width = PIXI.Loader.shared.resources['foreground'].texture.width * 1.3;
-foreground.height = PIXI.Loader.shared.resources['foreground'].texture.height * 1;
+foreground = new PIXI.Sprite(foregroundTexture);
+foreground.width = foreground.texture.width * 1.3;
+foreground.height = foreground.texture.height * 1;
 foreground.anchor.set(0, 1);
 foreground.x = 0;
 foreground.y = Math.max(app.screen.height);
@@ -1513,12 +1553,12 @@ foreground.y = Math.max(app.screen.height);
 
 
 
-      const frogGhostTextures = PIXI.Loader.shared.resources['frog_ghost'].texture;
-      frogGhostPlayer = new PIXI.Sprite(frogGhostTextures);
+const frogGhostTextures = textures.frog_ghost;
+frogGhostPlayer = new PIXI.Sprite(frogGhostTextures);
 
-      frogGhostPlayer.anchor.set(0, 0);
-      frogGhostPlayer.scale.set(0.28);
-      backgroundTexture = PIXI.Loader.shared.resources['background'].texture;
+frogGhostPlayer.anchor.set(0, 0);
+frogGhostPlayer.scale.set(0.28);
+backgroundTexture = textures.background;
 
       // Create a new tiling sprite with the background texture, specifying the width and height
  
@@ -1531,7 +1571,27 @@ foreground.y = Math.max(app.screen.height);
       const mountain2 = createMountainSprite('mountain2', app.screen.width * 0.45, mountainVelocity2, foreground);
       const mountain3 = createMountainSprite('mountain2', -200, mountainVelocity3, foreground); // Adjust the position as needed
       const mountain4 = createMountainSprite('mountain1', app.screen.width * 1.2, mountainVelocity4, foreground); // Adjust the position as needed
+      function createMountainSprite(resourceName, xPos, velocity, foreground) {
+        const sprite = new PIXI.Sprite(textures[resourceName]);
 
+        const scaleFactor = Math.min(
+          app.screen.height * 0.6 / sprite.height,
+          app.screen.width * 1.5 / sprite.width
+        );
+
+        sprite.scale.set(scaleFactor);
+        sprite.anchor.set(0, 1);
+
+        const minHeightOffset = foreground ? foreground.height * 0.34 : 0;
+        const heightOffsetRatio = (1 - scaleFactor) * 0.3; // Adjust this ratio based on your preference
+
+        const foregroundHeightOffset = foreground ? minHeightOffset + sprite.height * heightOffsetRatio : 0; // Adjusted offset calculation
+        sprite.position.set(xPos, app.screen.height - foregroundHeightOffset);
+        sprite.zIndex = -1;
+        sprite.velocity = velocity;
+
+        return sprite;
+      }
       mountain3.scale.x = .6;
       mountain3.scale.y = .65;
       mountain4.scale.x = .5;
@@ -1569,29 +1629,11 @@ foreground.y = Math.max(app.screen.height);
       hpBarBackground.beginFill(hpBarBackgroundColor, 1);
       hpBarBackground.drawRect(hpBarX + hpBarBorderThickness, hpBarY + hpBarBorderThickness, hpBarWidth - hpBarBorderThickness * 2, hpBarHeight - hpBarBorderThickness * 2);
       hpBarBackground.endFill();
-      function createMountainSprite(resourceName, xPos, velocity, foreground) {
-        const sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[resourceName].texture);
+    
 
-        const scaleFactor = Math.min(
-          app.screen.height * 0.6 / sprite.height,
-          app.screen.width * 1.5 / sprite.width
-        );
+ 
 
-        sprite.scale.set(scaleFactor);
-        sprite.anchor.set(0, 1);
-
-        const minHeightOffset = foreground ? foreground.height * 0.34 : 0;
-        const heightOffsetRatio = (1 - scaleFactor) * 0.3; // Adjust this ratio based on your preference
-
-        const foregroundHeightOffset = foreground ? minHeightOffset + sprite.height * heightOffsetRatio : 0; // Adjusted offset calculation
-        sprite.position.set(xPos, app.screen.height - foregroundHeightOffset);
-        sprite.zIndex = -1;
-        sprite.velocity = velocity;
-
-        return sprite;
-      }
-
-      let frogIdleTexture = PIXI.Loader.shared.resources['frog'].texture;
+      let frogIdleTexture = textures.frog;
       let frogIdleTextures = [frogIdleTexture];
       const frogIdleTextures1 = [frogIdleTexture];
       frogWalkTextures = createAnimationTextures('frog_walk', 10, 351);
@@ -1608,8 +1650,8 @@ foreground.y = Math.max(app.screen.height);
       const beeAttackTextures = createAnimationTextures2('bee_attack', 18, 256, 1950, 1024);
       const birdWalkTextures = createAnimationTextures2('bird_walk', 13, 403, 2541, 806);
       const birdAttackTextures = createAnimationTextures2('bird_attack', 13, 403, 2541, 806);
-      const cloudsTexture = PIXI.Loader.shared.resources['clouds'].texture;
-      const clouds2Texture = PIXI.Loader.shared.resources['clouds2'].texture;
+      const cloudsTexture = textures.clouds;
+      const clouds2Texture = textures.clouds2;
       const scorpWalkTextures = createAnimationTextures2('scorp_walk', 6, 499, 2202, 499);
       const scorpAttackTextures = createAnimationTextures2('scorp_attack', 9, 499, 3303, 499);
       const tooferWalkTextures = createAnimationTextures2('toofer_walk', 6, 377, 2412, 377);
@@ -1667,31 +1709,31 @@ foreground.y = Math.max(app.screen.height);
       let isMoving = false;
 
       function createAnimationTextures(resourceName, frameCount, frameHeight) {
-        const textures = [];
-        const textureWidth = PIXI.Loader.shared.resources[resourceName].texture.width / frameCount;
+        const textures1 = [];
+        const textureWidth = textures[resourceName].width / frameCount;
 
         for (let i = 0; i < frameCount; i++) {
           const rect = new PIXI.Rectangle(i * textureWidth, 0, textureWidth, frameHeight);
-          const texture = new PIXI.Texture(PIXI.Loader.shared.resources[resourceName].texture, rect);
-          textures.push(texture);
+          const texture1 = new PIXI.Texture(textures[resourceName], rect);
+          textures1.push(texture1);
         }
 
-        return textures;
+        return textures1;
       }
 
       function createAnimationTextures2(resourceName, frameCount, frameHeight, sheetWidth, sheetHeight) {
-        const textures = [];
+        const textures1 = [];
         const frameWidth = sheetWidth / Math.ceil(frameCount / (sheetHeight / frameHeight));
 
         for (let i = 0; i < frameCount; i++) {
           const row = Math.floor(i / (sheetWidth / frameWidth));
           const col = i % (sheetWidth / frameWidth);
           const rect = new PIXI.Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
-          const texture = new PIXI.Texture(PIXI.Loader.shared.resources[resourceName].texture, rect);
-          textures.push(texture);
+          const texture1 = new PIXI.Texture(textures[resourceName], rect);
+          textures1.push(texture1);
         }
 
-        return textures;
+        return textures1;
       }
 
       function createAnimatedSprite(textures) {
