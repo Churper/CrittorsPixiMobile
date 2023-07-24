@@ -1789,9 +1789,7 @@ backgroundTexture = textures.background;
                 attackSound.src = "./attacksound.wav";
                 attackSound.play();
                 if (getCurrentCharacter() === "character-bird") {
-                  const birdProjectile = new PIXI.Sprite(
-                    PIXI.Loader.shared.resources["bird_egg"].texture
-                  );
+                  const birdProjectile = new PIXI.Sprite(textures.bird_egg);
                   birdProjectile.position.set(
                     critter.position.x,
                     critter.position.y
