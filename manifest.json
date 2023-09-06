@@ -14,6 +14,6 @@
     }
   ],
   "start_url": "/CrittorsPixiMobile/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#ffffff"
 }
