@@ -3,7 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
 console.log("PIXIVERSION:",PIXI.VERSION);
   let rotateMessage = document.getElementById('rotateDevice');
 
-mainAppFunction();
+  document.getElementById('proceedAnyway').addEventListener('click', function() {
+    rotateMessage.style.display = 'none';
+    // Run your app's main function here if it's not already running
+    if (!appStarted) {
+      mainAppFunction();
+      appStarted = true;
+      
+    }
+  });
   function mainAppFunction() {
     let leveling = false;
     let timer = null;
