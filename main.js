@@ -1361,8 +1361,8 @@ mainAppFunction();
     app.stage.addChild(loadingSprite);
     const sound = new Audio();
     sound.src = "./theme.ogg";
-    sound.volume = .42;
-    sound.play();
+   // sound.volume = .42;
+    //sound.play();
 
 
     // Game elements and logic 
