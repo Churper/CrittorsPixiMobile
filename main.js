@@ -1351,7 +1351,7 @@ mainAppFunction();
     app.stage.addChild(loadingSprite);
     const sound = new Audio();
     sound.src = "./theme.ogg";
-    sound.volume = .02;
+    sound.volume = .42;
     //sound.play();
 
 
