@@ -2755,8 +2755,9 @@ let hasAttackedThisFrame = false;
     }
 
     if (!enemy.enemyAdded) {
-      
+      if(enemy.isAlive){
       addEnemyInRange(enemy);
+      }
       return;
     }
 
