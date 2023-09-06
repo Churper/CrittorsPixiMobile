@@ -6,14 +6,14 @@ console.log("PIXIVERSION:",PIXI.VERSION);
 
   document.getElementById('proceedAnyway').addEventListener('click', function() {
     rotateMessage.style.display = 'none';
-    // Run your app's main function here if it's not already running
+    // Run your app's main function here if it's not already runnin
     if (!appStarted) {
       mainAppFunction();
       appStarted = true;
       
     }
   });
-mainAppFunction();
+
   function mainAppFunction() {
     let leveling = false;
     let timer = null;
