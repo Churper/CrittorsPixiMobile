@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let appStarted = false;
 console.log("PIXIVERSION:",PIXI.VERSION);
   let rotateMessage = document.getElementById('rotateDevice');
+  rotateMessage.style.display = "block"; // Always display the new menu
 
   document.getElementById('proceedAnyway').addEventListener('click', function() {
     rotateMessage.style.display = 'none';
@@ -12,6 +13,7 @@ console.log("PIXIVERSION:",PIXI.VERSION);
       
     }
   });
+mainAppFunction();
   function mainAppFunction() {
     let leveling = false;
     let timer = null;
