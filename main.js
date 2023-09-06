@@ -2861,9 +2861,7 @@ function handleCritterAttack(critter, enemy, critterAttackTextures) {
         // Callback function to remove enemy after death animation2
         if (app.stage.children.includes(enemy)) {
             enemy.tint = 0xFF0000; // Set the hit color
-            if (getEnemiesInRange() > 0) {
-                setEnemiesInRange(0);
-            }
+        
 
             if (getEnemiesInRange() === 0) {
                 const enemyPortrait = document.getElementById('enemy-portrait');
@@ -2881,6 +2879,9 @@ enemy.isAlive = false;
 
             critter.play();
         }
+        if (getEnemiesInRange() > 0) {
+          setEnemiesInRange(getEnemiesInRange()-1);
+      }
     } 
 }
 
