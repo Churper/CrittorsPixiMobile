@@ -2862,7 +2862,7 @@ function handleCritterAttack(critter, enemy, critterAttackTextures) {
         if (app.stage.children.includes(enemy)) {
             enemy.tint = 0xFF0000; // Set the hit color
             if (getEnemiesInRange() > 0) {
-                setEnemiesInRange(getEnemiesInRange() - 1);
+                setEnemiesInRange(0);
             }
 
             if (getEnemiesInRange() === 0) {
