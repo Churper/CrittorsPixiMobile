@@ -54,7 +54,7 @@ console.log("PIXIVERSION:",PIXI.VERSION);
     speed = 1;
   }
   let backgroundSprite;
-
+  let demiSpawned = 0;
   let speedChanged = false;
   let selectLevel = 0;
   let frogTintColor = 0xffffff;
@@ -235,6 +235,26 @@ console.log("PIXIVERSION:",PIXI.VERSION);
     }
   }
 
+ function spawnDemi()
+ {
+
+  console.log("running 1 DEMO HERE");
+  if(demiSpawned === 0)
+  {
+    console.log("SPAWENING 1 DEMO HERE");
+    const randomIndex = Math.floor(Math.random() * enemyTypes.length);
+    const selectedEnemy = enemyTypes[randomIndex];
+
+    spawnEnemyDemi(
+      critter,
+      selectedEnemy.attackTextures,
+      selectedEnemy.walkTextures,
+      selectedEnemy.name
+    );
+    demiSpawned = 1;
+  }
+
+ }
   // Reset Timer
   function resetTimer() {
     const snail = document.getElementById('snail');
@@ -2118,6 +2138,7 @@ let cantGainEXP = false;
               }
             };
         }
+       // demiSpawned = 2;
     }
     
 
@@ -2134,6 +2155,9 @@ let cantGainEXP = false;
       let once = 0;
       app.ticker.add(() => {
         if (isTimerFinished()) {
+         
+          console.log("TIMERDONE");
+          spawnDemi();
           pauseTimer();
         }
         //console.log("HERXOROR:", getEnemiesInRange());
@@ -2203,7 +2227,7 @@ let cantGainEXP = false;
             }
 
             if (exploded) {
-
+              
               mountain1.tint = getRandomColor();
               mountain2.tint = getRandomColor();
               mountain3.tint = getRandomColor3();
@@ -2236,6 +2260,9 @@ let cantGainEXP = false;
 app.stage.addChild(hpBarBackground,hpBar);
               console.log("REEEE");
               hasExploded = false;
+
+
+demiSpawned = 0;
             }
 
             playRoundText(currentRound);
@@ -2271,7 +2298,6 @@ app.stage.addChild(hpBarBackground,hpBar);
             // setPlayerCurrentHealth(0);
             // Clear the enemies array
             isPointerDown = false;
-
             let characterHealth;
 
             switch (getCurrentCharacter()) {
@@ -2554,6 +2580,7 @@ app.stage.addChild(hpBarBackground,hpBar);
     }
 
     if (isTimerFinished()) {
+      console.log("TIMERDONE");
       return
     }
 
@@ -2602,6 +2629,59 @@ app.stage.addChild(hpBarBackground,hpBar);
 
 
 
+
+  function spawnEnemyDemi(critter, critterAttackTextures, critterWalkTextures, enemyName) {
+    const enemy = createSpawnDemi(critterWalkTextures, enemyName);
+
+    addEnemies(enemy); // add the already created enemy
+    if (enemy.isAlive) {
+      app.stage.addChild(enemy);
+    }
+
+    handleEnemySorting(enemy);
+
+    app.ticker.add(() => {
+      if (getisPaused()) {
+        return;
+      }
+
+      if (app.stage.children.includes(enemy)) {
+        handleEnemyActions(critter, critterAttackTextures, critterWalkTextures, enemy, enemyName);
+      } else {
+        removeEnemy(enemy);
+        return;
+      }
+    });
+  }
+
+  
+
+  function createSpawnDemi(critterWalkTextures, enemyName) {
+    const enemy = new PIXI.AnimatedSprite(critterWalkTextures);
+    enemy.scale.set(determineEnemyScale(enemyName) * 2);
+    enemy.exp = 32 + Math.floor(currentRound * 4);
+    enemy.anchor.set(0.5, 0.5);
+    enemy.resett = false;
+    enemy.type = enemyName;
+    enemy.tint = Math.floor(Math.random() * 0xFFFFFF);
+    enemy.isAttacking = false;
+    enemy.enemyAdded = false;
+    enemy.position.set(2800, app.screen.height - 120 - enemy.height / 8 - enemy.scale.y * 120 + (Math.random() * 60 - 30));
+    enemy.zIndex = enemy.position.y + 10000;
+    enemy.animationSpeed = enemyName === "pig" ? 0.23 : enemyName === "scorp" ? 0.15 : 0.25;
+    enemy.loop = true;
+    enemy.isAlive = true;
+    enemy.attackDamage = Math.round(2 + currentRound /2) ;
+    enemy.maxHP = 200 + currentRound * 7;
+    enemy.currentHP = enemy.maxHP;
+    enemy.scale.x *= -1; // Flip the enemy horizontally
+    enemy.play();
+    const randomSpeedFactor = 0.75 + Math.random() * 0.5; // Random speed factor between 0.75 and 1.25
+    enemy.vx = -2 * randomSpeedFactor; // Set the enemy's horizontal velocity with random speed factor    console.log("enemy created", enemyName);
+    return enemy;
+  }
+
+
   function spawnEnemy(critter, critterAttackTextures, critterWalkTextures, enemyName) {
     const enemy = createSpawnEnemy(critterWalkTextures, enemyName);
 
@@ -2625,6 +2705,8 @@ app.stage.addChild(hpBarBackground,hpBar);
       }
     });
   }
+
+  
 
   function createSpawnEnemy(critterWalkTextures, enemyName) {
     const enemy = new PIXI.AnimatedSprite(critterWalkTextures);
@@ -3949,6 +4031,7 @@ enemy.isAlive = false;
         clearInterval(fadeOutInterval);
       }
     }, 10); // Adjust the interval duration by changing this value
+    
   }
 
 
